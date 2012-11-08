@@ -87,21 +87,7 @@ class DrinkingZage extends Sprite {
 		//stage.autoOrients = false;
 		
 		stage.addEventListener(Event.RESIZE, resizeHandler);
-		stage.addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown );		
 		populate();
-	}
-	
-	static function onKeyDown(event:KeyboardEvent )
-	{
-	  if ( 27 == event.keyCode )
-	  {
-		 //if (mCurrentDialog!=null)
-			//mCurrentDialog.goBack();
-		 //else if (mCurrentScreen!=null)
-			//mCurrentScreen.goBack();
-			trace( "escape or back key" );
-		 return;
-	  }
 	}
 	
 	public function populate():Void
