@@ -44,13 +44,13 @@ class EmoticonsWindow extends ITabListWindow
 	
 	override public function createList():Void
 	{
-		_items.push ( new Item( "Like" ) );
-		_items.push ( new Item( "Love" ) );
-		_items.push ( new Item( "Lets go to my place" ) );
-		_items.push ( new Item( "Can I get you a drink" ) );
-		_items.push ( new Item( "20 most original lines" ) );
-		_items.push ( new Item( "20 lines to make them laugh" ) );
-		_items.push ( new Item( "20 lines to shock them" ) );
+		itemAdd ( new Item( "Like" ) );
+		itemAdd ( new Item( "Love" ) );
+		itemAdd ( new Item( "Lets go to my place" ) );
+		itemAdd ( new Item( "Can I get you a drink" ) );
+		itemAdd ( new Item( "20 most original lines" ) );
+		itemAdd ( new Item( "20 lines to make them laugh" ) );
+		itemAdd ( new Item( "20 lines to shock them" ) );
 	}
 }
 

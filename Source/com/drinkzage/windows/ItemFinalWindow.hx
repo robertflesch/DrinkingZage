@@ -68,11 +68,13 @@ class ItemFinalWindow {
 	public function addListeners():Void
 	{
 		_stage.addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown );	
+		trace( "ItemFinalWindow.addListeners");
 	}
 	
 	public function removeListeners():Void
 	{
 		_stage.removeEventListener(KeyboardEvent.KEY_DOWN, onKeyDown );				
+		trace( "ItemFinalWindow.removeEventListener");
 	}
 	
 	public function populate(item:Item):Void
@@ -176,7 +178,7 @@ class ItemFinalWindow {
 	
 	function onKeyDown( event:KeyboardEvent )
 	{
-		if ( Globals.BACK_BUTTON == event.keyCode )
+		if ( Globals.BACK_BUTTON == cast( event.keyCode, Int ) )
 		{
 			backHandler();
 			return;

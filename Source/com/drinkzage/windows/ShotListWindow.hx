@@ -68,16 +68,16 @@ class ShotListWindow extends ITabListWindow
 	
 	override public function createList():Void
 	{
-		_items.push ( new Item( "Jager Bomb" ) );
-		_items.push ( new Item( "Red Headed Slut" ) );
-		_items.push ( new Item( "Perfect Pussy" ) );
-		_items.push ( new Item( "Tequila" ) );
-		_items.push ( new Item( "Washington Apple" ) );
-		_items.push ( new Item( "Buttery Nipple" ) );
-		_items.push ( new Item( "Kamikaze" ) );
-		_items.push ( new Item( "Lemon Drops" ) );
-		_items.push ( new Item( "Irish Carbomb" ) );
-		_items.push ( new Item( "Purple Hooter" ) );
-		_items.push ( new Item( "Liquid Cocaine" ) );
+		itemAdd ( new Item( "Jager Bomb" ) );
+		itemAdd ( new Item( "Red Headed Slut" ) );
+		itemAdd ( new Item( "Perfect Pussy" ) );
+		itemAdd ( new Item( "Tequila" ) );
+		itemAdd ( new Item( "Washington Apple" ) );
+		itemAdd ( new Item( "Buttery Nipple" ) );
+		itemAdd ( new Item( "Kamikaze" ) );
+		itemAdd ( new Item( "Lemon Drops" ) );
+		itemAdd ( new Item( "Irish Carbomb" ) );
+		itemAdd ( new Item( "Purple Hooter" ) );
+		itemAdd ( new Item( "Liquid Cocaine" ) );
 	}
 }

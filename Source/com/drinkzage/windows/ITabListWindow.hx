@@ -38,12 +38,15 @@ class ITabListWindow extends IListWindow
 		_stage.addEventListener( MouseEvent.MOUSE_DOWN, mouseDownHandler );
 		_stage.addEventListener( nme.events.Event.ENTER_FRAME, onEnter);
 		_stage.addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown );		
+		trace( "ITabListWindow.addListeners");
 	}
 	
 	override public function removeListeners():Void
 	{
 		_stage.removeEventListener( MouseEvent.MOUSE_DOWN, mouseDownHandler );
-		_stage.addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown );		
+		_stage.removeEventListener( nme.events.Event.ENTER_FRAME, onEnter);
+		_stage.removeEventListener( KeyboardEvent.KEY_DOWN, onKeyDown );		
+		trace( "ITabListWindow.removeListeners");
 	}
 	
 	private function listDraw( scrollOffset:Float ):Void
@@ -89,8 +92,10 @@ class ITabListWindow extends IListWindow
 	
 	function onKeyDown( event:KeyboardEvent )
 	{
-		if ( Globals.BACK_BUTTON == event.keyCode )
+		trace( "ITabListWindow.onKeyDown");
+		if ( Globals.BACK_BUTTON == cast( event.keyCode, Int ) )
 		{
+			trace( "ITabListWindow.onKeyDown - backHandler");
 			backHandler();
 			return;
 		}
@@ -123,7 +128,7 @@ class ITabListWindow extends IListWindow
 		_item = null;
 		if ( ListWindowConsts.MOVE_MIN > Math.abs( _change ) )
 		{
-			//trace( "mixedDrinkListMouseUpHandler - CLICKED at: " + clickLoc );
+			//trace( "mixedDrinkList.MouseUpHandler - CLICKED at: " + clickLoc );
 			var countDrawn:Int = 0;
 			var distance:Float = Globals.g_app.tabHeight() + Globals.g_app.logoHeight();
 			var clickLoc:Float = _listOffset + (me.stageY);

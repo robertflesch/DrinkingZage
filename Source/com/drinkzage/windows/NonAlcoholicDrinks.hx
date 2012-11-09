@@ -71,11 +71,11 @@ class NonAlcoholicDrinks extends ITabListWindow
 	
 	override public function createList():Void
 	{
-		_items.push ( new Item( "Coffee" ) );
-		_items.push ( new Item( "Soda" ) );
-		_items.push ( new Item( "Non Alcoholic Beer" ) );
-		_items.push ( new Item( "Water" ) );
-		_items.push ( new Item( "Juice" ) );
+		itemAdd ( new Item( "Coffee" ) );
+		itemAdd ( new Item( "Soda" ) );
+		itemAdd ( new Item( "Non Alcoholic Beer" ) );
+		itemAdd ( new Item( "Water" ) );
+		itemAdd ( new Item( "Juice" ) );
 	}
 }
 

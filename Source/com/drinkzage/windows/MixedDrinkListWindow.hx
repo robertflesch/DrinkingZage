@@ -51,16 +51,16 @@ class MixedDrinkListWindow extends ITabListWindow
 	
 	override public function createList():Void
 	{
-		_items.push ( new Item( "Margarita" ) );
-		_items.push ( new Item( "Sex on the beach" ) );
-		_items.push ( new Item( "Rum and Coke" ) );
-		_items.push ( new Item( "Vodka and Cranberry" ) );
-		_items.push ( new Item( "Vodka and Tonic" ) );
-		_items.push ( new Item( "Salty Dog" ) );
-		_items.push ( new Item( "Long Island Ice Tea" ) );
-		_items.push ( new Item( "Screw Driver" ) );
-		_items.push ( new Item( "Rum and Pineapple" ) );
-		_items.push ( new Item( "Gin and Tonic" ) );
-		_items.push ( new Item( "Tequila Sunrise" ) );
+		itemAdd ( new Item( "Margarita" ) );
+		itemAdd ( new Item( "Sex on the beach" ) );
+		itemAdd ( new Item( "Rum and Coke" ) );
+		itemAdd ( new Item( "Vodka and Cranberry" ) );
+		itemAdd ( new Item( "Vodka and Tonic" ) );
+		itemAdd ( new Item( "Salty Dog" ) );
+		itemAdd ( new Item( "Long Island Ice Tea" ) );
+		itemAdd ( new Item( "Screw Driver" ) );
+		itemAdd ( new Item( "Rum and Pineapple" ) );
+		itemAdd ( new Item( "Gin and Tonic" ) );
+		itemAdd ( new Item( "Tequila Sunrise" ) );
 	}
 }

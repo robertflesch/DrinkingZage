@@ -70,5 +70,10 @@ class IListWindow
 		addListeners();
 		_window.prepareNewWindow();		
 	}
-	
+
+	public function itemAdd( item:Item ):Void
+	{
+		_items.push ( item );
+		Globals.g_app.addItem( item );
+	}
 }

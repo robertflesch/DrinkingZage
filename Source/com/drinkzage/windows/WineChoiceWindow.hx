@@ -29,10 +29,10 @@ class WineChoiceWindow extends ITabListWindow
 	
 	override public function createList():Void
 	{
-		_items.push ( new Item( "Red" ) );
-		_items.push ( new Item( "White" ) );
-		_items.push ( new Item( "Rose" ) );
-		_items.push ( new Item( "Sparkling" ) );
+		itemAdd ( new Item( "Red" ) );
+		itemAdd ( new Item( "White" ) );
+		itemAdd ( new Item( "Rose" ) );
+		itemAdd ( new Item( "Sparkling" ) );
 	}
 }
 

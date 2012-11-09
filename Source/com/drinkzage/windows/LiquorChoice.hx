@@ -17,6 +17,7 @@ import com.drinkzage.utils.Utils;
 class LiquorChoice extends ITabListWindow
 {
 	static inline var GUTTER:Float = 10;
+	static inline var CHOICES:Int = 2;
 	private var _ChoiceButtons:Vector<ChoiceButton>;
 	
 	private static var _instance:LiquorChoice = null;
@@ -47,16 +48,16 @@ class LiquorChoice extends ITabListWindow
 	override public function listDraw( scrollOffset:Float ):Void
 	{
 		var width:Float = _stage.stageWidth;
-		var height:Float = (_stage.stageHeight - Globals.g_app.logoHeight() - Globals.g_app.tabHeight())/2;
+		var height:Float = (_stage.stageHeight - Globals.g_app.logoHeight() - Globals.g_app.tabHeight())/CHOICES;
 
-		for ( i in 0...2 )
+		for ( i in 0...CHOICES )
 		{
 			var graphic:Sprite = Utils.loadGraphic ( "assets/" + _ChoiceButtons[ i ]._image, true );
 			graphic.name = Std.string( i );
 			graphic.x = GUTTER;
 			graphic.y = i * height + GUTTER + Globals.g_app.logoHeight() + Globals.g_app.tabHeight();
-			graphic.width = width - (GUTTER * 2);
-			graphic.height = height - (GUTTER * 2);
+			graphic.width = width - (GUTTER * CHOICES);
+			graphic.height = height - (GUTTER * CHOICES);
 			graphic.addEventListener( MouseEvent.CLICK, liquorChoiceMouseDownHandler);
 			_window.addChild(graphic);
 		}

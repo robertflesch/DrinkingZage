@@ -49,6 +49,7 @@ class DrinkingZage extends Sprite {
 	
 	static inline var GUTTER:Float = 10;
 	private var _frontButtons:Vector<FrontButton>;
+	private var _allItems:Vector<Item>;
 	
 	public function new () {
 		
@@ -57,6 +58,8 @@ class DrinkingZage extends Sprite {
 		Globals.g_app = this;
 		Lib.current.stage.scaleMode = EXACT_FIT;
 		
+		_allItems = new Vector<Item>();
+
 		//initialize ();
 		addEventListener( Event.ADDED_TO_STAGE, addedToStage );
 		
@@ -72,6 +75,12 @@ class DrinkingZage extends Sprite {
 	function resizeHandler(e:Event):Void
 	{
 		populate();
+	}
+	
+	public function addItem( item:Item ):Void
+	{
+		trace( "DrinkingZage.addItem: " + item + "  name: " + item._name );
+		_allItems.push( item );
 	}
 
 	private function addedToStage( e:Event ):Void
@@ -128,22 +137,19 @@ class DrinkingZage extends Sprite {
 	
 	public function tabHeight():Float
 	{
-		var returnVal:Float = 0.0625 * Lib.current.stage.stageHeight;
-//		var returnVal:Float = Globals.g_app.tabHeight() * Lib.current.stage.stageHeight;
+		var returnVal:Float = ListWindowConsts.TAB_HEIGHT * Lib.current.stage.stageHeight;
 		return returnVal;
 	}
 	
 	public function logoHeight():Float
 	{
-		var returnVal:Float = 0.0625 * Lib.current.stage.stageHeight;
-//		var returnVal:Float = Globals.g_app.logoHeight() * Lib.current.stage.stageHeight;
+		var returnVal:Float = LogoConsts.LOGO_HEIGHT * Lib.current.stage.stageHeight;
 		return returnVal;
 	}
 	
 	public function componentHeight():Float
 	{
-		var returnVal:Float = 0.0625 * Lib.current.stage.stageHeight;
-//		var returnVal:Float = Globals.g_app.logoHeight() * Lib.current.stage.stageHeight;
+		var returnVal:Float = ListWindowConsts.COMPONENT_HEIGHT * Lib.current.stage.stageHeight;
 		return returnVal;
 	}
 	
@@ -194,7 +200,7 @@ class DrinkingZage extends Sprite {
 //			text.borderColor = 0xffff00;
 			
 			var ts:TextFormat = new TextFormat("_sans");
-			ts.size = 16;                // set the font size
+			ts.size = 10;                // set the font size
 			ts.align = TextFormatAlign.CENTER;
 			ts.color = 0xffffff;
 			text.setTextFormat(ts);
