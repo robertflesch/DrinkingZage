@@ -1,6 +1,8 @@
 ﻿package com.drinkzage;
 
 import com.drinkzage.windows.Item;
+import com.drinkzage.windows.SearchWindow;
+import nme.Vector;
 import Std;
 
 import nme.Lib;
@@ -39,6 +41,21 @@ import com.drinkzage.windows.EmoticonsWindow;
 
 import com.drinkzage.windows.ListWindowConsts;
 
+import nme.net.SharedObject;
+import nme.net.SharedObjectFlushStatus;
+
+import com.drinkzage.windows.WineWindow;
+import com.drinkzage.windows.NonAlcoholicDrinkWindow;
+import com.drinkzage.windows.BeerWindow;
+
+import com.drinkzage.windows.Item;
+import com.drinkzage.windows.ItemBeer;
+import com.drinkzage.windows.ContainerColor;
+import com.drinkzage.windows.BeerColor;
+import com.drinkzage.windows.ShotWindow;
+import com.drinkzage.windows.EmoteWindow;
+import com.drinkzage.windows.MixedDrinkWindow;
+
 #if flash
 import org.flashdevelop.utils.FlashConnect;
 #end
@@ -70,6 +87,53 @@ class DrinkingZage extends Sprite {
 		_frontButtons.push( new FrontButton( "Emote", "emote.jpg" ) );
 		_frontButtons.push( new FrontButton( "Liquor", "liquor.jpg" ) );
 		_frontButtons.push( new FrontButton( "Non Alco", "non.jpg" ) );
+		
+		createList();
+		
+		storageTest();
+	}
+	
+	public function getAllItems():Vector<Item>
+	{
+		return _allItems;
+	}
+	
+	private function storageTest():Void
+	{
+		trace("DrinkingZage.storageTest" );
+		var so = SharedObject.getLocal( "storage-test" );
+		// Load the values
+		// Data.message is null the first time
+		trace("DrinkingZage.storageTest data loaded: " + so.data.message );
+		var count:Int = Std.parseInt( so.data.count );
+
+		// Set the values
+		so.data.message = "oh hello! [" + count + "]";
+		so.data.count = count + 1 ;
+
+		// Prepare to save.. with some checks
+		#if ( cpp || neko )
+			// Android didn't wanted SharedObjectFlushStatus not to be a String
+			var flushStatus:SharedObjectFlushStatus = null;
+		#else
+			// Flash wanted it very much to be a String
+			var flushStatus:String = null;
+		#end
+
+		try {
+			flushStatus = so.flush() ;	// Save the object
+		} catch ( e:Dynamic ) {
+			trace("couldn't write...");
+		}
+
+		if ( flushStatus != null ) {
+			switch( flushStatus ) {
+				case SharedObjectFlushStatus.PENDING:
+					trace("DrinkingZage.storageTest - requesting permission to save");
+				case SharedObjectFlushStatus.FLUSHED:
+					trace("DrinkingZage.storageTest - value saved");
+			}
+		}				
 	}
 	
 	function resizeHandler(e:Event):Void
@@ -83,6 +147,26 @@ class DrinkingZage extends Sprite {
 		_allItems.push( item );
 	}
 
+	public function resetVisiblity():Void
+	{
+		var count:Int = _allItems.length;
+		for ( i in 0...count )
+		{
+			_allItems[i].setVisible( true );
+		}
+	}
+	
+	public function hideItemsWithoutString( val:String ):Void
+	{
+		var count:Int = _allItems.length;
+		for ( i in 0...count )
+		{
+			var index:Int = _allItems[i]._name.toLowerCase().indexOf( val.toLowerCase(), 0 );
+			if ( 0 > index )
+				_allItems[i].setVisible( false );
+		}
+	}
+	
 	private function addedToStage( e:Event ):Void
 	{
 		removeEventListener( Event.ADDED_TO_STAGE, addedToStage );
@@ -103,13 +187,13 @@ class DrinkingZage extends Sprite {
 	{
 		prepareNewWindow();
 		addButtons();
+		searchDraw();
 	}
 	
 	public function addButtons():Void
 	{
-		
 		var width:Float = stage.stageWidth/2;
-		var height:Float = (stage.stageHeight  - logoHeight())/3;
+		var height:Float = (stage.stageHeight  - logoHeight() - searchHeight() )/3;
 
 		for ( i in 0...2 )
 		{
@@ -152,7 +236,50 @@ class DrinkingZage extends Sprite {
 		var returnVal:Float = ListWindowConsts.COMPONENT_HEIGHT * Lib.current.stage.stageHeight;
 		return returnVal;
 	}
+
+	public function searchHeight():Float
+	{
+		var returnVal:Float = ListWindowConsts.COMPONENT_HEIGHT * Lib.current.stage.stageHeight;
+		return returnVal;
+	}
 	
+	public function searchDraw():Void
+	{
+		//var logo:Sprite = Utils.loadGraphic ( "assets/bottombar.jpg", true );
+		//logo.width = Lib.current.stage.stageWidth;
+		//logo.height = logoHeight();
+		//logo.y = Lib.current.stage.stageHeight - logo.height;
+		//this.addChild(logo);
+		
+		var searchBut:Sprite = Utils.loadGraphic ( "assets/findDrink.png", true );
+		searchBut.y = Lib.current.stage.stageHeight - searchBut.height;
+		searchBut.x = 0;
+		searchBut.width = Lib.current.stage.stageWidth/2;
+		searchBut.addEventListener( MouseEvent.CLICK, searchDrinkClickHandler);
+		this.addChild(searchBut);
+		
+		var customBut:Sprite = Utils.loadGraphic ( "assets/customDrink.png", true );
+		customBut.y = Lib.current.stage.stageHeight - customBut.height;
+		customBut.x = Lib.current.stage.stageWidth/2;
+		customBut.width = Lib.current.stage.stageWidth/2;
+		customBut.addEventListener( MouseEvent.CLICK, customDrinkClickHandler);
+		this.addChild(customBut);
+	}
+	
+	private function searchDrinkClickHandler( me:MouseEvent )
+	{
+		trace("searchDrinkClickHandler");
+		var sw:SearchWindow = SearchWindow.instance();
+		sw.populate();
+	}
+
+	private function customDrinkClickHandler( me:MouseEvent )
+	{
+		trace("customDrinkClickHandler");
+		var sw:SearchWindow = SearchWindow.instance();
+		sw.populate();
+	}
+
 	public function tabsDraw( tabs:Vector<String>, tabSelected:Dynamic, tabHandler:Dynamic -> Void):Void
 	{
 		var tabCount:Int = tabs.length;
@@ -252,7 +379,118 @@ class DrinkingZage extends Sprite {
 		Lib.current.addChild (new DrinkingZage ());
 	}
 	
+	private function createList():Void
+	{
+		addItem ( new Item( "Red", WineWindow ) );
+		addItem ( new Item( "White", WineWindow ) );
+		addItem ( new Item( "Rose", WineWindow ) );
+		addItem ( new Item( "Sparkling", WineWindow ) );
+	
+		addItem ( new Item( "Coffee", NonAlcoholicDrinkWindow ) );
+		addItem ( new Item( "Soda", NonAlcoholicDrinkWindow ) );
+		addItem ( new Item( "Non Alcoholic Beer", NonAlcoholicDrinkWindow ) );
+		addItem ( new Item( "Water", NonAlcoholicDrinkWindow ) );
+		addItem ( new Item( "Juice", NonAlcoholicDrinkWindow ) );
+		
+		addItem ( new Item( "Jager Bomb", ShotWindow ) );
+		addItem ( new Item( "Red Headed Slut", ShotWindow ) );
+		addItem ( new Item( "Perfect Pussy", ShotWindow ) );
+		addItem ( new Item( "Tequila", ShotWindow ) );
+		addItem ( new Item( "Washington Apple", ShotWindow ) );
+		addItem ( new Item( "Buttery Nipple", ShotWindow ) );
+		addItem ( new Item( "Kamikaze", ShotWindow ) );
+		addItem ( new Item( "Lemon Drops", ShotWindow ) );
+		addItem ( new Item( "Irish Carbomb", ShotWindow ) );
+		addItem ( new Item( "Purple Hooter", ShotWindow ) );
+		addItem ( new Item( "Liquid Cocaine", ShotWindow ) );
+		
+		addItem ( new Item( "Like", EmoteWindow ) );
+		addItem ( new Item( "Love", EmoteWindow ) );
+		addItem ( new Item( "Lets go to my place", EmoteWindow ) );
+		addItem ( new Item( "Can I get you a drink", EmoteWindow ) );
+		addItem ( new Item( "20 most original lines", EmoteWindow ) );
+		addItem ( new Item( "20 lines to make them laugh", EmoteWindow ) );
+		addItem ( new Item( "20 lines to shock them", EmoteWindow ) );
+		
+		addItem ( new Item( "Margarita", MixedDrinkWindow ) );
+		addItem ( new Item( "Sex on the beach", MixedDrinkWindow ) );
+		addItem ( new Item( "Rum and Coke", MixedDrinkWindow ) );
+		addItem ( new Item( "Vodka and Cranberry", MixedDrinkWindow ) );
+		addItem ( new Item( "Vodka and Tonic", MixedDrinkWindow ) );
+		addItem ( new Item( "Salty Dog", MixedDrinkWindow ) );
+		addItem ( new Item( "Long Island Ice Tea", MixedDrinkWindow ) );
+		addItem ( new Item( "Screw Driver", MixedDrinkWindow ) );
+		addItem ( new Item( "Rum and Pineapple", MixedDrinkWindow ) );
+		addItem ( new Item( "Gin and Tonic", MixedDrinkWindow ) );
+		addItem ( new Item( "Tequila Sunrise", MixedDrinkWindow ) );
 
+		addItem ( new ItemBeer( "Bud Light", BeerWindow, "budweiser_lite_label.png", "Domestic", ContainerColor.Dark, BeerColor.Light ) );
+		addItem ( new ItemBeer( "Budweiser", BeerWindow, "budweiser_label.png", "Domestic", ContainerColor.Dark, BeerColor.Light ) );
+		addItem ( new ItemBeer( "Miller Lite", BeerWindow, "miller_lite_label.png", "Domestic", ContainerColor.Light, BeerColor.Light ) );
+		addItem ( new ItemBeer( "Coors Lite", BeerWindow, "coors_lite_label.png", "Domestic", ContainerColor.Dark, BeerColor.Light ) );
+		addItem ( new ItemBeer( "Natural Lite", BeerWindow, "natural_lite_label.png", "Domestic", ContainerColor.Dark, BeerColor.Light ) );
+		addItem ( new ItemBeer( "Corona", BeerWindow, "corona_label.png", "Domestic", ContainerColor.Light, BeerColor.Light ) );
+		addItem ( new ItemBeer( "Busch", BeerWindow, "busch_label.png", "Domestic", ContainerColor.Light, BeerColor.Light ) );
+		addItem ( new ItemBeer( "Busch Light", BeerWindow, "busch_lite_label.png", "Domestic", ContainerColor.Light, BeerColor.Light ) );
+		addItem ( new ItemBeer( "Heineken", BeerWindow, "heineken_label.png", "Import", ContainerColor.Green, BeerColor.Light ) );
+		addItem ( new ItemBeer( "Miller High Life", BeerWindow, "miller_high_life_label.png", "Domestic", ContainerColor.Light, BeerColor.Light ) );
+
+		//addItem ( new Item( "Aguila", "aguila_label.png", "import", ContainerColor.Dark ) );
+		//addItem ( new Item( "Alexander Keith's Brown", "akbrown.png", "import", ContainerColor.Dark ) );
+		//addItem ( new Item( "Alexander Keith's Lager", "aklager.png", "import", ContainerColor.Dark ) );
+		//addItem ( new Item( "Alexander Keith's Pale Ale", "akpaleale.png", "import", ContainerColor.Light ) );
+		//addItem ( new Item( "Amsel Light", "amsellight.png", "Domestic", ContainerColor.Light ) );
+		//addItem ( new Item( "Animee Clear", "animeeclear.png", "Domestic", ContainerColor.Clear ) );
+		//addItem ( new Item( "Animee Lemon", "animeelemon.png", "Domestic", ContainerColor.Lemon ) );
+		//addItem ( new Item( "Animee Rose", "animeerose.png", "Domestic", ContainerColor.Other ) );
+		//addItem ( new Item( "Apatinsko", "apatinsko.png", "import", ContainerColor.Dark ) );
+		//addItem ( new Item( "Astika", "astika.png", "import", ContainerColor.Dark ) );
+		//addItem ( new Item( "Astika Dark", "astikadark.png", "import", ContainerColor.Dark ) );
+		//addItem ( new Item( "Bacardi Lemon", "bacardilemon.png", "import", ContainerColor.Lemon ) );
+		//
+		//addItem ( new Item( "Bacardi Mojito", "bacardimojito.png", "import", ContainerColor.Dark ) );
+		//addItem ( new Item( "Bacardi Raz", "bacardiraz.png", "import", ContainerColor.Dark ) );
+		//addItem ( new Item( "Bacardi Silver Sangria", "bacardisilversangria.png", "import", ContainerColor.Dark ) );
+		//addItem ( new Item( "Bacardi Strawberry", "bacardistrawberry.png", "import", ContainerColor.Dark ) );
+		//
+		//addItem ( new Item( "CAguila", "aguila_label.png", "import", ContainerColor.Dark ) );
+		//addItem ( new Item( "CAlexander Keith's Brown", "akbrown.png", "import", ContainerColor.Dark ) );
+		//addItem ( new Item( "CAlexander Keith's Lager", "aklager.png", "import", ContainerColor.Dark ) );
+		//addItem ( new Item( "CAlexander Keith's Pale Ale", "akpaleale.png", "import", ContainerColor.Dark ) );
+		//addItem ( new Item( "CAmsel Light", "amsellight.png", "Domestic", ContainerColor.Dark ) );
+		//addItem ( new Item( "CAnimee Clear", "animeeclear.png", "Domestic", ContainerColor.Dark ) );
+		//addItem ( new Item( "CAnimee Lemon", "animeelemon.png", "Domestic", ContainerColor.Dark ) );
+		//addItem ( new Item( "CAnimee Rose", "animeerose.png", "Domestic", ContainerColor.Dark ) );
+		//addItem ( new Item( "CApatinsko", "apatinsko.png", "import", ContainerColor.Dark ) );
+		//addItem ( new Item( "CAstika", "astika.png", "import", ContainerColor.Dark ) );
+		//addItem ( new Item( "CAstika Dark", "astikadark.png", "import", ContainerColor.Dark ) );
+		//addItem ( new Item( "CBacardi Lemon", "bacardilemon.png", "import", ContainerColor.Dark ) );
+		//
+		//addItem ( new Item( "CBacardi Mojito", "bacardimojito.png", "import", ContainerColor.Dark ) );
+		//addItem ( new Item( "CBacardi Raz", "bacardiraz.png", "import", ContainerColor.Dark ) );
+		//addItem ( new Item( "CBacardi Silver Sangria", "bacardisilversangria.png", "import", ContainerColor.Dark ) );
+		//addItem ( new Item( "CBacardi Strawberry", "bacardistrawberry.png", "import", ContainerColor.Dark ) );
+		
+		_allItems.sort(orderLastName);
+	}
+	
+	private function orderLastName( item1:Item, item2:Item ):Int 
+	{ 
+		var name1:Int = item1._name.toLowerCase().charCodeAt(0);
+		var name2:Int = item2._name.toLowerCase().charCodeAt(0);
+		if (name1 < name2) 
+		{ 
+			return -1; 
+		} 
+		else if (name1 > name2) 
+		{ 
+			return 1; 
+		} 
+		else 
+		{ 
+			return 0; 
+		} 
+	} 
 }
 
 class FrontButton

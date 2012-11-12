@@ -1,6 +1,8 @@
 ﻿package com.drinkzage.windows;
 
+import nme.Vector;
 import nme.events.MouseEvent;
+
 import com.drinkzage.windows.Item;
 
 /**
@@ -24,7 +26,7 @@ class MixedDrinkListWindow extends ITabListWindow
 		
 		createList();
 
-		_tabs.push( "Back" );
+		_tabs.push( "BACK" );
 	}
 	
 	override private function tabHandler( me:MouseEvent ):Void
@@ -51,16 +53,12 @@ class MixedDrinkListWindow extends ITabListWindow
 	
 	override public function createList():Void
 	{
-		itemAdd ( new Item( "Margarita" ) );
-		itemAdd ( new Item( "Sex on the beach" ) );
-		itemAdd ( new Item( "Rum and Coke" ) );
-		itemAdd ( new Item( "Vodka and Cranberry" ) );
-		itemAdd ( new Item( "Vodka and Tonic" ) );
-		itemAdd ( new Item( "Salty Dog" ) );
-		itemAdd ( new Item( "Long Island Ice Tea" ) );
-		itemAdd ( new Item( "Screw Driver" ) );
-		itemAdd ( new Item( "Rum and Pineapple" ) );
-		itemAdd ( new Item( "Gin and Tonic" ) );
-		itemAdd ( new Item( "Tequila Sunrise" ) );
+		var allItems:Vector<Item> = _window.getAllItems();
+		var count:Int = allItems.length;
+		for ( i in 0 ... count )
+		{
+			if ( allItems[i].category() == MixedDrinkWindow )
+				_items.push( allItems[i] );
+		}
 	}
 }

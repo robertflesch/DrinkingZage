@@ -149,7 +149,7 @@ class ItemFinalWindow {
 		tab.name = "0";
 
 		var text : TextField = new TextField();
-		text.text = "Back";
+		text.text = "BACK";
 		text.height = Globals.g_app.tabHeight();
 		text.name = "0";
 		text.width = tab.width;

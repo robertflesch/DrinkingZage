@@ -42,14 +42,14 @@ class NotDoneYetWindow extends ItemFinalWindow {
 	{
 		super();
 		
-		_tabs.push( "Back" );
+		_tabs.push( "BACK" );
 		
 		_tabSelected = TabDefault.Back;
 	}
 	
 	override public function populate( item:Item ):Void
 	{
-		_item = new Item( "Not Done Yet" );
+		_item = new Item( "Not Done Yet", null );
 		super.populate( _item );
 	}
 	

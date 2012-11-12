@@ -34,7 +34,7 @@ class LiquorChoice extends ITabListWindow
 	{
 		super();
 		
-		_tabs.push( "Back" );
+		_tabs.push( "BACK" );
 		
 		createList();
 	}

@@ -46,7 +46,7 @@ class ShotListWindow extends ITabListWindow
 	private function new () {
 		super();
 		
-		_tabs.push( "Back" );
+		_tabs.push( "BACK" );
 		
 		createList();
 	}
@@ -68,16 +68,12 @@ class ShotListWindow extends ITabListWindow
 	
 	override public function createList():Void
 	{
-		itemAdd ( new Item( "Jager Bomb" ) );
-		itemAdd ( new Item( "Red Headed Slut" ) );
-		itemAdd ( new Item( "Perfect Pussy" ) );
-		itemAdd ( new Item( "Tequila" ) );
-		itemAdd ( new Item( "Washington Apple" ) );
-		itemAdd ( new Item( "Buttery Nipple" ) );
-		itemAdd ( new Item( "Kamikaze" ) );
-		itemAdd ( new Item( "Lemon Drops" ) );
-		itemAdd ( new Item( "Irish Carbomb" ) );
-		itemAdd ( new Item( "Purple Hooter" ) );
-		itemAdd ( new Item( "Liquid Cocaine" ) );
+		var allItems:Vector<Item> = _window.getAllItems();
+		var count:Int = allItems.length;
+		for ( i in 0 ... count )
+		{
+			if ( allItems[i].category() == ShotWindow )
+				_items.push( allItems[i] );
+		}
 	}
 }

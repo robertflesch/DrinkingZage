@@ -10,12 +10,10 @@ import nme.events.KeyboardEvent;
 import nme.events.MouseEvent;
 
 import nme.text.TextField;
-import nme.text.TextFormat;
-import nme.text.TextFormatAlign;
 
 import com.drinkzage.Globals;
-import com.drinkzage.utils.Utils;
 import com.drinkzage.windows.TabConst;
+
 /**
  * @author Robert Flesch
  */
@@ -38,7 +36,7 @@ class ITabListWindow extends IListWindow
 		_stage.addEventListener( MouseEvent.MOUSE_DOWN, mouseDownHandler );
 		_stage.addEventListener( nme.events.Event.ENTER_FRAME, onEnter);
 		_stage.addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown );		
-		trace( "ITabListWindow.addListeners");
+//		trace( "ITabListWindow.addListeners");
 	}
 	
 	override public function removeListeners():Void
@@ -46,7 +44,7 @@ class ITabListWindow extends IListWindow
 		_stage.removeEventListener( MouseEvent.MOUSE_DOWN, mouseDownHandler );
 		_stage.removeEventListener( nme.events.Event.ENTER_FRAME, onEnter);
 		_stage.removeEventListener( KeyboardEvent.KEY_DOWN, onKeyDown );		
-		trace( "ITabListWindow.removeListeners");
+//		trace( "ITabListWindow.removeListeners");
 	}
 	
 	private function listDraw( scrollOffset:Float ):Void
@@ -80,6 +78,7 @@ class ITabListWindow extends IListWindow
 		super.populate();
 		listDraw( _listOffset );
 		_window.tabsDraw( _tabs, _tabSelected, tabHandler );
+		_window.searchDraw();
 	}
 	
 	private function tabHandler( me:MouseEvent ):Void
@@ -92,7 +91,7 @@ class ITabListWindow extends IListWindow
 	
 	function onKeyDown( event:KeyboardEvent )
 	{
-		trace( "ITabListWindow.onKeyDown");
+		//trace( "ITabListWindow.onKeyDown");
 		if ( Globals.BACK_BUTTON == cast( event.keyCode, Int ) )
 		{
 			trace( "ITabListWindow.onKeyDown - backHandler");
@@ -143,6 +142,7 @@ class ITabListWindow extends IListWindow
 				else 
 				{
 					_item = _items[countDrawn];
+					break;
 				}
 			}
 

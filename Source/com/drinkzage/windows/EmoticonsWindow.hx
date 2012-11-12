@@ -1,6 +1,8 @@
 ﻿package com.drinkzage.windows;
 
+import nme.Vector;
 import nme.events.MouseEvent;
+
 import com.drinkzage.windows.Item;
 
 /**
@@ -22,7 +24,7 @@ class EmoticonsWindow extends ITabListWindow
 	{
 		super();
 		
-		_tabs.push( "Back" );
+		_tabs.push( "BACK" );
 		
 		createList();
 	}
@@ -35,22 +37,23 @@ class EmoticonsWindow extends ITabListWindow
 		backHandler();
 	}
 			
-
 	override public function selectionHandler():Void
 	{
 		removeListeners();
-		NotDoneYetWindow.instance().populate(null);
+		var blw: EmoteWindow = EmoteWindow.instance();
+		blw.populate( _item );
 	}
+	
 	
 	override public function createList():Void
 	{
-		itemAdd ( new Item( "Like" ) );
-		itemAdd ( new Item( "Love" ) );
-		itemAdd ( new Item( "Lets go to my place" ) );
-		itemAdd ( new Item( "Can I get you a drink" ) );
-		itemAdd ( new Item( "20 most original lines" ) );
-		itemAdd ( new Item( "20 lines to make them laugh" ) );
-		itemAdd ( new Item( "20 lines to shock them" ) );
+		var allItems:Vector<Item> = _window.getAllItems();
+		var count:Int = allItems.length;
+		for ( i in 0 ... count )
+		{
+			if ( allItems[i].category() == EmoteWindow )
+				_items.push( allItems[i] );
+		}
 	}
 }
 

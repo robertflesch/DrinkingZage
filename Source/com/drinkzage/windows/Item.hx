@@ -14,9 +14,18 @@ class Item
 {
 	public var _name:String;
 	public var _textField:TextField;
+	private var _category( category, null ):Dynamic;
+	public function category():Dynamic { return _category; }
 	
-	public function new( name:String ):Void
+	private var _visible( isVisible, setVisible ):Bool;
+	public function isVisible():Bool { return _visible; }
+	public function setVisible( val:Bool ):Bool { return (_visible = val); }
+	
+	public function new( name:String, category:Dynamic ):Void
 	{
+		_visible = true;
+		_category = category;
+		
 		_name = name;
 		
 		_textField = new TextField();

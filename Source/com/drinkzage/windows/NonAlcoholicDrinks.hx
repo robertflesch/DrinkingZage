@@ -48,7 +48,7 @@ class NonAlcoholicDrinks extends ITabListWindow
 	{
 		super();
 		
-		_tabs.push( "Back" );
+		_tabs.push( "BACK" );
 		
 		createList();
 	}
@@ -60,22 +60,23 @@ class NonAlcoholicDrinks extends ITabListWindow
 			
 		backHandler();
 	}
-	
-				
 
 	override public function selectionHandler():Void
 	{
 		removeListeners();
-		NotDoneYetWindow.instance().populate( null);
+		var blw: NonAlcoholicDrinkWindow = NonAlcoholicDrinkWindow.instance();
+		blw.populate( _item );
 	}
 	
 	override public function createList():Void
 	{
-		itemAdd ( new Item( "Coffee" ) );
-		itemAdd ( new Item( "Soda" ) );
-		itemAdd ( new Item( "Non Alcoholic Beer" ) );
-		itemAdd ( new Item( "Water" ) );
-		itemAdd ( new Item( "Juice" ) );
+		var allItems:Vector<Item> = _window.getAllItems();
+		var count:Int = allItems.length;
+		for ( i in 0 ... count )
+		{
+			if ( allItems[i].category() == NonAlcoholicDrinkWindow )
+				_items.push( allItems[i] );
+		}
 	}
 }
 

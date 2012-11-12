@@ -14,19 +14,19 @@ class ItemBeer extends Item
 {
 	public var _label:String;
 	public var _color:ContainerColor;
-	public var _category:BeerCategory;
+	public var _beerCategory:BeerCategory;
 	public var _bcolor:BeerColor;
 	
-	public var category( getCategory, null ):BeerCategory;
+	public var beerCategory( getBeerCategory, null ):BeerCategory;
 	
-	public function getCategory():BeerCategory { return _category; }
+	public function getBeerCategory():BeerCategory { return _category; }
 	
-	public function new( name:String, label_image:String, category:String, color:ContainerColor, bcolor:BeerColor ):Void
+	public function new( name:String, category:Dynamic, label_image:String, beerCategory:String, color:ContainerColor, bcolor:BeerColor ):Void
 	{
-		super( name );
+		super( name, category );
 		
 		_label = label_image;
-		_category = Type.createEnum( BeerCategory, category );
+		_beerCategory = Type.createEnum( BeerCategory, beerCategory );
 		_color = color;
 		_bcolor = bcolor;
 		

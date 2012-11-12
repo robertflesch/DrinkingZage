@@ -46,7 +46,7 @@ class BeerWindow extends ItemFinalWindow {
 		_tabs.push( "Can" );
 		_tabs.push( "Draft" );
 		_tabs.push( "Pitcher" );
-		_tabs.push( "Back" );
+		_tabs.push( "BACK" );
 	}
 	
 	//override public function populate( item:Item ):Void
@@ -241,13 +241,13 @@ class BeerWindow {
 		_window = Globals.g_app;
 
 		Globals.resetButtons();
-		_tabs.push( "Back" );
+		_tabs.push( "BACK" );
 		
 		_tabSelected.push( "Bottle" );
 		_tabSelected.push( "Can" );
 		_tabSelected.push( "Draft" );
 		_tabSelected.push( "Pitcher" );
-		_tabSelected.push( "Back" );
+		_tabSelected.push( "BACK" );
 		
 		_countTextField = new TextField();
 		_countTextFormat = new TextFormat();

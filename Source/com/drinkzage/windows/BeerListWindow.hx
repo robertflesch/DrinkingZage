@@ -55,7 +55,7 @@ class BeerListWindow extends ITabListWindow
 		_tabs.push( "U.S." );
 		_tabs.push( "Import" );
 		_tabs.push( "Local" );
-		_tabs.push( "Back" );
+		_tabs.push( "BACK" );
 		_tabSelected = BeerCategory.All;
 
 		createList();
@@ -123,7 +123,7 @@ class BeerListWindow extends ITabListWindow
 					{
 						break;
 					}
-					else if ( cast( _item, ItemBeer ).category == _tabSelected )
+					else if ( cast( _item, ItemBeer ).beerCategory == _tabSelected )
 					{
 						break;
 					}
@@ -171,7 +171,7 @@ class BeerListWindow extends ITabListWindow
 				}
 				else 
 				{
-					if ( _tabSelected == beer._category )
+					if ( _tabSelected == beer.beerCategory )
 					{
 						beer._textField.name = Std.string( i );
 						beer._textField.x = ListWindowConsts.GUTTER;
@@ -196,52 +196,12 @@ class BeerListWindow extends ITabListWindow
 	
 	override public function createList():Void
 	{
-		trace( "BeerListWindow.createList - ONCE" );
-		itemAdd ( new ItemBeer( "Bud Light", "budweiser_lite_label.png", "Domestic", ContainerColor.Dark, BeerColor.Light ) );
-		itemAdd ( new ItemBeer( "Budweiser", "budweiser_label.png", "Domestic", ContainerColor.Dark, BeerColor.Light ) );
-		itemAdd ( new ItemBeer( "Miller Lite", "miller_lite_label.png", "Domestic", ContainerColor.Light, BeerColor.Light ) );
-		itemAdd ( new ItemBeer( "Coors Lite", "coors_lite_label.png", "Domestic", ContainerColor.Dark, BeerColor.Light ) );
-		itemAdd ( new ItemBeer( "Natural Lite", "natural_lite_label.png", "Domestic", ContainerColor.Dark, BeerColor.Light ) );
-		itemAdd ( new ItemBeer( "Corona", "corona_label.png", "Domestic", ContainerColor.Light, BeerColor.Light ) );
-		itemAdd ( new ItemBeer( "Busch", "busch_label.png", "Domestic", ContainerColor.Light, BeerColor.Light ) );
-		itemAdd ( new ItemBeer( "Busch Light", "busch_lite_label.png", "Domestic", ContainerColor.Light, BeerColor.Light ) );
-		itemAdd ( new ItemBeer( "Heineken", "heineken_label.png", "Import", ContainerColor.Green, BeerColor.Light ) );
-		itemAdd ( new ItemBeer( "Miller High Life", "miller_high_life_label.png", "Domestic", ContainerColor.Light, BeerColor.Light ) );
-
-		//itemAdd ( new Item( "Aguila", "aguila_label.png", "import", ContainerColor.Dark ) );
-		//itemAdd ( new Item( "Alexander Keith's Brown", "akbrown.png", "import", ContainerColor.Dark ) );
-		//itemAdd ( new Item( "Alexander Keith's Lager", "aklager.png", "import", ContainerColor.Dark ) );
-		//itemAdd ( new Item( "Alexander Keith's Pale Ale", "akpaleale.png", "import", ContainerColor.Light ) );
-		//itemAdd ( new Item( "Amsel Light", "amsellight.png", "Domestic", ContainerColor.Light ) );
-		//itemAdd ( new Item( "Animee Clear", "animeeclear.png", "Domestic", ContainerColor.Clear ) );
-		//itemAdd ( new Item( "Animee Lemon", "animeelemon.png", "Domestic", ContainerColor.Lemon ) );
-		//itemAdd ( new Item( "Animee Rose", "animeerose.png", "Domestic", ContainerColor.Other ) );
-		//itemAdd ( new Item( "Apatinsko", "apatinsko.png", "import", ContainerColor.Dark ) );
-		//itemAdd ( new Item( "Astika", "astika.png", "import", ContainerColor.Dark ) );
-		//itemAdd ( new Item( "Astika Dark", "astikadark.png", "import", ContainerColor.Dark ) );
-		//itemAdd ( new Item( "Bacardi Lemon", "bacardilemon.png", "import", ContainerColor.Lemon ) );
-		//
-		//itemAdd ( new Item( "Bacardi Mojito", "bacardimojito.png", "import", ContainerColor.Dark ) );
-		//itemAdd ( new Item( "Bacardi Raz", "bacardiraz.png", "import", ContainerColor.Dark ) );
-		//itemAdd ( new Item( "Bacardi Silver Sangria", "bacardisilversangria.png", "import", ContainerColor.Dark ) );
-		//itemAdd ( new Item( "Bacardi Strawberry", "bacardistrawberry.png", "import", ContainerColor.Dark ) );
-		//
-		//itemAdd ( new Item( "CAguila", "aguila_label.png", "import", ContainerColor.Dark ) );
-		//itemAdd ( new Item( "CAlexander Keith's Brown", "akbrown.png", "import", ContainerColor.Dark ) );
-		//itemAdd ( new Item( "CAlexander Keith's Lager", "aklager.png", "import", ContainerColor.Dark ) );
-		//itemAdd ( new Item( "CAlexander Keith's Pale Ale", "akpaleale.png", "import", ContainerColor.Dark ) );
-		//itemAdd ( new Item( "CAmsel Light", "amsellight.png", "Domestic", ContainerColor.Dark ) );
-		//itemAdd ( new Item( "CAnimee Clear", "animeeclear.png", "Domestic", ContainerColor.Dark ) );
-		//itemAdd ( new Item( "CAnimee Lemon", "animeelemon.png", "Domestic", ContainerColor.Dark ) );
-		//itemAdd ( new Item( "CAnimee Rose", "animeerose.png", "Domestic", ContainerColor.Dark ) );
-		//itemAdd ( new Item( "CApatinsko", "apatinsko.png", "import", ContainerColor.Dark ) );
-		//itemAdd ( new Item( "CAstika", "astika.png", "import", ContainerColor.Dark ) );
-		//itemAdd ( new Item( "CAstika Dark", "astikadark.png", "import", ContainerColor.Dark ) );
-		//itemAdd ( new Item( "CBacardi Lemon", "bacardilemon.png", "import", ContainerColor.Dark ) );
-		//
-		//itemAdd ( new Item( "CBacardi Mojito", "bacardimojito.png", "import", ContainerColor.Dark ) );
-		//itemAdd ( new Item( "CBacardi Raz", "bacardiraz.png", "import", ContainerColor.Dark ) );
-		//itemAdd ( new Item( "CBacardi Silver Sangria", "bacardisilversangria.png", "import", ContainerColor.Dark ) );
-		//itemAdd ( new Item( "CBacardi Strawberry", "bacardistrawberry.png", "import", ContainerColor.Dark ) );
+		var allItems:Vector<Item> = _window.getAllItems();
+		var count:Int = allItems.length;
+		for ( i in 0 ... count )
+		{
+			if ( allItems[i].category() == BeerWindow )
+				_items.push( allItems[i] );
+		}
 	}
 }

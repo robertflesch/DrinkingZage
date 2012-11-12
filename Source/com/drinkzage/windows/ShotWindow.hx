@@ -32,7 +32,7 @@ class ShotWindow extends ItemFinalWindow {
 	public function new () 
 	{
 		super();
-		_tabs.push( "Back" );
+		_tabs.push( "BACK" );
 	}
 	
 	override public function tabHandler( me:MouseEvent ):Void
