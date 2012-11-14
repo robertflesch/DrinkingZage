@@ -44,7 +44,7 @@ class ItemFinalWindow {
 		_tabs = new Vector<String>();
 		
 		var font = Assets.getFont ("assets/VeraSeBd.ttf");
-		_countTextFormat = new TextFormat (font.fontName, 200, 0xffff00);
+		_countTextFormat = new TextFormat (font.fontName, 150, 0xffff00);
 		_countTextFormat.align = TextFormatAlign.CENTER;
 		
 		_countTextField = new TextField();
@@ -60,7 +60,7 @@ class ItemFinalWindow {
 		var width:Float = _stage.stageWidth;
 		var height:Float = _stage.stageHeight;
 		
-		_countTextField.x = width;
+		_countTextField.x = width + 10;
 		_countTextField.y = height / 2 - 30;
 		
 	}
@@ -116,9 +116,23 @@ class ItemFinalWindow {
 		
 		var width:Float = _stage.stageWidth;
 		var height:Float = _stage.stageHeight;
+		height = height - Globals.g_app.tabHeight() - Globals.g_app.logoHeight();
+		//var nameLength:Int = _item._name.length;
+		//var words:Array<String> = _item._name.split( " " );
+		//var longestWord:Int = 0;
+		//for (i in 0...words.length )
+		//{
+			//if ( longestWord < words[i].length )
+				//longestWord = words[i].length;
+		//}
 		
+		
+		var FONT_BITMAP_HEIGHT:Int = 72;
 		var font = Assets.getFont ("assets/VeraSeBd.ttf");
 		var format = new TextFormat (font.fontName, 120, 0xFF0000);
+		//format.size = 20;
+		format.size = height / FONT_BITMAP_HEIGHT;
+
 		format.align = TextFormatAlign.CENTER;
 		var name:TextField = new TextField();
 		name.wordWrap = true;
@@ -131,8 +145,10 @@ class ItemFinalWindow {
 		name.x = width*5/8;
 		name.y = Globals.g_app.logoHeight() + Globals.g_app.tabHeight();
 		name.text = _item._name;
-		name.width = height - name.y - 1;
-		name.height = width *2 /3;
+		//name.width = height - name.y - 1;
+		name.width = height;
+		name.height = width * 2 / 3;
+		
 		name.rotation = 90;
 		_window.addChild( name );
 
