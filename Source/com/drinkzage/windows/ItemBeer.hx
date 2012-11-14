@@ -21,14 +21,13 @@ class ItemBeer extends Item
 	
 	public function getBeerCategory():BeerCategory { return _category; }
 	
-	public function new( name:String, category:Dynamic, label_image:String, beerCategory:String, color:ContainerColor, bcolor:BeerColor ):Void
+	public function new( name:String, category:Dynamic, label_image:String, beerCategory:String, color:String, bcolor:String ):Void
 	{
 		super( name, category );
 		
 		_label = label_image;
 		_beerCategory = Type.createEnum( BeerCategory, beerCategory );
-		_color = color;
-		_bcolor = bcolor;
-		
+		_color = Type.createEnum( ContainerColor, color );
+		_bcolor = Type.createEnum( BeerColor, bcolor );
 	}
 }

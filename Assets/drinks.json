@@ -1,0 +1,128 @@
+{
+    "wines": 
+			[
+                {  "name" : "Red" },
+                {  "name" : "White" },
+                {  "name" : "Rose" },
+                {  "name" : "Sparkling" }
+            ],
+	"nonAlcoholicDrinks": 
+			[
+                {  "name" : "Coffee" },
+                {  "name" : "Soda" },
+                {  "name" : "Non Alcoholic Beer" },
+                {  "name" : "Water" },
+                {  "name" : "Juice" }
+			],
+	"shots": 
+			[
+                {  "name" : "Jager Bomb" },
+                {  "name" : "Red Headed Slut" },
+                {  "name" : "Perfect Pussy" },
+                {  "name" : "Tequila" },
+                {  "name" : "Washington Apple" },
+                {  "name" : "Buttery Nipple" },
+                {  "name" : "Kamikaze" },
+                {  "name" : "Lemon Drops" },
+                {  "name" : "Irish Carbomb" },
+                {  "name" : "Purple Hooter" },
+                {  "name" : "Liquid Cocaine" }
+			],
+	"emotes": 
+			[
+                {  "name" : "Like" },
+                {  "name" : "Love" },
+                {  "name" : "Lets go to my place" },
+                {  "name" : "Can I get you a drink" },
+                {  "name" : "20 most original lines" },
+                {  "name" : "20 lines to make them laugh" },
+                {  "name" : "20 lines to shock them" }
+			],
+    "mixedDrinks": 
+			[
+                {  "name" : "Margarita" },
+                {  "name" : "Sex on the beach" },
+                {  "name" : "Rum and Coke" },
+                {  "name" : "Vodka and Cranberry" },
+                {  "name" : "Vodka and Tonic" },
+                {  "name" : "Salty Dog" },
+                {  "name" : "Long Island Ice Tea" },
+                {  "name" : "Screw Driver" },
+                {  "name" : "Rum and Pineapple" },
+                {  "name" : "Gin and Tonic" },
+                {  "name" : "Tequila Sunrise" }
+            ],
+    "commercial_beers": 
+			[
+				{ 
+					"name"   			: "Bud Light", 
+					"label"  			: "budweiser_lite_label.png",
+					"origin" 			: "Domestic",
+					"container_color"	: "Dark",
+					"beer_color"		: "Light" 
+				},
+				{ 
+					"name"   			: "Budweiser", 
+					"label"  			: "budweiser_label.png",
+					"origin" 			: "Domestic",
+					"container_color"	: "Dark",
+					"beer_color"		: "Light" 
+				},
+				{ 
+					"name"   			: "Miller Lite", 
+					"label"  			: "miller_lite_label.png",
+					"origin" 			: "Domestic",
+					"container_color"	: "Light",
+					"beer_color"		: "Light" 
+				},
+				{ 
+					"name"   			: "Coors Lite", 
+					"label"  			: "coors_lite_label.png",
+					"origin" 			: "Domestic",
+					"container_color"	: "Dark",
+					"beer_color"		: "Light" 
+				},
+				{ 
+					"name"   			: "Natural Lite", 
+					"label"  			: "natural_lite_label.png",
+					"origin" 			: "Domestic",
+					"container_color"	: "Dark",
+					"beer_color"		: "Light" 
+				},
+				{ 
+					"name"   			: "Corona", 
+					"label"  			: "corona_label.png",
+					"origin" 			: "Domestic",
+					"container_color"	: "Light",
+					"beer_color"		: "Light" 
+				},
+				{ 
+					"name"   			: "Busch", 
+					"label"  			: "busch_label.png",
+					"origin" 			: "Domestic",
+					"container_color"	: "Dark",
+					"beer_color"		: "Light" 
+				},
+				{ 
+					"name"   			: "Busch Light", 
+					"label"  			: "busch_lite_label.png",
+					"origin" 			: "Domestic",
+					"container_color"	: "Dark",
+					"beer_color"		: "Light" 
+				},
+				{ 
+					"name"   			: "Heineken", 
+					"label"  			: "heineken_label.png",
+					"origin" 			: "Import",
+					"container_color"	: "Green",
+					"beer_color"		: "Light" 
+				},
+				{ 
+					"name"   			: "Miller High Life", 
+					"label"  			: "miller_high_life_label.png",
+					"origin" 			: "Domestic",
+					"container_color"	: "Light",
+					"beer_color"		: "Light" 
+				}
+            ]
+}

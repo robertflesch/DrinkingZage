@@ -56,6 +56,9 @@ import com.drinkzage.windows.ShotWindow;
 import com.drinkzage.windows.EmoteWindow;
 import com.drinkzage.windows.MixedDrinkWindow;
 
+import haxe.Json;
+
+
 #if flash
 import org.flashdevelop.utils.FlashConnect;
 #end
@@ -87,9 +90,30 @@ class DrinkingZage extends Sprite {
 		_frontButtons.push( new FrontButton( "Emote", "emote.jpg" ) );
 		_frontButtons.push( new FrontButton( "Liquor", "liquor.jpg" ) );
 		_frontButtons.push( new FrontButton( "Non Alco", "non.jpg" ) );
+		/*
+		_frontButtons.push( new FrontButton( "Fav", "beer_bnb.jpg" ) );
+		_frontButtons.push( new FrontButton( "Beer", "beer_bnb.jpg" ) );
+		_frontButtons.push( new FrontButton( "Wine", "beer_bnb.jpg" ) );
+		_frontButtons.push( new FrontButton( "Emote", "beer_bnb.jpg" ) );
+		_frontButtons.push( new FrontButton( "Liquor", "beer_bnb.jpg" ) );
+		_frontButtons.push( new FrontButton( "Non Alco", "beer_bnb.jpg" ) );
 		
+		_frontButtons.push( new FrontButton( "Fav", "beer_blue.jpg" ) );
+		_frontButtons.push( new FrontButton( "Beer", "beer_blue.jpg" ) );
+		_frontButtons.push( new FrontButton( "Wine", "beer_blue.jpg" ) );
+		_frontButtons.push( new FrontButton( "Emote", "beer_blue.jpg" ) );
+		_frontButtons.push( new FrontButton( "Liquor", "beer_blue.jpg" ) );
+		_frontButtons.push( new FrontButton( "Non Alco", "beer_blue.jpg" ) );
+		
+		_frontButtons.push( new FrontButton( "Fav", "beer.jpg" ) );
+		_frontButtons.push( new FrontButton( "Beer", "beer.jpg" ) );
+		_frontButtons.push( new FrontButton( "Wine", "beer.jpg" ) );
+		_frontButtons.push( new FrontButton( "Emote", "beer.jpg" ) );
+		_frontButtons.push( new FrontButton( "Liquor", "beer.jpg" ) );
+		_frontButtons.push( new FrontButton( "Non Alco", "beer.jpg" ) );
+*/		
 		createList();
-		
+ 
 		storageTest();
 	}
 	
@@ -381,95 +405,50 @@ class DrinkingZage extends Sprite {
 	
 	private function createList():Void
 	{
-		addItem ( new Item( "Red", WineWindow ) );
-		addItem ( new Item( "White", WineWindow ) );
-		addItem ( new Item( "Rose", WineWindow ) );
-		addItem ( new Item( "Sparkling", WineWindow ) );
-	
-		addItem ( new Item( "Coffee", NonAlcoholicDrinkWindow ) );
-		addItem ( new Item( "Soda", NonAlcoholicDrinkWindow ) );
-		addItem ( new Item( "Non Alcoholic Beer", NonAlcoholicDrinkWindow ) );
-		addItem ( new Item( "Water", NonAlcoholicDrinkWindow ) );
-		addItem ( new Item( "Juice", NonAlcoholicDrinkWindow ) );
-		
-		addItem ( new Item( "Jager Bomb", ShotWindow ) );
-		addItem ( new Item( "Red Headed Slut", ShotWindow ) );
-		addItem ( new Item( "Perfect Pussy", ShotWindow ) );
-		addItem ( new Item( "Tequila", ShotWindow ) );
-		addItem ( new Item( "Washington Apple", ShotWindow ) );
-		addItem ( new Item( "Buttery Nipple", ShotWindow ) );
-		addItem ( new Item( "Kamikaze", ShotWindow ) );
-		addItem ( new Item( "Lemon Drops", ShotWindow ) );
-		addItem ( new Item( "Irish Carbomb", ShotWindow ) );
-		addItem ( new Item( "Purple Hooter", ShotWindow ) );
-		addItem ( new Item( "Liquid Cocaine", ShotWindow ) );
-		
-		addItem ( new Item( "Like", EmoteWindow ) );
-		addItem ( new Item( "Love", EmoteWindow ) );
-		addItem ( new Item( "Lets go to my place", EmoteWindow ) );
-		addItem ( new Item( "Can I get you a drink", EmoteWindow ) );
-		addItem ( new Item( "20 most original lines", EmoteWindow ) );
-		addItem ( new Item( "20 lines to make them laugh", EmoteWindow ) );
-		addItem ( new Item( "20 lines to shock them", EmoteWindow ) );
-		
-		addItem ( new Item( "Margarita", MixedDrinkWindow ) );
-		addItem ( new Item( "Sex on the beach", MixedDrinkWindow ) );
-		addItem ( new Item( "Rum and Coke", MixedDrinkWindow ) );
-		addItem ( new Item( "Vodka and Cranberry", MixedDrinkWindow ) );
-		addItem ( new Item( "Vodka and Tonic", MixedDrinkWindow ) );
-		addItem ( new Item( "Salty Dog", MixedDrinkWindow ) );
-		addItem ( new Item( "Long Island Ice Tea", MixedDrinkWindow ) );
-		addItem ( new Item( "Screw Driver", MixedDrinkWindow ) );
-		addItem ( new Item( "Rum and Pineapple", MixedDrinkWindow ) );
-		addItem ( new Item( "Gin and Tonic", MixedDrinkWindow ) );
-		addItem ( new Item( "Tequila Sunrise", MixedDrinkWindow ) );
+		var drinks : Dynamic;
+		drinks = Json.parse(Assets.getText("assets/drinks.json"));
 
-		addItem ( new ItemBeer( "Bud Light", BeerWindow, "budweiser_lite_label.png", "Domestic", ContainerColor.Dark, BeerColor.Light ) );
-		addItem ( new ItemBeer( "Budweiser", BeerWindow, "budweiser_label.png", "Domestic", ContainerColor.Dark, BeerColor.Light ) );
-		addItem ( new ItemBeer( "Miller Lite", BeerWindow, "miller_lite_label.png", "Domestic", ContainerColor.Light, BeerColor.Light ) );
-		addItem ( new ItemBeer( "Coors Lite", BeerWindow, "coors_lite_label.png", "Domestic", ContainerColor.Dark, BeerColor.Light ) );
-		addItem ( new ItemBeer( "Natural Lite", BeerWindow, "natural_lite_label.png", "Domestic", ContainerColor.Dark, BeerColor.Light ) );
-		addItem ( new ItemBeer( "Corona", BeerWindow, "corona_label.png", "Domestic", ContainerColor.Light, BeerColor.Light ) );
-		addItem ( new ItemBeer( "Busch", BeerWindow, "busch_label.png", "Domestic", ContainerColor.Light, BeerColor.Light ) );
-		addItem ( new ItemBeer( "Busch Light", BeerWindow, "busch_lite_label.png", "Domestic", ContainerColor.Light, BeerColor.Light ) );
-		addItem ( new ItemBeer( "Heineken", BeerWindow, "heineken_label.png", "Import", ContainerColor.Green, BeerColor.Light ) );
-		addItem ( new ItemBeer( "Miller High Life", BeerWindow, "miller_high_life_label.png", "Domestic", ContainerColor.Light, BeerColor.Light ) );
+		var wineListSize:Int = drinks.wines.length;
+		for ( i in 0 ... wineListSize )
+		{
+			addItem ( new Item( drinks.wines[i].name, WineWindow ) );
+		}
+		
+		var nonAlcoholicDrinksListSize:Int = drinks.nonAlcoholicDrinks.length;
+		for ( i in 0 ... nonAlcoholicDrinksListSize )
+		{
+			addItem ( new Item( drinks.nonAlcoholicDrinks[i].name, NonAlcoholicDrinkWindow ) );
+		}
+		
+		var shotsListSize:Int = drinks.shots.length;
+		for ( i in 0 ... shotsListSize )
+		{
+			addItem ( new Item( drinks.shots[i].name, ShotWindow ) );
+		}
+		
+		var emotesListSize:Int = drinks.emotes.length;
+		for ( i in 0 ... emotesListSize )
+		{
+			addItem ( new Item( drinks.emotes[i].name, EmoteWindow ) );
+		}
+		
+		var mixedDrinksListSize:Int = drinks.mixedDrinks.length;
+		for ( i in 0 ... mixedDrinksListSize )
+		{
+			addItem ( new Item( drinks.mixedDrinks[i].name, MixedDrinkWindow ) );
+		}
 
-		//addItem ( new Item( "Aguila", "aguila_label.png", "import", ContainerColor.Dark ) );
-		//addItem ( new Item( "Alexander Keith's Brown", "akbrown.png", "import", ContainerColor.Dark ) );
-		//addItem ( new Item( "Alexander Keith's Lager", "aklager.png", "import", ContainerColor.Dark ) );
-		//addItem ( new Item( "Alexander Keith's Pale Ale", "akpaleale.png", "import", ContainerColor.Light ) );
-		//addItem ( new Item( "Amsel Light", "amsellight.png", "Domestic", ContainerColor.Light ) );
-		//addItem ( new Item( "Animee Clear", "animeeclear.png", "Domestic", ContainerColor.Clear ) );
-		//addItem ( new Item( "Animee Lemon", "animeelemon.png", "Domestic", ContainerColor.Lemon ) );
-		//addItem ( new Item( "Animee Rose", "animeerose.png", "Domestic", ContainerColor.Other ) );
-		//addItem ( new Item( "Apatinsko", "apatinsko.png", "import", ContainerColor.Dark ) );
-		//addItem ( new Item( "Astika", "astika.png", "import", ContainerColor.Dark ) );
-		//addItem ( new Item( "Astika Dark", "astikadark.png", "import", ContainerColor.Dark ) );
-		//addItem ( new Item( "Bacardi Lemon", "bacardilemon.png", "import", ContainerColor.Lemon ) );
-		//
-		//addItem ( new Item( "Bacardi Mojito", "bacardimojito.png", "import", ContainerColor.Dark ) );
-		//addItem ( new Item( "Bacardi Raz", "bacardiraz.png", "import", ContainerColor.Dark ) );
-		//addItem ( new Item( "Bacardi Silver Sangria", "bacardisilversangria.png", "import", ContainerColor.Dark ) );
-		//addItem ( new Item( "Bacardi Strawberry", "bacardistrawberry.png", "import", ContainerColor.Dark ) );
-		//
-		//addItem ( new Item( "CAguila", "aguila_label.png", "import", ContainerColor.Dark ) );
-		//addItem ( new Item( "CAlexander Keith's Brown", "akbrown.png", "import", ContainerColor.Dark ) );
-		//addItem ( new Item( "CAlexander Keith's Lager", "aklager.png", "import", ContainerColor.Dark ) );
-		//addItem ( new Item( "CAlexander Keith's Pale Ale", "akpaleale.png", "import", ContainerColor.Dark ) );
-		//addItem ( new Item( "CAmsel Light", "amsellight.png", "Domestic", ContainerColor.Dark ) );
-		//addItem ( new Item( "CAnimee Clear", "animeeclear.png", "Domestic", ContainerColor.Dark ) );
-		//addItem ( new Item( "CAnimee Lemon", "animeelemon.png", "Domestic", ContainerColor.Dark ) );
-		//addItem ( new Item( "CAnimee Rose", "animeerose.png", "Domestic", ContainerColor.Dark ) );
-		//addItem ( new Item( "CApatinsko", "apatinsko.png", "import", ContainerColor.Dark ) );
-		//addItem ( new Item( "CAstika", "astika.png", "import", ContainerColor.Dark ) );
-		//addItem ( new Item( "CAstika Dark", "astikadark.png", "import", ContainerColor.Dark ) );
-		//addItem ( new Item( "CBacardi Lemon", "bacardilemon.png", "import", ContainerColor.Dark ) );
-		//
-		//addItem ( new Item( "CBacardi Mojito", "bacardimojito.png", "import", ContainerColor.Dark ) );
-		//addItem ( new Item( "CBacardi Raz", "bacardiraz.png", "import", ContainerColor.Dark ) );
-		//addItem ( new Item( "CBacardi Silver Sangria", "bacardisilversangria.png", "import", ContainerColor.Dark ) );
-		//addItem ( new Item( "CBacardi Strawberry", "bacardistrawberry.png", "import", ContainerColor.Dark ) );
+		var commercial_beersListSize:Int = drinks.commercial_beers.length;
+		for ( i in 0 ... commercial_beersListSize )
+		{
+			addItem ( new ItemBeer( drinks.commercial_beers[i].name
+								  , BeerWindow
+								  , drinks.commercial_beers[i].label
+								  , drinks.commercial_beers[i].origin
+								  , drinks.commercial_beers[i].container_color
+								  , drinks.commercial_beers[i].beer_color
+								  ) );
+		}
 		
 		_allItems.sort(orderLastName);
 	}

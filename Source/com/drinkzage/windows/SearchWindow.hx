@@ -129,14 +129,14 @@ class SearchWindow extends ITabListWindow
 		text.selectable = true;
 		text.border = true;
 		text.borderColor = Globals.COLOR_SAGE;
-		text.width = Lib.current.stage.stageWidth;
+		text.width = Lib.current.stage.stageWidth - 6;
 		text.height = 50;
 #if android
 		text.y = Lib.current.stage.stageHeight/2 - text.height;
 #else		
-		text.y = Lib.current.stage.stageHeight - text.height;
+		text.y = Lib.current.stage.stageHeight - text.height - 2;
 #end		
-		text.x = 0;
+		text.x = 2;
 		text.type = TextFieldType.INPUT;
 		text.addEventListener (Event.CHANGE, TextField_onChange);
 		text.background = true;
