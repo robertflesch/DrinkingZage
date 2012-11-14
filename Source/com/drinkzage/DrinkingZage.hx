@@ -167,7 +167,7 @@ class DrinkingZage extends Sprite {
 	
 	public function addItem( item:Item ):Void
 	{
-		trace( "DrinkingZage.addItem: " + item + "  name: " + item._name );
+		//trace( "DrinkingZage.addItem: " + item + "  name: " + item._name );
 		_allItems.push( item );
 	}
 

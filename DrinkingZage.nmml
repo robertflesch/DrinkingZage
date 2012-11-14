@@ -11,7 +11,7 @@
   <haxedef name="fdb" if="target_flash"/>
 
   <classpath name="Source" />
-  <classpath name="D:\Program Files\FlashDevelop\Library\HAXE\classes\" />
+  <classpath name="D:\FlashDevelop\Library\HAXE\classes\" />
 
   <haxelib name="nme" />
   <haxelib name="actuate" />

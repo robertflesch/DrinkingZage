@@ -16,7 +16,7 @@
   <!-- Other classes to be compiled into your SWF -->
   <classpaths>
     <class path="Source" />
-    <class path="D:\Program Files\FlashDevelop\Library\HAXE\classes\" />
+    <class path="D:\FlashDevelop\Library\HAXE\classes\" />
     <class path="Export/flash/haxe" />
   </classpaths>
   <!-- Build options -->
