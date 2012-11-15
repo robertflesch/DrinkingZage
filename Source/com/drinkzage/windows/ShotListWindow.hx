@@ -51,18 +51,11 @@ class ShotListWindow extends ITabListWindow
 		createList();
 	}
 	
-	override private function backHandler():Void
-	{
-		super.backHandler();
-		var blw: LiquorChoice = LiquorChoice.instance();
-		blw.populate();
-	}
-	
-	
 	override public function selectionHandler():Void
 	{
 		removeListeners();
 		var blw: ShotWindow = ShotWindow.instance();
+		blw.setBackHandler( this );
 		blw.populate( _item );
 	}
 	

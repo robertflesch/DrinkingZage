@@ -33,6 +33,7 @@ class WineChoiceWindow extends ITabListWindow
 	{
 		removeListeners();
 		var blw: WineWindow = WineWindow.instance();
+		blw.setBackHandler( this );
 		blw.populate( _item );
 	}
 	

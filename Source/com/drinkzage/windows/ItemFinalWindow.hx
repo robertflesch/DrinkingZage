@@ -23,23 +23,22 @@ import com.drinkzage.windows.Item;
 import com.drinkzage.utils.Utils;
 import com.drinkzage.windows.LogoConsts;
 import com.drinkzage.windows.TabConst;
+import com.drinkzage.windows.IChildWindow;
+
 /**
  * @author Robert Flesch
  */
-class ItemFinalWindow {
+class ItemFinalWindow extends IChildWindow {
 	
 	private var _countTextField:TextField;
 	private var _countTextFormat:TextFormat;
-	private var _stage:Stage;
-	private var _window:DrinkingZage;
 	private var _item:Item;
 	private var _parent:Dynamic;
 	private var _tabs:Vector<String>;
 	
 	public function new () 
 	{
-		_stage = Globals.g_stage;
-		_window = Globals.g_app;
+		super();
 		
 		_tabs = new Vector<String>();
 		
@@ -63,18 +62,6 @@ class ItemFinalWindow {
 		_countTextField.x = width + 10;
 		_countTextField.y = height / 2 - 30;
 		
-	}
-	
-	public function addListeners():Void
-	{
-		_stage.addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown );	
-		trace( "ItemFinalWindow.addListeners");
-	}
-	
-	public function removeListeners():Void
-	{
-		_stage.removeEventListener(KeyboardEvent.KEY_DOWN, onKeyDown );				
-		trace( "ItemFinalWindow.removeEventListener");
 	}
 	
 	public function populate(item:Item):Void
@@ -127,11 +114,11 @@ class ItemFinalWindow {
 		//}
 		
 		
-		var FONT_BITMAP_HEIGHT:Int = 72;
 		var font = Assets.getFont ("assets/VeraSeBd.ttf");
 		var format = new TextFormat (font.fontName, 120, 0xFF0000);
-		//format.size = 20;
-		format.size = height / FONT_BITMAP_HEIGHT;
+		
+		var MAX_CHARS:Int = 10;
+		format.size = height / MAX_CHARS;
 
 		format.align = TextFormatAlign.CENTER;
 		var name:TextField = new TextField();
@@ -190,20 +177,6 @@ class ItemFinalWindow {
 			return;
 		
 		backHandler();
-	}
-	
-	function onKeyDown( event:KeyboardEvent )
-	{
-		if ( Globals.BACK_BUTTON == cast( event.keyCode, Int ) )
-		{
-			backHandler();
-			return;
-		}
-	}
-	
-	public function backHandler():Void
-	{
-		removeListeners();
 	}
 	
 	private function plusHandler( me:MouseEvent ):Void

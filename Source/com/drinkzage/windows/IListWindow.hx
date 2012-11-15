@@ -23,15 +23,14 @@ import nme.events.TimerEvent;
 
 import com.drinkzage.Globals;
 import com.drinkzage.DrinkingZage;
+import com.drinkzage.windows.IChildWindow;
 
 /**
  * @author Robert Flesch
  */
-class IListWindow 
+class IListWindow extends IChildWindow
 {
 	private var _items:Vector<Item> = null;
-	private var _stage:Stage;
-	private var _window:DrinkingZage;
 
 	private var _listOffset ( getListOffset, setListOffset ):Float = 0;
 	function getListOffset():Float { return _listOffset; }
@@ -45,8 +44,7 @@ class IListWindow
 	private var _swipeSpeed:Float = 0;
 	
 	private function new () {
-		_stage = Globals.g_stage;
-		_window = Globals.g_app;
+		super();
 		
 		if ( null == _items )
 		{
@@ -57,8 +55,6 @@ class IListWindow
 		_maxOffset += Globals.g_app.tabHeight() + ListWindowConsts.FUDGE_FACTOR; // Fudge factor
 	}
 	
-	public function addListeners():Void {}
-	public function removeListeners():Void {}
 	public function createList():Void {}
 	
 	public function populate():Void

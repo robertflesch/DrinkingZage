@@ -33,6 +33,7 @@ class ITabListWindow extends IListWindow
 	
 	override public function addListeners():Void
 	{
+		super.addListeners();
 		_stage.addEventListener( MouseEvent.MOUSE_DOWN, mouseDownHandler );
 		_stage.addEventListener( nme.events.Event.ENTER_FRAME, onEnter);
 		_stage.addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown );		
@@ -41,6 +42,7 @@ class ITabListWindow extends IListWindow
 	
 	override public function removeListeners():Void
 	{
+		super.removeListeners();
 		_stage.removeEventListener( MouseEvent.MOUSE_DOWN, mouseDownHandler );
 		_stage.removeEventListener( nme.events.Event.ENTER_FRAME, onEnter);
 		_stage.removeEventListener( KeyboardEvent.KEY_DOWN, onKeyDown );		
@@ -89,27 +91,10 @@ class ITabListWindow extends IListWindow
 		backHandler();
 	}
 	
-	function onKeyDown( event:KeyboardEvent )
-	{
-		//trace( "ITabListWindow.onKeyDown");
-		if ( Globals.BACK_BUTTON == cast( event.keyCode, Int ) )
-		{
-			trace( "ITabListWindow.onKeyDown - backHandler");
-			backHandler();
-			return;
-		}
-	}
-	
-	private function backHandler():Void
-	{
-		removeListeners();
-		_window.populate();
-	}
-	
 	public function selectionHandler():Void
 	{
 		removeListeners();
-		NotDoneYetWindow.instance().populate( null );
+		NotDoneYetWindow.instance().populate(null);
 	}
 	
 	public function mouseUpHandler( me:MouseEvent ):Void

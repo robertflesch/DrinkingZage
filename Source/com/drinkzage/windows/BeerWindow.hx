@@ -49,18 +49,6 @@ class BeerWindow extends ItemFinalWindow {
 		_tabs.push( "BACK" );
 	}
 	
-	//override public function populate( item:Item ):Void
-	//{
-		//super.populate( item );
-		//
-		//_window.prepareNewWindow();
-		//_item = item;
-//
-		//itemDraw();
-		//countDraw();
-		//_window.tabsDraw( _tabs, _tabSelected, tabHandler );
-	//}
-	
 	override public function tabHandler( me:MouseEvent ):Void
 	{
 		if ( me.stageY >= Globals.g_app.tabHeight() + Globals.g_app.logoHeight() )
@@ -84,13 +72,6 @@ class BeerWindow extends ItemFinalWindow {
 			case 4: // Back
 				backHandler();
 		}
-	}
-	
-	override public function backHandler():Void
-	{
-		super.backHandler();
-		var blw: BeerListWindow = BeerListWindow.instance();
-		blw.populate();
 	}
 	
 /*

@@ -99,12 +99,6 @@ class SearchWindow extends ITabListWindow
 		}
 	}
 	
-	override private function backHandler():Void
-	{
-		removeListeners();
-		_window.populate();
-	}
-	
 	override public function populate():Void
 	{
 		super.populate();
@@ -268,38 +262,39 @@ class SearchWindow extends ITabListWindow
 		trace( "SearchWindow.selectionHandler" );
 		removeListeners();
 		
-		var window:Dynamic;
+		var window:Dynamic = null;
 		if ( EmoteWindow == _item.category() )
 		{
 			window = EmoteWindow.instance();
-			window.populate( _item );
 		}
 		else if ( WineWindow == _item.category() )
 		{
 			window = WineWindow.instance();
-			window.populate( _item );
 		}
 		else if ( NonAlcoholicDrinkWindow == _item.category() )
 		{
 			window = NonAlcoholicDrinkWindow.instance();
-			window.populate( _item );
 		}
 		else if ( BeerWindow == _item.category() )
 		{
 			window = BeerWindow.instance();
-			window.populate( cast( _item, ItemBeer ) );
 		}
 		else if ( ShotWindow == _item.category() )
 		{
 			window = ShotWindow.instance();
-			window.populate( _item );
 		}
 		else if ( MixedDrinkWindow == _item.category() )
 		{
 			window = MixedDrinkWindow.instance();
-			window.populate( _item );
 		}
 		
+		if ( null != window )
+		{
+			window.setBackHandler( this );
+			window.populate( _item );
+		}
+		else
+			trace( "SearchWindow.selectionHandler - ERROR - no category found" );
 		
 	}
 	

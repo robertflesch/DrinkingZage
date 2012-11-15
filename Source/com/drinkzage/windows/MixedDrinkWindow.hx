@@ -34,19 +34,11 @@ class MixedDrinkWindow extends ItemFinalWindow {
 		_tabs.push( "BACK" );
 	}
 	
-	override public function tabHandler( me:MouseEvent ):Void
-	{
-		if ( me.stageY >= Globals.g_app.tabHeight() + Globals.g_app.logoHeight() )
-			return;
-			
-		backHandler();	
-	}
-	
-	override public function backHandler():Void
-	{
-		super.backHandler();
-		var blw: MixedDrinkListWindow = MixedDrinkListWindow.instance();
-		blw.populate();
-	}
-	
+	//override public function tabHandler( me:MouseEvent ):Void
+	//{
+		//if ( me.stageY >= Globals.g_app.tabHeight() + Globals.g_app.logoHeight() )
+			//return;
+			//
+		//backHandler();	
+	//}
 }

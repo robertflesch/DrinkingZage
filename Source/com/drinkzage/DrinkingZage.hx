@@ -294,6 +294,7 @@ class DrinkingZage extends Sprite {
 	{
 		trace("searchDrinkClickHandler");
 		var sw:SearchWindow = SearchWindow.instance();
+		sw.setBackHandler( this );
 		sw.populate();
 	}
 
@@ -301,6 +302,7 @@ class DrinkingZage extends Sprite {
 	{
 		trace("customDrinkClickHandler");
 		var sw:SearchWindow = SearchWindow.instance();
+		sw.setBackHandler( this );
 		sw.populate();
 	}
 
@@ -377,20 +379,45 @@ class DrinkingZage extends Sprite {
 		//trace( me.target.name );
 		var index:Int = me.target.name;
 		stage.removeEventListener(Event.RESIZE, resizeHandler);
+		var nw:Dynamic = null;
 		switch ( index )
 		{
 			case 0: // Fav
-				NotDoneYetWindow.instance().populate( null );
+			{
+				nw = NotDoneYetWindow.instance();
+				nw.setBackHandler( this );
+				nw.populate( null );
+			}
 			case 1: // Beer
-				BeerListWindow.instance().populate();
+			{
+				nw = BeerListWindow.instance();
+				nw.setBackHandler( this );
+				nw.populate();
+			}
 			case 2: // Wine
-				WineChoiceWindow.instance().populate();
+			{
+				nw = WineChoiceWindow.instance();
+				nw.setBackHandler( this );
+				nw.populate();
+			}
 			case 3: // Emote
-				EmoticonsWindow.instance().populate();
+			{
+				nw = EmoticonsWindow.instance();
+				nw.setBackHandler( this );
+				nw.populate();
+			}
 			case 4: // Liquor
-				LiquorChoice.instance().populate();
+			{
+				nw = LiquorChoice.instance();
+				nw.setBackHandler( this );
+				nw.populate();
+			}
 			case 5: // Non Alco
-				NonAlcoholicDrinks.instance().populate();
+			{
+				nw = NonAlcoholicDrinks.instance();
+				nw.setBackHandler( this );
+				nw.populate();
+			}
 		}
 	}
 	

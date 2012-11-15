@@ -76,18 +76,4 @@ class NotDoneYetWindow extends ItemFinalWindow {
 		name.rotation = 90;
 		_window.addChild( name );
 	}
-	
-	override public function tabHandler( me:MouseEvent ):Void
-	{
-		if ( me.stageY >= Globals.g_app.tabHeight() + Globals.g_app.logoHeight() )
-			return;
-			
-		backHandler();	
-	}
-	
-	override public function backHandler():Void
-	{
-		super.backHandler();
-		Globals.g_app.populate();
-	}
 }

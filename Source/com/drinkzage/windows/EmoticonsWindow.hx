@@ -41,6 +41,7 @@ class EmoticonsWindow extends ITabListWindow
 	{
 		removeListeners();
 		var blw: EmoteWindow = EmoteWindow.instance();
+		blw.setBackHandler( this );
 		blw.populate( _item );
 	}
 	

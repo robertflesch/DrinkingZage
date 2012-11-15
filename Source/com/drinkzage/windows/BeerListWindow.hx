@@ -191,6 +191,7 @@ class BeerListWindow extends ITabListWindow
 		trace( "BeerListWindow.selectionHandler" );
 		removeListeners();
 		var bw:BeerWindow = new BeerWindow();
+		bw.setBackHandler( this );
 		bw.populate( cast( _item, ItemBeer ) );
 	}
 	

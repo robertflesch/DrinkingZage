@@ -32,12 +32,4 @@ class WineWindow extends ItemFinalWindow {
 			
 		backHandler();	
 	}
-	
-	override public function backHandler():Void
-	{
-		super.backHandler();
-		var blw: WineChoiceWindow = WineChoiceWindow.instance();
-		blw.populate();
-	}
-	
 }

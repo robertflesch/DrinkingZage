@@ -37,17 +37,11 @@ class MixedDrinkListWindow extends ITabListWindow
 		backHandler();
 	}
 	
-	override private function backHandler():Void
-	{
-		super.backHandler();
-		var blw: LiquorChoice = LiquorChoice.instance();
-		blw.populate();
-	}
-	
 	override public function selectionHandler():Void
 	{
 		removeListeners();
 		var blw: MixedDrinkWindow = MixedDrinkWindow.instance();
+		blw.setBackHandler( this );
 		blw.populate( _item );
 	}
 	

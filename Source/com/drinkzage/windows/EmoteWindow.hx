@@ -43,12 +43,4 @@ class EmoteWindow extends ItemFinalWindow {
 			
 		backHandler();	
 	}
-	
-	override public function backHandler():Void
-	{
-		super.backHandler();
-		var blw: EmoticonsWindow = EmoticonsWindow.instance();
-		blw.populate();
-	}
-	
 }

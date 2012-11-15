@@ -39,12 +39,6 @@ class LiquorChoice extends ITabListWindow
 		createList();
 	}
 	
-	override private function backHandler():Void
-	{
-		super.backHandler();
-		_window.populate();
-	}
-	
 	override public function listDraw( scrollOffset:Float ):Void
 	{
 		var width:Float = _stage.stageWidth;
@@ -69,9 +63,13 @@ class LiquorChoice extends ITabListWindow
 		switch ( index )
 		{
 			case 0: // Shots
-				ShotListWindow.instance().populate();
+				var slw:ShotListWindow = ShotListWindow.instance();
+				slw.setBackHandler( this );
+				slw.populate();
 			case 1: // Mixed Drinks
-				MixedDrinkListWindow.instance().populate();
+				var mlw:MixedDrinkListWindow = MixedDrinkListWindow.instance();
+				mlw.setBackHandler( this );
+				mlw.populate();
 		}
 	}
 	

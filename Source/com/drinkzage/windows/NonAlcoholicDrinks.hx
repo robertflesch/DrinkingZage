@@ -65,6 +65,7 @@ class NonAlcoholicDrinks extends ITabListWindow
 	{
 		removeListeners();
 		var blw: NonAlcoholicDrinkWindow = NonAlcoholicDrinkWindow.instance();
+		blw.setBackHandler( this );
 		blw.populate( _item );
 	}
 	
