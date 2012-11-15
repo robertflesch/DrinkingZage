@@ -1,67 +1,63 @@
 ﻿package com.drinkzage;
 
-import com.drinkzage.windows.Item;
-import com.drinkzage.windows.SearchWindow;
-import nme.Vector;
 import Std;
 
+import haxe.Json;
+
+import nme.Assets;
 import nme.Lib;
 import nme.Vector;
-import nme.Assets;
 
-import nme.display.Sprite;
 import nme.display.Bitmap;
+import nme.display.LoaderInfo;
+import nme.display.Sprite;
+import nme.display.Stage;
 import nme.display.StageAlign;
 import nme.display.StageQuality;
 import nme.display.StageScaleMode;
-import nme.display.LoaderInfo;
-import nme.display.Stage;
 
-import nme.events.MouseEvent;
-import nme.events.KeyboardEvent;
 import nme.events.Event;
+import nme.events.KeyboardEvent;
+import nme.events.MouseEvent;
 
 import nme.filters.GlowFilter;
 
 import nme.geom.Vector3D;
+
+import nme.net.SharedObject;
+import nme.net.SharedObjectFlushStatus;
 
 import nme.text.TextField;
 import nme.text.TextFormat;
 import nme.text.TextFormatAlign;
 
 import com.drinkzage.Globals;
-import com.drinkzage.windows.BeerListWindow;
-import com.drinkzage.windows.LiquorChoice;
 import com.drinkzage.utils.Utils;
-import com.drinkzage.windows.LogoConsts;
-import com.drinkzage.windows.NotDoneYetWindow;
-import com.drinkzage.windows.WineChoiceWindow;
-import com.drinkzage.windows.NonAlcoholicDrinks;
-import com.drinkzage.windows.EmoticonsWindow;
 
-import com.drinkzage.windows.ListWindowConsts;
-
-import nme.net.SharedObject;
-import nme.net.SharedObjectFlushStatus;
-
-import com.drinkzage.windows.WineWindow;
-import com.drinkzage.windows.NonAlcoholicDrinkWindow;
+import com.drinkzage.windows.BeerColor;
+import com.drinkzage.windows.BeerListWindow;
 import com.drinkzage.windows.BeerWindow;
-
+import com.drinkzage.windows.ContainerColor;
+import com.drinkzage.windows.EmoticonsWindow;
+import com.drinkzage.windows.EmoteWindow;
 import com.drinkzage.windows.Item;
 import com.drinkzage.windows.ItemBeer;
-import com.drinkzage.windows.ContainerColor;
-import com.drinkzage.windows.BeerColor;
-import com.drinkzage.windows.ShotWindow;
-import com.drinkzage.windows.EmoteWindow;
+import com.drinkzage.windows.LogoConsts;
 import com.drinkzage.windows.MixedDrinkWindow;
-
-import haxe.Json;
-
+import com.drinkzage.windows.NonAlcoholicDrinks;
+import com.drinkzage.windows.NonAlcoholicDrinkWindow;
+import com.drinkzage.windows.NotDoneYetWindow;
+import com.drinkzage.windows.LiquorChoice;
+import com.drinkzage.windows.ListWindowConsts;
+import com.drinkzage.windows.SearchWindow;
+import com.drinkzage.windows.ShotWindow;
+import com.drinkzage.windows.WineChoiceWindow;
+import com.drinkzage.windows.WineWindow;
 
 #if flash
 import org.flashdevelop.utils.FlashConnect;
 #end
+
 /**
  * @author Robert Flesch
  */
@@ -165,12 +161,6 @@ class DrinkingZage extends Sprite {
 		populate();
 	}
 	
-	public function addItem( item:Item ):Void
-	{
-		//trace( "DrinkingZage.addItem: " + item + "  name: " + item._name );
-		_allItems.push( item );
-	}
-
 	public function resetVisiblity():Void
 	{
 		var count:Int = _allItems.length;
@@ -430,6 +420,11 @@ class DrinkingZage extends Sprite {
 		Lib.current.addChild (new DrinkingZage ());
 	}
 	
+	public function addItem( item:Item ):Void
+	{
+		_allItems.push( item );
+	}
+
 	private function createList():Void
 	{
 		var drinks : Dynamic;
@@ -477,10 +472,10 @@ class DrinkingZage extends Sprite {
 								  ) );
 		}
 		
-		_allItems.sort(orderLastName);
+		_allItems.sort( orderByName );
 	}
 	
-	private function orderLastName( item1:Item, item2:Item ):Int 
+	private function orderByName( item1:Item, item2:Item ):Int 
 	{ 
 		var name1:Int = item1._name.toLowerCase().charCodeAt(0);
 		var name2:Int = item2._name.toLowerCase().charCodeAt(0);

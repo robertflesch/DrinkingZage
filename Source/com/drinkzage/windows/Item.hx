@@ -14,6 +14,7 @@ class Item
 {
 	public var _name:String;
 	public var _textField:TextField;
+
 	private var _category( category, null ):Dynamic;
 	public function category():Dynamic { return _category; }
 	

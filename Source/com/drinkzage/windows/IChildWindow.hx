@@ -1,7 +1,10 @@
 ﻿package com.drinkzage.windows;
 
-import com.drinkzage.Globals;
 import nme.events.KeyboardEvent;
+import nme.display.Stage;
+
+import com.drinkzage.Globals;
+import com.drinkzage.DrinkingZage;
 
 /**
  * @author Robert Flesch
@@ -32,13 +35,13 @@ class IChildWindow
 	
 	public function addListeners():Void
 	{
-		Globals.g_stage.addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown );	
+		_stage.addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown );	
 		trace( "IChildWindow.addListeners");
 	}
 	
 	public function removeListeners():Void
 	{
-		Globals.g_stage.removeEventListener(KeyboardEvent.KEY_DOWN, onKeyDown );				
+		_stage.removeEventListener(KeyboardEvent.KEY_DOWN, onKeyDown );				
 		trace( "IChildWindow.removeListeners");
 	}
 	

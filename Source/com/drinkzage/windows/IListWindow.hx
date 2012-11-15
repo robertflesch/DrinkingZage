@@ -1,28 +1,8 @@
 ﻿package com.drinkzage.windows;
 
-import Std;
-
-import nme.Assets;
-import nme.Lib;
 import nme.Vector;
 
-import nme.display.Sprite;
-import nme.display.Stage;
-
-import nme.events.MouseEvent;
-import nme.events.Event;
-
-import nme.filters.GlowFilter;
-
-import nme.text.TextField;
-import nme.text.TextFormat;
-import nme.text.TextFormatAlign;
-
-import nme.ui.Mouse;
-import nme.events.TimerEvent;
-
 import com.drinkzage.Globals;
-import com.drinkzage.DrinkingZage;
 import com.drinkzage.windows.IChildWindow;
 
 /**
