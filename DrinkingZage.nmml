@@ -1,10 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <project>
 
-  <app title="DrinkingZage" file="com.drinkzage.DrinkingZage" main="com.drinkzage.DrinkingZage" package="com.drinkzage.DrinkingZage" version="1.0.0" icon="assets/dz_icon_96.png" company="DrinkingZage" />
+  <app title="DrinkingZage" file="com.drinkzage.DrinkingZage" main="com.drinkzage.DrinkingZage" package="com.drinkzage.DrinkingZage" version="1.0.0" icon="assets/dz_icon_114.png" company="DrinkingZage" />
   <window width="480" height="854" fps="30" orientation="portrait" resizable="false" background="0x000000" />
-  <!-- <window width="194" height="368" fps="30" orientation="portrait" resizable="false" background="0x000000" />-->
-  <!-- unless="target_flash" -->
  
   <set name="BUILD_DIR" value="Export" />
   <set name="SWF_VERSION" value="11" />
@@ -16,12 +14,12 @@
   <haxelib name="nme" />
   <haxelib name="actuate" />
 
-  <icon path="dz_icon_114.png" width="114" height="114" />
-  <icon path="dz_icon_96.png"  width="96" height="96" />
-  <icon path="dz_icon_72.png"  width="72" height="72" />
-  <icon path="dz_icon_48.png"  width="48" height="48" />
-  <icon path="dz_icon_36.png"  width="36" height="36" />
   <assets path="Assets" rename="assets" include="*" />
+  <icon path="assets/dz_icon_114.png" width="114" height="114" ></icon>
+  <icon path="assets/dz_icon_96.png" width="96" height="96" ></icon>
+  <icon path="assets/dz_icon_72.png" width="72" height="72" ></icon>
+  <icon path="assets/dz_icon_48.png" width="48" height="48" ></icon>
+  <icon path="assets/dz_icon_36.png" width="36" height="36" ></icon>
 
   <ndll name="std" />
   <ndll name="regexp" />
