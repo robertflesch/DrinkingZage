@@ -88,17 +88,6 @@ class SearchWindow extends ITabListWindow
 	// overides 
 	///////////////////////////////////////////////////////////////
 	
-	// is this needed?
-	override function onKeyDown( event:KeyboardEvent )
-	{
-		if ( Globals.BACK_BUTTON == cast( event.keyCode, Int ) )
-		{
-			trace( "SearchWindow.onKeyDown - backHandler");
-			backHandler();
-			return;
-		}
-	}
-	
 	override public function populate():Void
 	{
 		super.populate();
@@ -124,9 +113,9 @@ class SearchWindow extends ITabListWindow
 		text.border = true;
 		text.borderColor = Globals.COLOR_SAGE;
 		text.width = Lib.current.stage.stageWidth - 6;
-		text.height = 50;
+		text.height = _window.componentHeight();
 #if android
-		text.y = Lib.current.stage.stageHeight/2 - text.height;
+		text.y = Lib.current.stage.stageHeight / 2; // - text.height;
 #else		
 		text.y = Lib.current.stage.stageHeight - text.height - 2;
 #end		
@@ -181,6 +170,13 @@ class SearchWindow extends ITabListWindow
 					_window.addChild(item._textField);
 					_window.addChild(graphic);
 					countDrawn++;
+					
+#if android
+					if ( Lib.current.stage.stageHeight < item._textField.y )
+#else		
+					if ( ( Lib.current.stage.stageHeight - text.height - 2) < item._textField.y )
+#end		
+						break;
 				}
 			}
 		}
@@ -190,6 +186,27 @@ class SearchWindow extends ITabListWindow
 		//SetFocusObject(
 		_window.addChild( text );
 
+/*
+#if android
+		var clickMe:Sprite = Utils.loadGraphic ( "assets/wine.jpg", true );
+		clickMe.x = 0;
+		clickMe.y = Lib.current.stage.stageHeight / 2 + _window.componentHeight();
+		clickMe.width = width;
+		clickMe.height = Lib.current.stage.stageHeight / 2 - _window.componentHeight();
+		
+		var clickMeText : TextField = new TextField();
+		clickMeText.text = "Click Me For Keyboard";
+		clickMeText.selectable = true;
+		clickMeText.border = true;
+		clickMeText.borderColor = Globals.COLOR_SAGE;
+		clickMeText.width = Lib.current.stage.stageWidth - 6;
+		clickMeText.height = _window.componentHeight();
+		clickMe.addChild( clickMeText );
+		_window.addChild(clickMe);
+#end
+*/
+		_stage.focus = text;
+		text.setSelection(text.text.length,text.text.length);//();
 	}
 
 	override public function mouseUpHandler( me:MouseEvent ):Void
@@ -203,7 +220,11 @@ class SearchWindow extends ITabListWindow
 			return;
 			
 		// if click is lower then search bar
+#if android
+		var bh:Int = Std.int( Lib.current.stage.stageHeight/2 - Globals.g_app.searchHeight() * 2 );
+#else
 		var bh:Int = Lib.current.stage.stageHeight - Std.int( Globals.g_app.searchHeight() * 2 );
+#end
 		if ( me.stageY > bh )
 			return;
 			

@@ -1,5 +1,7 @@
 ﻿package com.drinkzage.windows;
 
+import nme.events.Event;
+import nme.events.EventDispatcher;
 import nme.events.KeyboardEvent;
 import nme.display.Stage;
 
@@ -35,23 +37,22 @@ class IChildWindow
 	
 	public function addListeners():Void
 	{
-		_stage.addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown );	
-		trace( "IChildWindow.addListeners");
+		_stage.addEventListener(KeyboardEvent.KEY_UP, onKeyUp );	
+//		trace( "IChildWindow.addListeners");
 	}
 	
 	public function removeListeners():Void
 	{
-		_stage.removeEventListener(KeyboardEvent.KEY_DOWN, onKeyDown );				
-		trace( "IChildWindow.removeListeners");
+		_stage.removeEventListener(KeyboardEvent.KEY_UP, onKeyUp );				
+//		trace( "IChildWindow.removeListeners");
 	}
 	
-	function onKeyDown( event:KeyboardEvent ):Void
+	function onKeyUp( event:KeyboardEvent ):Void
 	{
-		if ( Globals.BACK_BUTTON == cast( event.keyCode, Int ) )
+		if ( Globals.BACK_BUTTON == event.keyCode )
 		{
-			trace( "IChildWindow.onKeyDown - backHandler");
 			backHandler();
-			return;
+			event.stopImmediatePropagation();
 		}
 	}
 	

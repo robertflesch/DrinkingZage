@@ -24,12 +24,4 @@ class WineWindow extends ItemFinalWindow {
 		super();
 		_tabs.push( "BACK" );
 	}
-	
-	override public function tabHandler( me:MouseEvent ):Void
-	{
-		if ( me.stageY >= Globals.g_app.tabHeight() + Globals.g_app.logoHeight() )
-			return;
-			
-		backHandler();	
-	}
 }

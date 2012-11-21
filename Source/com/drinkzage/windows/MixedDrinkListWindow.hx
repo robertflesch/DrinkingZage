@@ -29,14 +29,6 @@ class MixedDrinkListWindow extends ITabListWindow
 		_tabs.push( "BACK" );
 	}
 	
-	override private function tabHandler( me:MouseEvent ):Void
-	{
-		if ( me.stageY >= Globals.g_app.tabHeight() + Globals.g_app.logoHeight() )
-			return;
-		
-		backHandler();
-	}
-	
 	override public function selectionHandler():Void
 	{
 		removeListeners();

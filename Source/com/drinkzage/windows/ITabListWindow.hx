@@ -36,7 +36,7 @@ class ITabListWindow extends IListWindow
 		super.addListeners();
 		_stage.addEventListener( MouseEvent.MOUSE_DOWN, mouseDownHandler );
 		_stage.addEventListener( nme.events.Event.ENTER_FRAME, onEnter);
-		_stage.addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown );		
+		_stage.addEventListener(KeyboardEvent.KEY_UP, onKeyUp );		
 //		trace( "ITabListWindow.addListeners");
 	}
 	
@@ -45,7 +45,7 @@ class ITabListWindow extends IListWindow
 		super.removeListeners();
 		_stage.removeEventListener( MouseEvent.MOUSE_DOWN, mouseDownHandler );
 		_stage.removeEventListener( nme.events.Event.ENTER_FRAME, onEnter);
-		_stage.removeEventListener( KeyboardEvent.KEY_DOWN, onKeyDown );		
+		_stage.removeEventListener( KeyboardEvent.KEY_UP, onKeyUp );		
 //		trace( "ITabListWindow.removeListeners");
 	}
 	

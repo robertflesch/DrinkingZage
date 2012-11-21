@@ -34,13 +34,4 @@ class EmoteWindow extends ItemFinalWindow {
 		itemDraw();
 		_window.tabsDraw( _tabs, TabDefault.Back, tabHandler );
 	}
-	
-	
-	override public function tabHandler( me:MouseEvent ):Void
-	{
-		if ( me.stageY >= Globals.g_app.tabHeight() + Globals.g_app.logoHeight() )
-			return;
-			
-		backHandler();	
-	}
 }
