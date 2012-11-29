@@ -55,8 +55,10 @@ class SearchWindow extends ITabListWindow
 	
 	private static var _instance:SearchWindow = null;
 	private static var _lastCategory:BeerCategory = null;
-	private static var _lastString:String = "";
 	private static var _textFormat:TextFormat = null;
+	private 	   var _searchText : TextField = null;
+
+	//public var cl:ControlList = null;
 	
 	public static function instance():SearchWindow
 	{ 
@@ -72,12 +74,20 @@ class SearchWindow extends ITabListWindow
 	{
 		super();
 		
+		setUseSearch( false );
+		
+		_searchText = new TextField();
+		
+		// trying to isolate the list from rest of controls
+		// not done
+		//cl = new ControlList();
+		
 		_tabs.push( "BACK" );
 		_tabSelected = TabDefault.Back;
 
 		_textFormat = new TextFormat("_sans");
 		_textFormat.size = 32;                // set the font size
-		_textFormat.align = TextFormatAlign.LEFT;
+		_textFormat.align = TextFormatAlign.CENTER;
 		_textFormat.color = 0x000000;
 		
 		createList();
@@ -91,40 +101,61 @@ class SearchWindow extends ITabListWindow
 	override public function populate():Void
 	{
 		super.populate();
-		listDraw( _listOffset );
-		_window.tabsDraw( _tabs, _tabSelected, tabHandler );
-	}
+		
+		_searchText.name = "_searchText";
+		_searchText.selectable = true;
+		_searchText.border = true;
+		//_searchText.borderColor = Globals.COLOR_SAGE;
+		_searchText.width = Lib.current.stage.stageWidth;
+		_searchText.height = _window.componentHeight();
+#if android
+		_searchText.y = Lib.current.stage.stageHeight / 2 + _searchText.height/2 - 20;
+#else		
+		_searchText.y = Lib.current.stage.stageHeight - _searchText.height - 2;
+#end		
+		_searchText.x = 0;
+		_searchText.type = TextFieldType.INPUT;
+		_searchText.addEventListener (Event.CHANGE, TextField_onChange);
+		_searchText.background = true;
+		_searchText.backgroundColor = Globals.COLOR_WHITE;
+		_searchText.setTextFormat( SearchWindow._textFormat );
+		
+		_window.addChild( _searchText );
+
+		_stage.focus = _searchText;
+		//_searchText.setSelection(_searchText.text.length, _searchText.text.length);//();
+		}
 	
+
+	// This removes all of the "items" from the displayObject list.
+	private function listUpdate():Void
+	{
+		var i:Int = _window.numChildren;
+		// this removes the existing items from the list.
+		// which allows list draw to add them back in.
+		while ( i > 0 )
+		{
+			i--;
+			var item:DisplayObject = _window.getChildAt(i);
+			if ( "item" == item.name )
+				_window.removeChildAt( i );
+		}
+		
+		// now add these visible items back in
+		listDraw( _listOffset );
+	}
 	
 	override public function listDraw( scrollOffset:Float ):Void
 	{
 		_window.resetVisiblity();
-		if ( "" != _lastString )
+		if ( "" != _searchText.text )
 		{
-			_window.hideItemsWithoutString( _lastString );
+			_window.hideItemsWithoutString( _searchText.text );
 		}
 		
 		var width:Int = Lib.current.stage.stageWidth;
 
 		var textOffset:Float = 5;
-		var text : TextField = new TextField();
-		text.text = _lastString;
-		text.selectable = true;
-		text.border = true;
-		text.borderColor = Globals.COLOR_SAGE;
-		text.width = Lib.current.stage.stageWidth - 6;
-		text.height = _window.componentHeight();
-#if android
-		text.y = Lib.current.stage.stageHeight / 2; // - text.height;
-#else		
-		text.y = Lib.current.stage.stageHeight - text.height - 2;
-#end		
-		text.x = 2;
-		text.type = TextFieldType.INPUT;
-		text.addEventListener (Event.CHANGE, TextField_onChange);
-		text.background = true;
-		text.backgroundColor = Globals.COLOR_WHITE;
-		text.setTextFormat( SearchWindow._textFormat );
 		
 		var allItems:Vector<Item> = _window.getAllItems();
 		var width:Float = _stage.stageWidth;
@@ -162,6 +193,7 @@ class SearchWindow extends ITabListWindow
 						image = "liquor.jpg";
 
 					var graphic:Sprite = Utils.loadGraphic ( "assets/" + image, true );
+					graphic.name = "item";
 					graphic.x = item._textField.x;
 					graphic.y = item._textField.y + 1;
 					graphic.height = Globals.g_app.componentHeight() - 2; 
@@ -174,39 +206,17 @@ class SearchWindow extends ITabListWindow
 #if android
 					if ( Lib.current.stage.stageHeight < item._textField.y )
 #else		
-					if ( ( Lib.current.stage.stageHeight - text.height - 2) < item._textField.y )
+					if ( ( Lib.current.stage.stageHeight - _searchText.height - 2) < item._textField.y )
 #end		
 						break;
 				}
 			}
 		}
-
-		//var fe:FocusEvent = new FocusEvent( FOCUS_IN, true, false );	
-		//DisplayObject
-		//SetFocusObject(
-		_window.addChild( text );
-
-/*
-#if android
-		var clickMe:Sprite = Utils.loadGraphic ( "assets/wine.jpg", true );
-		clickMe.x = 0;
-		clickMe.y = Lib.current.stage.stageHeight / 2 + _window.componentHeight();
-		clickMe.width = width;
-		clickMe.height = Lib.current.stage.stageHeight / 2 - _window.componentHeight();
 		
-		var clickMeText : TextField = new TextField();
-		clickMeText.text = "Click Me For Keyboard";
-		clickMeText.selectable = true;
-		clickMeText.border = true;
-		clickMeText.borderColor = Globals.COLOR_SAGE;
-		clickMeText.width = Lib.current.stage.stageWidth - 6;
-		clickMeText.height = _window.componentHeight();
-		clickMe.addChild( clickMeText );
-		_window.addChild(clickMe);
-#end
-*/
-		_stage.focus = text;
-		text.setSelection(text.text.length,text.text.length);//();
+		// readd the searchText field which bring it to the front.
+		_searchText.setTextFormat( SearchWindow._textFormat );
+		_window.addChild( _searchText );
+		_stage.focus = _searchText;
 	}
 
 	override public function mouseUpHandler( me:MouseEvent ):Void
@@ -221,7 +231,7 @@ class SearchWindow extends ITabListWindow
 			
 		// if click is lower then search bar
 #if android
-		var bh:Int = Std.int( Lib.current.stage.stageHeight/2 - Globals.g_app.searchHeight() * 2 );
+		var bh:Int = Std.int( Lib.current.stage.stageHeight/2 - Globals.g_app.searchHeight() );
 #else
 		var bh:Int = Lib.current.stage.stageHeight - Std.int( Globals.g_app.searchHeight() * 2 );
 #end
@@ -237,9 +247,14 @@ class SearchWindow extends ITabListWindow
 			var countDrawn:Int = 0;
 			var distance:Float = Globals.g_app.tabHeight() + Globals.g_app.logoHeight();
 			var clickLoc:Float = _listOffset + (me.stageY);
-			var shotCount:Int = allItems.length;
-			for ( i in 0...shotCount )
+			var itemCount:Int = allItems.length;
+			var item:Item = null;
+			for ( i in 0...itemCount )
 			{
+				item = allItems[i];
+				if ( false == item.isVisible() )
+					continue;
+				
 				if ( distance + Globals.g_app.componentHeight() < clickLoc )
 				{
 					distance += Globals.g_app.componentHeight();
@@ -247,10 +262,10 @@ class SearchWindow extends ITabListWindow
 				}
 				else 
 				{
-					trace( allItems[countDrawn]._name );
-					if ( true == allItems[countDrawn].isVisible() )
+					trace( allItems[i]._name );
+					if ( true == allItems[i].isVisible() )
 					{
-						_item = allItems[countDrawn];
+						_item = allItems[i];
 						break;
 					}
 					countDrawn++;
@@ -271,11 +286,13 @@ class SearchWindow extends ITabListWindow
 	public function TextField_onChange( event:Event ): Void
 	{
 		var textField:TextField = event.currentTarget;
+		
+		//_window.addItem( new Item( "1" + textField.text, EmoteWindow ) );
  
-		trace (textField.text);		
-//		_window.hideItemsWithoutString( textField.text );
-		_lastString = textField.text;
-		populate();
+		trace ( "SearchWindow.TextField_onChange - search data:" + textField.text);		
+		
+		_searchText.text = textField.text;
+		listUpdate();
 	}
 	
 	override public function selectionHandler():Void
