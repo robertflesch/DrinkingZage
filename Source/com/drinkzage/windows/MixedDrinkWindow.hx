@@ -19,15 +19,6 @@ class MixedDrinkWindow extends ItemFinalWindow {
 		return _instance;
 	}
 
-	//override public function populate( item:Item ):Void
-	//{
-		//_window.prepareNewWindow();
-		//_item = item;
-		//itemDraw();
-		//countDraw();
-		//_window.tabsDraw( _tabs, TabDefault.Back, tabHandler );
-	//}
-//
 	public function new () 
 	{
 		super();
