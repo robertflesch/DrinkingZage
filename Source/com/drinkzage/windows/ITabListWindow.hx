@@ -22,6 +22,9 @@ class ITabListWindow extends IListWindow
 	public  var _item:Item = null;
 	private var _tabs:Vector<String>;
 	private var _tabSelected:Dynamic;
+	private var _useSearch ( getUseSearch, setUseSearch ):Bool = true;
+	function getUseSearch():Bool { return _useSearch; }
+	function setUseSearch( val:Bool ):Bool { return _useSearch = val; }
 
 	private function new () 
 	{
@@ -80,7 +83,8 @@ class ITabListWindow extends IListWindow
 		super.populate();
 		listDraw( _listOffset );
 		_window.tabsDraw( _tabs, _tabSelected, tabHandler );
-		_window.searchDraw();
+		if ( getUseSearch() )
+			_window.searchDraw();
 	}
 	
 	private function tabHandler( me:MouseEvent ):Void
