@@ -1,10 +1,10 @@
 {
     "wines": 
 			[
-                {  "name" : "Red" },
-                {  "name" : "White" },
-                {  "name" : "Rose" },
-                {  "name" : "Sparkling" }
+                {  "name" : "Red Wine" },
+                {  "name" : "White Wine" },
+                {  "name" : "Rose Wine" },
+                {  "name" : "Sparkling Wine" }
             ],
 	"nonAlcoholicDrinks": 
 			[
