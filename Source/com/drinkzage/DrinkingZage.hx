@@ -20,6 +20,8 @@ import nme.events.Event;
 import nme.events.KeyboardEvent;
 import nme.events.MouseEvent;
 
+import nme.display.DisplayObject;
+
 import nme.filters.GlowFilter;
 
 import nme.geom.Vector3D;
@@ -86,28 +88,7 @@ class DrinkingZage extends Sprite {
 		_frontButtons.push( new FrontButton( "Emote", "emote.jpg" ) );
 		_frontButtons.push( new FrontButton( "Liquor", "liquor.jpg" ) );
 		_frontButtons.push( new FrontButton( "Non Alco", "non.jpg" ) );
-		/*
-		_frontButtons.push( new FrontButton( "Fav", "beer_bnb.jpg" ) );
-		_frontButtons.push( new FrontButton( "Beer", "beer_bnb.jpg" ) );
-		_frontButtons.push( new FrontButton( "Wine", "beer_bnb.jpg" ) );
-		_frontButtons.push( new FrontButton( "Emote", "beer_bnb.jpg" ) );
-		_frontButtons.push( new FrontButton( "Liquor", "beer_bnb.jpg" ) );
-		_frontButtons.push( new FrontButton( "Non Alco", "beer_bnb.jpg" ) );
-		
-		_frontButtons.push( new FrontButton( "Fav", "beer_blue.jpg" ) );
-		_frontButtons.push( new FrontButton( "Beer", "beer_blue.jpg" ) );
-		_frontButtons.push( new FrontButton( "Wine", "beer_blue.jpg" ) );
-		_frontButtons.push( new FrontButton( "Emote", "beer_blue.jpg" ) );
-		_frontButtons.push( new FrontButton( "Liquor", "beer_blue.jpg" ) );
-		_frontButtons.push( new FrontButton( "Non Alco", "beer_blue.jpg" ) );
-		
-		_frontButtons.push( new FrontButton( "Fav", "beer.jpg" ) );
-		_frontButtons.push( new FrontButton( "Beer", "beer.jpg" ) );
-		_frontButtons.push( new FrontButton( "Wine", "beer.jpg" ) );
-		_frontButtons.push( new FrontButton( "Emote", "beer.jpg" ) );
-		_frontButtons.push( new FrontButton( "Liquor", "beer.jpg" ) );
-		_frontButtons.push( new FrontButton( "Non Alco", "beer.jpg" ) );
-*/		
+
 		createList();
  
 		storageTest();
@@ -227,7 +208,9 @@ class DrinkingZage extends Sprite {
 	
 	private function logoDraw():Void
 	{
+		trace( "DrinkZage.logoDraw" );
 		var logo:Sprite = Utils.loadGraphic ( "assets/logo.jpg", true );
+		logo.name = "DrinkZage Logo";
 		logo.width = Lib.current.stage.stageWidth;
 		logo.height = logoHeight();
 		this.addChild(logo);
@@ -266,18 +249,20 @@ class DrinkingZage extends Sprite {
 		//this.addChild(logo);
 		
 		var searchBut:Sprite = Utils.loadGraphic ( "assets/findDrink.png", true );
+		searchBut.name = "searchBut";
 		searchBut.y = Lib.current.stage.stageHeight - searchBut.height;
 		searchBut.x = 0;
-		searchBut.width = Lib.current.stage.stageWidth/2;
+		searchBut.width = Lib.current.stage.stageWidth;
 		searchBut.addEventListener( MouseEvent.CLICK, searchDrinkClickHandler);
 		this.addChild(searchBut);
 		
-		var customBut:Sprite = Utils.loadGraphic ( "assets/customDrink.png", true );
-		customBut.y = Lib.current.stage.stageHeight - customBut.height;
-		customBut.x = Lib.current.stage.stageWidth/2;
-		customBut.width = Lib.current.stage.stageWidth/2;
-		customBut.addEventListener( MouseEvent.CLICK, customDrinkClickHandler);
-		this.addChild(customBut);
+		//var customBut:Sprite = Utils.loadGraphic ( "assets/customDrink.png", true );
+		//customBut.name = "customBut";
+		//customBut.y = Lib.current.stage.stageHeight - customBut.height;
+		//customBut.x = Lib.current.stage.stageWidth/2;
+		//customBut.width = Lib.current.stage.stageWidth/2;
+		//customBut.addEventListener( MouseEvent.CLICK, customDrinkClickHandler);
+		//this.addChild(customBut);
 	}
 	
 	private function searchDrinkClickHandler( me:MouseEvent )
@@ -288,13 +273,13 @@ class DrinkingZage extends Sprite {
 		sw.populate();
 	}
 
-	private function customDrinkClickHandler( me:MouseEvent )
-	{
-		trace("customDrinkClickHandler");
-		var sw:SearchWindow = SearchWindow.instance();
-		sw.setBackHandler( this );
-		sw.populate();
-	}
+	//private function customDrinkClickHandler( me:MouseEvent )
+	//{
+		//trace("customDrinkClickHandler");
+		//var sw:SearchWindow = SearchWindow.instance();
+		//sw.setBackHandler( this );
+		//sw.populate();
+	//}
 
 	public function tabsDraw( tabs:Vector<String>, tabSelected:Dynamic, tabHandler:Dynamic -> Void):Void
 	{
@@ -355,11 +340,19 @@ class DrinkingZage extends Sprite {
 	
 	public function prepareNewWindow():Void
 	{
+		// remove ALL items from the display list
 		var children:Int = this.numChildren;
 		for ( i in 0...children )
 		{
 			this.removeChildAt( 0 );
 		}
+
+		//trace( "DrinkZage.prepareNewWindow - Number of Children after removal: " + this.numChildren );
+		//for  ( j in 0...this.numChildren )
+		//{
+			//var item:DisplayObject = this.getChildAt(j);
+			//trace ( item.name );
+		//}
 		
 		logoDraw();
 	}
