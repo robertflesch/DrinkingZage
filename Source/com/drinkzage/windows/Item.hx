@@ -37,6 +37,7 @@ class Item
 		_textField.border = true;
 		_textField.borderColor = 0xffffff;
 		_textField.selectable = false;
+		_textField.name = "item";
 		
 		var ts = new TextFormat("_sans");
 		ts.size = 36;                // set the font size
