@@ -4,11 +4,12 @@ import com.drinkzage.DrinkingZage;
 import nme.events.MouseEvent;
 import com.drinkzage.windows.Item;
 import nme.Vector;
+import com.drinkzage.windows.IListWindow;
 
 /**
  * @author Robert Flesch
  */
-class WineChoiceWindow extends ITabListWindow
+class WineChoiceWindow extends IListWindow
 {
 	private static var _instance:WineChoiceWindow = null;
 	
@@ -34,7 +35,8 @@ class WineChoiceWindow extends ITabListWindow
 		removeListeners();
 		var blw: WineWindow = WineWindow.instance();
 		blw.setBackHandler( this );
-		blw.populate( _item );
+		blw.setItem( _item );
+		blw.populate();
 	}
 	
 	override public function createList():Void

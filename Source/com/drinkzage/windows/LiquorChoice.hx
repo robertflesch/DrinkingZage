@@ -10,11 +10,12 @@ import nme.events.MouseEvent;
 import nme.events.Event;
 
 import com.drinkzage.utils.Utils;
+import com.drinkzage.windows.IListWindow;
 
 /**
  * @author Robert Flesch
  */
-class LiquorChoice extends ITabListWindow
+class LiquorChoice extends IListWindow
 {
 	static inline var GUTTER:Float = 10;
 	static inline var CHOICES:Int = 2;
@@ -42,7 +43,7 @@ class LiquorChoice extends ITabListWindow
 	override public function listDraw( scrollOffset:Float ):Void
 	{
 		var width:Float = _stage.stageWidth;
-		var height:Float = (_stage.stageHeight - Globals.g_app.logoHeight() - Globals.g_app.tabHeight())/CHOICES;
+		var height:Float = (Globals.g_app.drawableHeight() - Globals.g_app.searchHeight())/CHOICES;
 
 		for ( i in 0...CHOICES )
 		{

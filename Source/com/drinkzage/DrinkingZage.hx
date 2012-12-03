@@ -208,7 +208,7 @@ class DrinkingZage extends Sprite {
 	
 	private function logoDraw():Void
 	{
-		trace( "DrinkZage.logoDraw" );
+		//trace( "DrinkZage.logoDraw" );
 		var logo:Sprite = Utils.loadGraphic ( "assets/logo.jpg", true );
 		logo.name = "DrinkZage Logo";
 		logo.width = Lib.current.stage.stageWidth;
@@ -218,26 +218,28 @@ class DrinkingZage extends Sprite {
 	
 	public function tabHeight():Float
 	{
-		var returnVal:Float = ListWindowConsts.TAB_HEIGHT * Lib.current.stage.stageHeight;
-		return returnVal;
+		return ListWindowConsts.TAB_HEIGHT * Lib.current.stage.stageHeight;
 	}
 	
 	public function logoHeight():Float
 	{
-		var returnVal:Float = LogoConsts.LOGO_HEIGHT * Lib.current.stage.stageHeight;
-		return returnVal;
+		return LogoConsts.LOGO_SCALE * Lib.current.stage.stageHeight;
 	}
 	
 	public function componentHeight():Float
 	{
-		var returnVal:Float = ListWindowConsts.COMPONENT_HEIGHT * Lib.current.stage.stageHeight;
-		return returnVal;
+		return ListWindowConsts.COMPONENT_HEIGHT * Lib.current.stage.stageHeight;
 	}
 
 	public function searchHeight():Float
 	{
 		var returnVal:Float = ListWindowConsts.COMPONENT_HEIGHT * Lib.current.stage.stageHeight;
 		return returnVal;
+	}
+	
+	public function drawableHeight():Float
+	{
+		return (Globals.g_stage.stageHeight - Globals.g_app.logoHeight() - Globals.g_app.tabHeight());
 	}
 	
 	public function searchDraw():Void
@@ -255,14 +257,6 @@ class DrinkingZage extends Sprite {
 		searchBut.width = Lib.current.stage.stageWidth;
 		searchBut.addEventListener( MouseEvent.CLICK, searchDrinkClickHandler);
 		this.addChild(searchBut);
-		
-		//var customBut:Sprite = Utils.loadGraphic ( "assets/customDrink.png", true );
-		//customBut.name = "customBut";
-		//customBut.y = Lib.current.stage.stageHeight - customBut.height;
-		//customBut.x = Lib.current.stage.stageWidth/2;
-		//customBut.width = Lib.current.stage.stageWidth/2;
-		//customBut.addEventListener( MouseEvent.CLICK, customDrinkClickHandler);
-		//this.addChild(customBut);
 	}
 	
 	private function searchDrinkClickHandler( me:MouseEvent )
@@ -272,14 +266,6 @@ class DrinkingZage extends Sprite {
 		sw.setBackHandler( this );
 		sw.populate();
 	}
-
-	//private function customDrinkClickHandler( me:MouseEvent )
-	//{
-		//trace("customDrinkClickHandler");
-		//var sw:SearchWindow = SearchWindow.instance();
-		//sw.setBackHandler( this );
-		//sw.populate();
-	//}
 
 	public function tabsDraw( tabs:Vector<String>, tabSelected:Dynamic, tabHandler:Dynamic -> Void):Void
 	{
@@ -304,7 +290,7 @@ class DrinkingZage extends Sprite {
 			var text : TextField = new TextField();
 			text.selectable = false;
 			text.text = tabs[ i ];
-			text.height = tab.height * 0.55;
+			text.height = tab.height; //* 0.55;
 			text.name = Std.string( i );
 			
 			// This should work as text.width = tab.width
@@ -369,7 +355,7 @@ class DrinkingZage extends Sprite {
 			{
 				nw = NotDoneYetWindow.instance();
 				nw.setBackHandler( this );
-				nw.populate( null );
+				nw.populate();
 			}
 			case 1: // Beer
 			{

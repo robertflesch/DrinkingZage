@@ -2,7 +2,6 @@
 
 
 import nme.events.MouseEvent;
-import com.drinkzage.windows.TabConst;
 
 /**
  * @author Robert Flesch

@@ -25,12 +25,12 @@ class EmoteWindow extends ItemFinalWindow {
 		_tabs.push( "BACK" );
 	}
 	
-	override public function populate(item:Item):Void
+	override public function populate():Void
 	{
 		addListeners();
 		
 		_window.prepareNewWindow();
-		_item = item;
 		itemDraw();
+		_window.tabsDraw( _tabs, TabDefault.Back, tabHandler );
 	}
 }

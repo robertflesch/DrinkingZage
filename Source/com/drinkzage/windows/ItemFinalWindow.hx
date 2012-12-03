@@ -1,46 +1,56 @@
 ﻿package com.drinkzage.windows;
 
-import com.drinkzage.Globals;
+import nme.Assets;
+import nme.Vector;
+
+import nme.display.Bitmap;
+import nme.display.BitmapData;
+import nme.display.DisplayObject;
 import nme.display.Sprite;
 import nme.display.Stage;
 
 import nme.events.MouseEvent;
+import nme.events.FocusEvent;
 import nme.events.Event;
 import nme.events.KeyboardEvent;
+
 import nme.errors.Error;
+
+import nme.filters.GlowFilter;
+
+import nme.geom.Matrix;
 
 import nme.text.TextField;
 import nme.text.TextFormat;
 import nme.text.TextFormatAlign;
 import nme.text.Font;
+import nme.text.TextFieldType;
 
-import nme.filters.GlowFilter;
-import nme.Assets;
-import nme.Vector;
-
-import com.drinkzage.windows.Item;
+import com.drinkzage.Globals;
 
 import com.drinkzage.utils.Utils;
+
+import com.drinkzage.windows.Item;
 import com.drinkzage.windows.LogoConsts;
 import com.drinkzage.windows.TabConst;
-import com.drinkzage.windows.IChildWindow;
+import com.drinkzage.windows.ITabWindow;
 
 /**
  * @author Robert Flesch
  */
-class ItemFinalWindow extends IChildWindow {
+class ItemFinalWindow extends ITabWindow {
 	
 	private var _countTextField:TextField;
 	private var _countTextFormat:TextFormat;
 	private var _item:Item;
 	private var _parent:Dynamic;
-	private var _tabs:Vector<String>;
+	//private var _tabs:Vector<String>;
 	
 	public function new () 
 	{
 		super();
 		
-		_tabs = new Vector<String>();
+		//_tabs = new Vector<String>();
 		
 		var font = Assets.getFont ("assets/VeraSeBd.ttf");
 		_countTextFormat = new TextFormat (font.fontName, 150, 0xffff00);
@@ -64,15 +74,24 @@ class ItemFinalWindow extends IChildWindow {
 		
 	}
 	
-	public function populate(item:Item):Void
+	public function setItem( item:Item ):Void
 	{
-		addListeners();
-		
-		_window.prepareNewWindow();
 		_item = item;
+	}
+	
+	override public function populate():Void
+	{
+		if ( null == _item )
+		{
+			trace( "ItemFinalWindow.populate - NULL ITEM" );
+			throw "ItemFinalWindow.populate - NULL ITEM";
+		}
+		
+		setUseSearch( false );
+		super.populate();
+		
 		itemDraw();
 		countDraw();
-		_window.tabsDraw( _tabs, TabDefault.Back, tabHandler );
 	}
 	
 	public function countDraw():Void
@@ -104,15 +123,6 @@ class ItemFinalWindow extends IChildWindow {
 		var width:Float = _stage.stageWidth;
 		var height:Float = _stage.stageHeight;
 		height = height - Globals.g_app.tabHeight() - Globals.g_app.logoHeight();
-		//var nameLength:Int = _item._name.length;
-		//var words:Array<String> = _item._name.split( " " );
-		//var longestWord:Int = 0;
-		//for (i in 0...words.length )
-		//{
-			//if ( longestWord < words[i].length )
-				//longestWord = words[i].length;
-		//}
-		
 		
 		var font = Assets.getFont ("assets/VeraSeBd.ttf");
 		var format = new TextFormat (font.fontName, 120, 0xFF0000);
@@ -124,59 +134,32 @@ class ItemFinalWindow extends IChildWindow {
 		var name:TextField = new TextField();
 		name.wordWrap = true;
 		name.defaultTextFormat = format;
-		name.selectable = false;
 		name.embedFonts = true;
-		//name.border = true;
-		//name.borderColor = 0x00FF00;
-//		name.x = width*2/3;
 		name.x = width*5/8;
 		name.y = Globals.g_app.logoHeight() + Globals.g_app.tabHeight();
 		name.text = _item._name;
-		//name.width = height - name.y - 1;
 		name.width = height;
 		name.height = width * 2 / 3;
 		
 		name.rotation = 90;
+		name.addEventListener (FocusEvent.FOCUS_IN, TextField_onFocus);
+		
 		_window.addChild( name );
 
 	}
 	
-	private function headerDraw():Void
+	public function TextField_onFocus( event:Event ): Void
 	{
-		var tab:Sprite = Utils.loadGraphic( "assets/tab_active.png", true );
-		tab.x = 0;
-		tab.y = Globals.g_app.logoHeight();
-		tab.width =  _window.width;
-		tab.height = Globals.g_app.tabHeight();
-		tab.addEventListener( MouseEvent.CLICK, tabHandler );
-		tab.name = "0";
-
-		var text : TextField = new TextField();
-		text.text = "BACK";
-		text.height = Globals.g_app.tabHeight();
-		text.name = "0";
-		text.width = tab.width;
-		text.y = text.height / 4;
-		text.x = 30;
-		//text.x = text.width/2 - 10;
-		text.selectable = false;
-		
-		var ts:TextFormat = new TextFormat("_sans");
-		ts.size = 16;                // set the font size
-		//ts.align = TextFormatAlign.CENTER;
-		ts.color = 0xffffff;
-		text.setTextFormat(ts);
-		tab.addChild(text);
-		
-		_window.addChild( tab );
+		var textField:TextField = event.currentTarget;
+		textField.type = TextFieldType.INPUT;
+		textField.addEventListener (FocusEvent.FOCUS_OUT, TextField_loseFocus);
 	}
 	
-	public function tabHandler( me:MouseEvent ):Void
+	public function TextField_loseFocus( event:Event ): Void
 	{
-		if ( me.stageY >= Globals.g_app.tabHeight() + Globals.g_app.logoHeight() )
-			return;
-		
-		backHandler();
+		var textField:TextField = event.currentTarget;
+		textField.type = TextFieldType.DYNAMIC;
+		textField.removeEventListener (FocusEvent.FOCUS_OUT, TextField_loseFocus);
 	}
 	
 	private function plusHandler( me:MouseEvent ):Void
@@ -198,4 +181,15 @@ class ItemFinalWindow extends IChildWindow {
 			_countTextField.setTextFormat( _countTextFormat );
 		}			
 	}
+
+	public function BitmapScaled(do_source:Bitmap, thumbWidth:Int, thumbHeight:Int):BitmapData 
+	{
+		var mat:Matrix = new Matrix();
+		mat.scale(thumbWidth / do_source.width, thumbHeight / do_source.height);
+		// doesnt like this, gives me a grey image... RSF
+		// mat.rotate( 90 );
+		var bmpd_draw:BitmapData = new BitmapData( thumbWidth, thumbHeight, false);
+		bmpd_draw.draw(do_source, mat, null, null, null, true);
+		return bmpd_draw;
+	}	
 }

@@ -19,7 +19,7 @@ class ItemBeer extends Item
 	
 	public var beerCategory( getBeerCategory, null ):BeerCategory;
 	
-	public function getBeerCategory():BeerCategory { return _category; }
+	public function getBeerCategory():BeerCategory { return _beerCategory; }
 	
 	public function new( name:String, category:Dynamic, label_image:String, beerCategory:String, color:String, bcolor:String ):Void
 	{

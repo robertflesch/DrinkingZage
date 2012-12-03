@@ -4,11 +4,12 @@ import nme.Vector;
 import nme.events.MouseEvent;
 
 import com.drinkzage.windows.Item;
+import com.drinkzage.windows.IListWindow;
 
 /**
  * @author Robert Flesch
  */
-class EmoticonsWindow extends ITabListWindow
+class EmoticonsWindow extends IListWindow
 {
 	private static var _instance:EmoticonsWindow = null;
 	
@@ -34,7 +35,8 @@ class EmoticonsWindow extends ITabListWindow
 		removeListeners();
 		var blw: EmoteWindow = EmoteWindow.instance();
 		blw.setBackHandler( this );
-		blw.populate( _item );
+		blw.setItem( _item );
+		blw.populate();
 	}
 	
 	

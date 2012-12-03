@@ -21,7 +21,7 @@ import nme.text.TextFormatAlign;
 import nme.ui.Mouse;
 import nme.events.TimerEvent;
 import com.drinkzage.windows.Item;
-import com.drinkzage.windows.ITabListWindow;
+import com.drinkzage.windows.IListWindow;
 import com.drinkzage.windows.ListWindowConsts;
 
 import com.drinkzage.Globals;
@@ -30,7 +30,7 @@ import com.drinkzage.utils.Utils;
 /**
  * @author Robert Flesch
  */
-class ShotListWindow extends ITabListWindow
+class ShotListWindow extends IListWindow
 {
 	
 	private static var _instance:ShotListWindow = null;
@@ -56,7 +56,8 @@ class ShotListWindow extends ITabListWindow
 		removeListeners();
 		var blw: ShotWindow = ShotWindow.instance();
 		blw.setBackHandler( this );
-		blw.populate( _item );
+		blw.setItem( _item );
+		blw.populate();
 	}
 	
 	override public function createList():Void

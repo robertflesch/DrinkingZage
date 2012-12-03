@@ -14,31 +14,27 @@ import nme.display.DisplayObject;
 import nme.events.Event;
 import nme.events.FocusEvent;
 import nme.events.MouseEvent;
+import nme.events.KeyboardEvent;
 
 import nme.filters.GlowFilter;
 
 import nme.text.TextField;
 import nme.text.TextFormat;
 import nme.text.TextFormatAlign;
+import nme.text.TextFieldType;
 
 import nme.ui.Mouse;
 import nme.events.TimerEvent;
-import com.drinkzage.windows.Item;
-import com.drinkzage.windows.ITabListWindow;
-import com.drinkzage.windows.ListWindowConsts;
-
 
 import com.drinkzage.Globals;
+
 import com.drinkzage.utils.Utils;
-import com.drinkzage.windows.TabConst;
 
-import nme.text.TextFieldType;
-import nme.events.KeyboardEvent;
-
+import com.drinkzage.windows.Item;
+import com.drinkzage.windows.ListWindowConsts;
 import com.drinkzage.windows.WineWindow;
 import com.drinkzage.windows.NonAlcoholicDrinkWindow;
 import com.drinkzage.windows.BeerWindow;
-
 import com.drinkzage.windows.Item;
 import com.drinkzage.windows.ItemBeer;
 import com.drinkzage.windows.ContainerColor;
@@ -46,20 +42,19 @@ import com.drinkzage.windows.BeerColor;
 import com.drinkzage.windows.ShotWindow;
 import com.drinkzage.windows.EmoteWindow;
 import com.drinkzage.windows.MixedDrinkWindow;
+import com.drinkzage.windows.IListWindow;
 
 /**
  * @author Robert Flesch
  */
-class SearchWindow extends ITabListWindow
+class SearchWindow extends IListWindow
 {
 	
 	private static var _instance:SearchWindow = null;
-	private static var _lastCategory:BeerCategory = null;
-	private static var _textFormat:TextFormat = null;
+
+	private 	   var _textFormat:TextFormat = null;
 	private 	   var _searchText : TextField = null;
 
-	//public var cl:ControlList = null;
-	
 	public static function instance():SearchWindow
 	{ 
 		if ( null == _instance )
@@ -78,12 +73,7 @@ class SearchWindow extends ITabListWindow
 		
 		_searchText = new TextField();
 		
-		// trying to isolate the list from rest of controls
-		// not done
-		//cl = new ControlList();
-		
 		_tabs.push( "BACK" );
-		_tabSelected = TabDefault.Back;
 
 		_textFormat = new TextFormat("_sans");
 		_textFormat.size = 32;                // set the font size
@@ -118,7 +108,7 @@ class SearchWindow extends ITabListWindow
 		_searchText.addEventListener (Event.CHANGE, TextField_onChange);
 		_searchText.background = true;
 		_searchText.backgroundColor = Globals.COLOR_WHITE;
-		_searchText.setTextFormat( SearchWindow._textFormat );
+		_searchText.setTextFormat( _textFormat );
 		
 		_window.addChild( _searchText );
 
@@ -205,16 +195,17 @@ class SearchWindow extends ITabListWindow
 					
 #if android
 					if ( Lib.current.stage.stageHeight < item._textField.y )
+						break;
 #else		
 					if ( ( Lib.current.stage.stageHeight - _searchText.height - 2) < item._textField.y )
-#end		
 						break;
+#end		
 				}
 			}
 		}
 		
 		// readd the searchText field which bring it to the front.
-		_searchText.setTextFormat( SearchWindow._textFormat );
+		_searchText.setTextFormat( _textFormat );
 		_window.addChild( _searchText );
 		_stage.focus = _searchText;
 	}

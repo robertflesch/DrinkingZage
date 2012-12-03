@@ -4,11 +4,12 @@ import nme.Vector;
 import nme.events.MouseEvent;
 
 import com.drinkzage.windows.Item;
+import com.drinkzage.windows.IListWindow;
 
 /**
  * @author Robert Flesch
  */
-class MixedDrinkListWindow extends ITabListWindow
+class MixedDrinkListWindow extends IListWindow
 {
 	private static var _instance:MixedDrinkListWindow = null;
 	
@@ -34,7 +35,8 @@ class MixedDrinkListWindow extends ITabListWindow
 		removeListeners();
 		var blw: MixedDrinkWindow = MixedDrinkWindow.instance();
 		blw.setBackHandler( this );
-		blw.populate( _item );
+		blw.setItem( _item );
+		blw.populate();
 	}
 	
 	override public function createList():Void

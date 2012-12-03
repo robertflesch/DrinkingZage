@@ -28,11 +28,12 @@ import nme.text.TextFormatAlign;
 import com.drinkzage.windows.BeerListWindow;
 import com.drinkzage.utils.Utils;
 import com.drinkzage.windows.LogoConsts;
+import com.drinkzage.windows.IListWindow;
 
 /**
  * @author Robert Flesch
  */
-class NonAlcoholicDrinks extends ITabListWindow
+class NonAlcoholicDrinks extends IListWindow
 {
 	private static var _instance:NonAlcoholicDrinks = null;
 	
@@ -58,7 +59,8 @@ class NonAlcoholicDrinks extends ITabListWindow
 		removeListeners();
 		var blw: NonAlcoholicDrinkWindow = NonAlcoholicDrinkWindow.instance();
 		blw.setBackHandler( this );
-		blw.populate( _item );
+		blw.setItem( _item );
+		blw.populate();
 	}
 	
 	override public function createList():Void

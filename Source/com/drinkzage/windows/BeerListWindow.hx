@@ -21,16 +21,15 @@ import nme.text.TextFormatAlign;
 import nme.ui.Mouse;
 import nme.events.TimerEvent;
 import com.drinkzage.windows.Item;
-import com.drinkzage.windows.ITabListWindow;
+import com.drinkzage.windows.IListWindow;
 import com.drinkzage.windows.ListWindowConsts;
 
 import com.drinkzage.Globals;
 import com.drinkzage.utils.Utils;
-import com.drinkzage.windows.TabConst;
 /**
  * @author Robert Flesch
  */
-class BeerListWindow extends ITabListWindow
+class BeerListWindow extends IListWindow
 {
 	
 	private static var _instance:BeerListWindow = null;
@@ -144,10 +143,9 @@ class BeerListWindow extends ITabListWindow
 	
 	override public function listDraw( scrollOffset:Float ):Void
 	{
-		trace( "BeerListWindow.listDraw" );
+		//trace( "BeerListWindow.listDraw" );
 		var width:Float = _stage.stageWidth;
 		var height:Float = Globals.g_app.componentHeight();
-		//var numComponents:Int = _stage.height / Globals.g_app.componentHeight();
 		var offset:Float = Globals.g_app.tabHeight() + Globals.g_app.logoHeight();
 		var beerCount:Int = _items.length;
 		var beer:ItemBeer = null;
@@ -192,7 +190,8 @@ class BeerListWindow extends ITabListWindow
 		removeListeners();
 		var bw:BeerWindow = new BeerWindow();
 		bw.setBackHandler( this );
-		bw.populate( cast( _item, ItemBeer ) );
+		bw.setItem( cast( _item, ItemBeer ) );
+		bw.populate();
 	}
 	
 	override public function createList():Void

@@ -6,5 +6,5 @@
  */
 class LogoConsts 
 {
-	static public inline var LOGO_HEIGHT:Float = 0.0625;
+	static public inline var LOGO_SCALE:Float = 0.0625;
 }
