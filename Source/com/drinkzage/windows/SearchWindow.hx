@@ -320,7 +320,8 @@ class SearchWindow extends IListWindow
 		if ( null != window )
 		{
 			window.setBackHandler( this );
-			window.populate( _item );
+			window.setItem( _item );
+			window.populate();
 		}
 		else
 			trace( "SearchWindow.selectionHandler - ERROR - no category found" );
