@@ -2,14 +2,15 @@
 
 import nme.Lib;
 import nme.Vector;
+import nme.display.DisplayObject;
 
-import com.drinkzage.Globals;
-import com.drinkzage.windows.IChildWindow;
 
 import nme.events.Event;
 import nme.events.KeyboardEvent;
 import nme.events.MouseEvent;
 
+import com.drinkzage.Globals;
+import com.drinkzage.windows.IChildWindow;
 
 /**
  * @author Robert Flesch
@@ -37,12 +38,30 @@ class IListWindow extends ITabWindow
 		{
 			_items = new Vector<Item>();
 		}
-		
-		_maxOffset = _items.length * Globals.g_app.componentHeight() - (_stage.stageHeight - Globals.g_app.tabHeight() - Globals.g_app.logoHeight());
-		_maxOffset += Globals.g_app.tabHeight() + ListWindowConsts.FUDGE_FACTOR; // Fudge factor
 	}
 	
 	public function createList():Void {}
+	
+	override public function populate():Void
+	{
+		_maxOffset = _items.length * Globals.g_app.componentHeight() - (_stage.stageHeight - Globals.g_app.tabHeight() - Globals.g_app.logoHeight());
+		_maxOffset += Globals.g_app.tabHeight() + ListWindowConsts.FUDGE_FACTOR; // Fudge factor
+		
+		_window.prepareNewWindow();		
+
+		_clickPoint = 0.0;
+		_change = 0.0;
+		_drag = false;
+		
+		removeListeners();
+		addListeners();
+		listDraw( _listOffset );
+
+		_window.tabsDraw( _tabs, _tabSelected, tabHandler );
+		
+		if ( getUseSearch() )
+			_window.searchDraw();
+	}
 	
 	private function listDraw( scrollOffset:Float ):Void
 	{
@@ -63,31 +82,36 @@ class IListWindow extends ITabWindow
 				beer._textField.width = width - ListWindowConsts.GUTTER * 2;
 				
 				beer._textField.y = countDrawn * Globals.g_app.componentHeight() + offset - remainder;
+				if ( beer._textField.y + Globals.g_app.logoHeight() > _stage.stageHeight )
+					break;
 				
 				_window.addChild(beer._textField);
 				countDrawn++;
 			}
 		}
+		trace( "IListWindow.listDraw - countDrawn: " + countDrawn );
 	}
 	
-	override public function populate():Void
+	// This removes all of the "items" from the displayObject list.
+	private function listRefresh( scrollOffset:Float ):Void
 	{
-		super.populate();
+		var i:Int = _window.numChildren;
+		// this removes the existing items from the list.
+		// which allows list draw to add them back in.
+		while ( i > 0 )
+		{
+			i--;
+			var item:DisplayObject = _window.getChildAt(i);
+			if ( "item" == item.name )
+				_window.removeChildAt( i );
+		}
 		
-		_clickPoint = 0.0;
-		_change = 0.0;
-		_drag = false;
+		// now add these visible items back in
+		listDraw( scrollOffset );
 		
-		removeListeners();
-		addListeners();
-		listDraw( _listOffset );
-	}
-	
-	public function selectionHandler():Void
-	{
-		removeListeners();
-		var ndyw:NotDoneYetWindow = NotDoneYetWindow.instance();
-		ndyw.populate();
+		// TODO - Just need to readd these, not recreate
+		_window.searchPop();
+		_window.tabsDraw( _tabs, _tabSelected, tabHandler );
 	}
 	
 	public function mouseUpHandler( me:MouseEvent ):Void
@@ -100,80 +124,100 @@ class IListWindow extends ITabWindow
 		if ( me.stageY < Globals.g_app.tabHeight() + Globals.g_app.logoHeight() && me.stageY - _clickPoint < 5 )
 			return;
 			
-		//listOffsetAdjust( _change );
+		listOffsetAdjust( _change );
 		
-		_item = null;
-		if ( ListWindowConsts.MOVE_MIN > Math.abs( _change ) )
+		if ( _drag )
 		{
-			//trace( "mixedDrinkList.MouseUpHandler - CLICKED at: " + clickLoc );
-			var countDrawn:Int = 0;
-			var distance:Float = Globals.g_app.tabHeight() + Globals.g_app.logoHeight();
-			var clickLoc:Float = _listOffset + (me.stageY);
-			var shotCount:Int = _items.length;
-			for ( i in 0...shotCount )
-			{
-				if ( distance + Globals.g_app.componentHeight() < clickLoc )
-				{
-					distance += Globals.g_app.componentHeight();
-					countDrawn++;
-				}
-				else 
-				{
-					_item = _items[countDrawn];
-					break;
-				}
-			}
+			var swipeTime:Float = Lib.getTimer() - _time;
+			_swipeSpeed = _change / swipeTime * 10;
 
-			if ( null != _item )
-				selectionHandler();
+			_drag = false;
+			_change = 0;
 		}
-		
-		var swipeTime:Float = Lib.getTimer() - _time;
-		_swipeSpeed = _change / swipeTime * 10;
+		else
+		{
+			_item = null;
+			if ( ListWindowConsts.MOVE_MIN > Math.abs( _change ) )
+			{
+				trace( "mixedDrinkList.MouseUpHandler - CLICKED at: " + _clickPoint );
+				var countDrawn:Int = 0;
+				var distance:Float = Globals.g_app.tabHeight() + Globals.g_app.logoHeight();
+				var clickLoc:Float = _listOffset + (me.stageY);
+				var shotCount:Int = _items.length;
+				for ( i in 0...shotCount )
+				{
+					if ( distance + Globals.g_app.componentHeight() < clickLoc )
+					{
+						distance += Globals.g_app.componentHeight();
+						countDrawn++;
+					}
+					else 
+					{
+						_item = _items[countDrawn];
+						break;
+					}
+				}
 
-		_drag = false;
-		_change = 0;
+				if ( null != _item )
+					selectionHandler();
+			}
+		}
 	}
 	
 	private function mouseDownHandler( me:MouseEvent ):Void
 	{
 		_stage.addEventListener( MouseEvent.MOUSE_UP, mouseUpHandler );
 		_stage.addEventListener( MouseEvent.MOUSE_MOVE, mouseMoveHandler );
-		if ( !_drag )
+		//if ( !_drag )
 		{
 			_clickPoint = me.stageY;
-			_time = Lib.getTimer();
-			_drag = true;		
+			//_time = Lib.getTimer();
+			//_drag = true;		
 		}
 	}
 	
 	private function mouseMoveHandler( me:MouseEvent ):Void
 	{
-		/*
+		if ( 5 < Math.abs( _clickPoint - me.stageY ) )
+		{
+			_drag = true;
+		}
+	
 		if ( _drag )
 		{
 			_swipeSpeed = 0;
 			_change = _clickPoint - me.stageY;
-			//trace( "mixedDrinkListMouseMoveHandler change:" + _change + "  _clickPoint: " + _clickPoint + "  me.stageY: " + me.stageY );
-			
+//			trace( "mixedDrinkListMouseMoveHandler change:" + _change + "  _clickPoint: " + _clickPoint + "  me.stageY: " + me.stageY );
+		
 			if ( _maxOffset < _listOffset + _change )
 			{
 				// end of list
-				draw( _maxOffset );
+				listRefresh( _maxOffset );
 			}
 			else
 			{
 				// Beginning of list
 				if ( _listOffset + _change < 0 )
-					draw( 0 );
+					listRefresh( 0 );
 				else
-					draw( _listOffset + _change ); // middle of list
+				{
+//					trace( "mouseMoveHandler: " + _listOffset + _change );
+					listRefresh( _listOffset + _change ); // middle of list
+				}
 			}
-		}*/
+		}
+	}
+	
+	public function selectionHandler():Void
+	{
+		removeListeners();
+		var ndyw:NotDoneYetWindow = NotDoneYetWindow.instance();
+		ndyw.populate();
 	}
 	
 	private function onEnter(e:Event):Void
 	{
+		/*
 		if ( 0 != _swipeSpeed && true != _drag )
 		{	
 			_swipeSpeed = 0.95 * _swipeSpeed;
@@ -184,6 +228,7 @@ class IListWindow extends ITabWindow
 
 			populate(); 	
 		}
+		*/
 	}
 	
 	private function listOffsetAdjust( changeAmount:Float ):Void
