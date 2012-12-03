@@ -1,10 +1,23 @@
 {
     "wines": 
 			[
-                {  "name" : "Red Wine" },
-                {  "name" : "White Wine" },
-                {  "name" : "Rose Wine" },
-                {  "name" : "Sparkling Wine" }
+                {  "name" : "House Red Wine" },
+                {  "name" : "Merlot" },
+                {  "name" : "Cabernet" },
+                {  "name" : "Shiraz" },
+                {  "name" : "Malbec" },
+                {  "name" : "Pinot noir" },
+                {  "name" : "Zinfandel" },
+                {  "name" : "Sangiovese" },
+                {  "name" : "Barbera" },
+                {  "name" : "House White Wine" },
+                {  "name" : "Chardonnay" },
+                {  "name" : "Sauvignon blanc" },
+                {  "name" : "Moscato" },
+                {  "name" : "Pinot grigio" },
+                {  "name" : "Gewürztraminer" },
+                {  "name" : "Riesling" },
+                {  "name" : "House Sparkling Wine" }
             ],
 	"nonAlcoholicDrinks": 
 			[
@@ -23,7 +36,7 @@
                 {  "name" : "Washington Apple" },
                 {  "name" : "Buttery Nipple" },
                 {  "name" : "Kamikaze" },
-                {  "name" : "Lemon Drops" },
+                {  "name" : "Lemon Drop" },
                 {  "name" : "Irish Carbomb" },
                 {  "name" : "Purple Hooter" },
                 {  "name" : "Liquid Cocaine" }
