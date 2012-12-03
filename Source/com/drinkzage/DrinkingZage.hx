@@ -68,6 +68,7 @@ class DrinkingZage extends Sprite {
 	static inline var GUTTER:Float = 10;
 	private var _frontButtons:Vector<FrontButton>;
 	private var _allItems:Vector<Item>;
+	private var _searchBut:Sprite = null;
 	
 	public function new () {
 		
@@ -242,6 +243,11 @@ class DrinkingZage extends Sprite {
 		return (Globals.g_stage.stageHeight - Globals.g_app.logoHeight() - Globals.g_app.tabHeight());
 	}
 	
+	public function searchPop():Void
+	{
+		this.addChild(_searchBut);
+	}
+	
 	public function searchDraw():Void
 	{
 		//var logo:Sprite = Utils.loadGraphic ( "assets/bottombar.jpg", true );
@@ -250,13 +256,13 @@ class DrinkingZage extends Sprite {
 		//logo.y = Lib.current.stage.stageHeight - logo.height;
 		//this.addChild(logo);
 		
-		var searchBut:Sprite = Utils.loadGraphic ( "assets/findDrink.png", true );
-		searchBut.name = "searchBut";
-		searchBut.y = Lib.current.stage.stageHeight - searchBut.height;
-		searchBut.x = 0;
-		searchBut.width = Lib.current.stage.stageWidth;
-		searchBut.addEventListener( MouseEvent.CLICK, searchDrinkClickHandler);
-		this.addChild(searchBut);
+		_searchBut = Utils.loadGraphic ( "assets/findDrink.png", true );
+		_searchBut.name = "searchBut";
+		_searchBut.y = Lib.current.stage.stageHeight - _searchBut.height;
+		_searchBut.x = 0;
+		_searchBut.width = Lib.current.stage.stageWidth;
+		_searchBut.addEventListener( MouseEvent.CLICK, searchDrinkClickHandler);
+		searchPop();
 	}
 	
 	private function searchDrinkClickHandler( me:MouseEvent )
