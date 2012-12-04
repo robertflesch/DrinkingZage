@@ -69,6 +69,8 @@ class DrinkingZage extends Sprite {
 	private var _frontButtons:Vector<FrontButton>;
 	private var _allItems:Vector<Item>;
 	private var _searchBut:Sprite = null;
+	private var _tabSprites:Vector<Sprite> = null;
+	private var _tabSpritesAdded:Bool = false;
 	
 	public function new () {
 		
@@ -78,6 +80,11 @@ class DrinkingZage extends Sprite {
 		Lib.current.stage.scaleMode = EXACT_FIT;
 		
 		_allItems = new Vector<Item>();
+		_tabSprites = new Vector<Sprite>();
+		for ( i in 0...6 )
+		{
+			_tabSprites[i] = new Sprite();
+		}
 
 		//initialize ();
 		addEventListener( Event.ADDED_TO_STAGE, addedToStage );
@@ -275,46 +282,48 @@ class DrinkingZage extends Sprite {
 
 	public function tabsDraw( tabs:Vector<String>, tabSelected:Dynamic, tabHandler:Dynamic -> Void):Void
 	{
+		trace( "tabsDraw: START" );
 		var tabCount:Int = tabs.length;
 		var width:Float = Lib.current.stage.stageWidth;
 		var height:Float = tabHeight();
 		for ( i in 0...tabCount )
 		{
-			var tab:Sprite;
+			trace( "tabsDraw: " + i );
 			if ( i == Type.enumIndex( tabSelected ) )
-				tab = Utils.loadGraphic( "assets/" + "tab_active.png", true );
+				_tabSprites[i] = Utils.loadGraphic( "assets/" + "tab_active.png", true );
 			else	
-				tab = Utils.loadGraphic( "assets/" + "tab_inactive.png", true );
+				_tabSprites[i] = Utils.loadGraphic( "assets/" + "tab_inactive.png", true );
 				
-			tab.x = i * width / tabCount;
-			tab.y = Globals.g_app.logoHeight();
-			tab.width =  width / tabCount;
-			tab.height = height;
-			tab.addEventListener( MouseEvent.CLICK, tabHandler );
-			tab.name = Std.string( i );
+			_tabSprites[i].x = i * width / tabCount;
+			_tabSprites[i].y = Globals.g_app.logoHeight();
+			_tabSprites[i].width =  width / tabCount;
+			_tabSprites[i].height = height;
+			_tabSprites[i].addEventListener( MouseEvent.CLICK, tabHandler );
+			_tabSprites[i].name = Std.string( i );
+			//_tabSprites[i].name = "TAB";
 
 			var text : TextField = new TextField();
 			text.selectable = false;
 			text.text = tabs[ i ];
-			text.height = tab.height; //* 0.55;
+			text.height = _tabSprites[i].height; //* 0.55;
 			text.name = Std.string( i );
 			
-			// This should work as text.width = tab.width
+			// This should work as text.width = _tabSprites[i].width
 			// but it only works for some cases. strange....
 			if ( tabCount == 1 )
-				text.width = tab.width / 6.5;
+				text.width = _tabSprites[i].width / 6.5;
 			else if ( tabCount == 2 )
-				text.width = tab.width / 3.3;// 2.1;
+				text.width = _tabSprites[i].width / 3.3;// 2.1;
 			else if ( tabCount == 3 )
-				text.width = tab.width / 2.2;
+				text.width = _tabSprites[i].width / 2.2;
 			else if ( tabCount == 4 )
-				text.width = tab.width / 1.65;
+				text.width = _tabSprites[i].width / 1.65;
 			else if ( tabCount == 5 )
-				text.width = tab.width / 1.30;
+				text.width = _tabSprites[i].width / 1.30;
 			else
-				text.width = tab.width * 1.15;
+				text.width = _tabSprites[i].width * 1.15;
 				
-			text.y = tab.height/ 8;
+			text.y = _tabSprites[i].height/ 8;
 			text.x = 0;
 //			text.border = true;
 //			text.borderColor = 0xffff00;
@@ -324,10 +333,12 @@ class DrinkingZage extends Sprite {
 			ts.align = TextFormatAlign.CENTER;
 			ts.color = 0xffffff;
 			text.setTextFormat(ts);
-			tab.addChild(text);
+			_tabSprites[i].addChild(text);
 			
-			this.addChild( tab );
+			this.addChild( _tabSprites[i] );
 		}
+		
+		_tabSpritesAdded = true;
 	}
 	
 	public function prepareNewWindow():Void
