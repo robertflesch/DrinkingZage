@@ -22,6 +22,8 @@ class Item
 	public function isVisible():Bool { return _visible; }
 	public function setVisible( val:Bool ):Bool { return (_visible = val); }
 	
+	public static var _tf:TextFormat = null;
+	
 	public function new( name:String, category:Dynamic ):Void
 	{
 		_visible = true;
@@ -39,10 +41,21 @@ class Item
 		_textField.selectable = false;
 		_textField.name = "item";
 		
-		var ts = new TextFormat("_sans");
-		ts.size = 36;                // set the font size
-		ts.align = TextFormatAlign.CENTER;
-		ts.color = 0xFF0000;           // set the color
-		_textField.setTextFormat(ts);
+		if ( null == _tf )
+		{
+			_tf = new TextFormat("_sans");
+			_tf.size = 36;                // set the font size
+			_tf.align = TextFormatAlign.CENTER;
+			_tf.color = 0xFF0000;           // set the color
+		}
+		
+		_textField.setTextFormat(_tf);
+	}
+	
+	public function setText( newText:String ):Void
+	{
+		_textField.text = newText;
+		_textField.setTextFormat( Item._tf );
+
 	}
 }
