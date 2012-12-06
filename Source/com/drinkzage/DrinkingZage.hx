@@ -26,8 +26,8 @@ import nme.filters.GlowFilter;
 
 import nme.geom.Vector3D;
 
-import nme.net.SharedObject;
-import nme.net.SharedObjectFlushStatus;
+//import nme.net.SharedObject;
+//import nme.net.SharedObjectFlushStatus;
 
 import nme.text.TextField;
 import nme.text.TextFormat;
@@ -109,6 +109,7 @@ class DrinkingZage extends Sprite {
 	
 	private function storageTest():Void
 	{
+		/*
 		trace("DrinkingZage.storageTest" );
 		var so = SharedObject.getLocal( "storage-test" );
 		// Load the values
@@ -142,7 +143,8 @@ class DrinkingZage extends Sprite {
 				case SharedObjectFlushStatus.FLUSHED:
 					trace("DrinkingZage.storageTest - value saved");
 			}
-		}				
+		}
+		*/
 	}
 	
 	function resizeHandler(e:Event):Void
@@ -164,7 +166,7 @@ class DrinkingZage extends Sprite {
 		var count:Int = _allItems.length;
 		for ( i in 0...count )
 		{
-			var index:Int = _allItems[i]._name.toLowerCase().indexOf( val.toLowerCase(), 0 );
+			var index:Int = _allItems[i].name().toLowerCase().indexOf( val.toLowerCase(), 0 );
 			if ( 0 > index )
 				_allItems[i].setVisible( false );
 		}
@@ -179,7 +181,9 @@ class DrinkingZage extends Sprite {
 		stage.showDefaultContextMenu = false;
 #end
 		//stage.scaleMode = StageScaleMode.EXACT_FIT;
+#if android		
 		stage.needsSoftKeyboard = true;
+#end		
 		//stage.autoOrients = false;
 		
 		stage.addEventListener(Event.RESIZE, resizeHandler);
@@ -274,7 +278,7 @@ class DrinkingZage extends Sprite {
 	
 	private function searchDrinkClickHandler( me:MouseEvent )
 	{
-		trace("searchDrinkClickHandler");
+		//trace("searchDrinkClickHandler");
 		var sw:SearchWindow = SearchWindow.instance();
 		sw.setBackHandler( this );
 		sw.populate();
@@ -282,13 +286,13 @@ class DrinkingZage extends Sprite {
 
 	public function tabsDraw( tabs:Vector<String>, tabSelected:Dynamic, tabHandler:Dynamic -> Void):Void
 	{
-		trace( "tabsDraw: START" );
+		//trace( "tabsDraw: START" );
 		var tabCount:Int = tabs.length;
 		var width:Float = Lib.current.stage.stageWidth;
 		var height:Float = tabHeight();
 		for ( i in 0...tabCount )
 		{
-			trace( "tabsDraw: " + i );
+			//trace( "tabsDraw: " + i );
 			if ( i == Type.enumIndex( tabSelected ) )
 				_tabSprites[i] = Utils.loadGraphic( "assets/" + "tab_active.png", true );
 			else	
@@ -305,7 +309,9 @@ class DrinkingZage extends Sprite {
 			var text : TextField = new TextField();
 			text.selectable = false;
 			text.text = tabs[ i ];
-			text.height = _tabSprites[i].height; //* 0.55;
+			// this was WAY to high
+			//text.height = _tabSprites[i].height; //* 0.55;
+			text.height = Globals.g_app.componentHeight()/3;
 			text.name = Std.string( i );
 			
 			// This should work as text.width = _tabSprites[i].width
@@ -313,7 +319,7 @@ class DrinkingZage extends Sprite {
 			if ( tabCount == 1 )
 				text.width = _tabSprites[i].width / 6.5;
 			else if ( tabCount == 2 )
-				text.width = _tabSprites[i].width / 3.3;// 2.1;
+				text.width = _tabSprites[i].width / 3.3;
 			else if ( tabCount == 3 )
 				text.width = _tabSprites[i].width / 2.2;
 			else if ( tabCount == 4 )
@@ -325,11 +331,12 @@ class DrinkingZage extends Sprite {
 				
 			text.y = _tabSprites[i].height/ 8;
 			text.x = 0;
-//			text.border = true;
-//			text.borderColor = 0xffff00;
+			
+			//text.border = true;
+			//text.borderColor = 0xffff00;
 			
 			var ts:TextFormat = new TextFormat("_sans");
-			ts.size = 10;                // set the font size
+			ts.size = 11;                // set the font size
 			ts.align = TextFormatAlign.CENTER;
 			ts.color = 0xffffff;
 			text.setTextFormat(ts);
@@ -473,8 +480,8 @@ class DrinkingZage extends Sprite {
 	
 	private function orderByName( item1:Item, item2:Item ):Int 
 	{ 
-		var name1:Int = item1._name.toLowerCase().charCodeAt(0);
-		var name2:Int = item2._name.toLowerCase().charCodeAt(0);
+		var name1:Int = item1.name().toLowerCase().charCodeAt(0);
+		var name2:Int = item2.name().toLowerCase().charCodeAt(0);
 		if (name1 < name2) 
 		{ 
 			return -1; 
@@ -487,7 +494,17 @@ class DrinkingZage extends Sprite {
 		{ 
 			return 0; 
 		} 
-	} 
+	}
+	
+	public function traceChildNames():Void
+	{
+		trace( "DrinkZage.dumpChildNames: " + this.numChildren );
+		for  ( j in 0... this.numChildren )
+		{
+			var item:DisplayObject = this.getChildAt(j);
+			trace ( item.name );
+		}
+	}
 }
 
 class FrontButton
