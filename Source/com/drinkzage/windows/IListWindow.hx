@@ -4,13 +4,17 @@ import nme.Lib;
 import nme.Vector;
 import nme.display.DisplayObject;
 
-
 import nme.events.Event;
 import nme.events.KeyboardEvent;
 import nme.events.MouseEvent;
 
+import nme.text.TextField;
+import nme.text.TextFormat;
+import nme.text.TextFormatAlign;
+
 import com.drinkzage.Globals;
 import com.drinkzage.windows.IChildWindow;
+import com.drinkzage.windows.DataTextField;
 
 /**
  * @author Robert Flesch
@@ -30,6 +34,11 @@ class IListWindow extends ITabWindow
 	private var _time:Int = 0;
 	private var _swipeSpeed:Float = 0;
 	public  var _item:Item = null;
+	private var _maxComponents:Int = 0;
+	private var _components:Vector<DisplayObject> = null;
+	public  var _tf:TextFormat = null;
+	
+	public var _temp:Item = null;
 	
 	private function new () {
 		super();
@@ -47,6 +56,13 @@ class IListWindow extends ITabWindow
 		_maxOffset = _items.length * Globals.g_app.componentHeight() - (_stage.stageHeight - Globals.g_app.tabHeight() - Globals.g_app.logoHeight());
 		_maxOffset += Globals.g_app.tabHeight() + ListWindowConsts.FUDGE_FACTOR; // Fudge factor
 		
+		var drawableArea:Float = _stage.stageHeight - Globals.g_app.tabHeight() - Globals.g_app.logoHeight() - ( getUseSearch() ? Globals.g_app.searchHeight() : 0 );
+		var maxVisibleComponents:Float = drawableArea / Globals.g_app.componentHeight() + 0.5;
+		// Add in one extra for when partial components at top and bottom as visible
+		_maxComponents = Std.int( maxVisibleComponents ) + 1;
+		
+		createComponents();
+		
 		_window.prepareNewWindow();		
 
 		_clickPoint = 0.0;
@@ -63,55 +79,90 @@ class IListWindow extends ITabWindow
 			_window.searchDraw();
 	}
 	
+	public function createComponents():Void
+	{
+		_components = new Vector<DisplayObject>();
+		for ( i in 0..._maxComponents )
+		{
+			_components.push( new DataTextField() );
+			_components[i].height = Globals.g_app.componentHeight();
+//			_components[i].text = name;
+			cast( _components[i], TextField ).background = true;
+			cast( _components[i], TextField ).backgroundColor = 0x000000;
+			cast( _components[i], TextField ).border = true;
+			cast( _components[i], TextField ).borderColor = 0xffffff;
+			cast( _components[i], TextField ).selectable = false;
+			//_components[i].name = "item";
+			
+			if ( null == _tf )
+			{
+				_tf = new TextFormat("_sans");
+				_tf.size = 36;                // set the font size
+				_tf.align = TextFormatAlign.CENTER;
+				_tf.color = 0xFF0000;           // set the color
+			}
+		}
+	}
+	
 	private function listDraw( scrollOffset:Float ):Void
 	{
 		var width:Float = _stage.stageWidth;
 		var height:Float = Globals.g_app.componentHeight();
 		var offset:Float = Globals.g_app.tabHeight() + Globals.g_app.logoHeight();
-		var beerCount:Int = _items.length;
-		var beer:Item = null;
+		var itemCount:Int = _items.length;
+		var item:Item = null;
 		var countDrawn:Int = 0;
 		var remainder:Float = scrollOffset % Globals.g_app.componentHeight();
-		for ( i in 0...beerCount )
+		for ( i in 0...itemCount )
 		{
 			if ( scrollOffset <= i * Globals.g_app.componentHeight() + Globals.g_app.componentHeight() )
 			{
-				beer = _items[i];
-				beer._textField.name = Std.string( i );
-				beer._textField.x = ListWindowConsts.GUTTER;
-				beer._textField.width = width - ListWindowConsts.GUTTER * 2;
+				cast( _components[countDrawn], TextField ).text = _items[i].name();
+				cast( _components[countDrawn], TextField ).setTextFormat(_tf);
+				_components[countDrawn].name = Std.string( i );
+				_components[countDrawn].x = ListWindowConsts.GUTTER;
+				_components[countDrawn].width = width - ListWindowConsts.GUTTER * 2;
+				_components[countDrawn].y = countDrawn * Globals.g_app.componentHeight() + offset - remainder;
+				cast( _components[countDrawn], DataTextField ).setData( _items[i] );
 				
-				beer._textField.y = countDrawn * Globals.g_app.componentHeight() + offset - remainder;
-				if ( beer._textField.y + Globals.g_app.logoHeight() > _stage.stageHeight )
+				if ( _components[countDrawn].y + Globals.g_app.logoHeight() > _stage.stageHeight )
 					break;
 				
-				_window.addChild(beer._textField);
+				_window.addChild(_components[countDrawn]);
 				countDrawn++;
+				if ( countDrawn == _maxComponents )
+					break;
 			}
 		}
-		trace( "IListWindow.listDraw - countDrawn: " + countDrawn );
 	}
 	
 	// This removes all of the "items" from the displayObject list.
 	private function listRefresh( scrollOffset:Float ):Void
 	{
-		var i:Int = _window.numChildren;
-		// this removes the existing items from the list.
-		// which allows list draw to add them back in.
-		while ( i > 0 )
+		for ( j in 0..._maxComponents )
+			_components[j].visible = false;
+			
+		var offset:Float = Globals.g_app.tabHeight() + Globals.g_app.logoHeight();
+		var itemCount:Int = _items.length;
+		var countDrawn:Int = 0;
+		var remainder:Float = scrollOffset % Globals.g_app.componentHeight();
+		for ( i in 0...itemCount )
 		{
-			i--;
-			var item:DisplayObject = _window.getChildAt(i);
-			if ( "item" == item.name )
-				_window.removeChildAt( i );
+			if ( scrollOffset <= i * Globals.g_app.componentHeight() + Globals.g_app.componentHeight() )
+			{
+				_components[countDrawn].visible = true;
+				cast( _components[countDrawn], TextField ).text = _items[i].name();
+				cast( _components[countDrawn], TextField ).setTextFormat(_tf);
+				_components[countDrawn].y = countDrawn * Globals.g_app.componentHeight() + offset - remainder;
+				cast( _components[countDrawn], DataTextField ).setData( _items[i] );
+				
+				if ( _components[countDrawn].y + Globals.g_app.logoHeight() > _stage.stageHeight )
+					break;
+				countDrawn++;
+				if ( countDrawn == _maxComponents )
+					break;
+			}
 		}
-		
-		// now add these visible items back in
-		listDraw( scrollOffset );
-		
-		// TODO - Just need to readd these, not recreate
-		_window.searchPop();
-		_window.tabsDraw( _tabs, _tabSelected, tabHandler );
 	}
 	
 	public function mouseUpHandler( me:MouseEvent ):Void
@@ -119,8 +170,7 @@ class IListWindow extends ITabWindow
 		_stage.removeEventListener( MouseEvent.MOUSE_UP, mouseUpHandler );
 		_stage.removeEventListener( MouseEvent.MOUSE_MOVE, mouseMoveHandler );
 		
-		// if we let the mouse up over the header or logo, and it hasnt moved
-		// then return
+		// if we let the mouse up over the header or logo, and it hasnt moved then return
 		if ( me.stageY < Globals.g_app.tabHeight() + Globals.g_app.logoHeight() && me.stageY - _clickPoint < 5 )
 			return;
 			
@@ -128,6 +178,8 @@ class IListWindow extends ITabWindow
 		
 		if ( _drag )
 		{
+			// TODO currently the list doesnt have momentum
+			// so when you stop moving, the list stops
 			var swipeTime:Float = Lib.getTimer() - _time;
 			_swipeSpeed = _change / swipeTime * 10;
 
@@ -136,28 +188,15 @@ class IListWindow extends ITabWindow
 		}
 		else
 		{
+			var remainder:Float = _listOffset % Globals.g_app.componentHeight();
+			// where did I click in the client area?
+			var relativeClickPoint:Float = (_clickPoint - Globals.g_app.tabHeight() - Globals.g_app.logoHeight());
+			// this gets the component index from where I clicked
+			var componentIndex:Int = Std.int((remainder + relativeClickPoint) / Globals.g_app.componentHeight());
 			_item = null;
-			if ( ListWindowConsts.MOVE_MIN > Math.abs( _change ) )
+			if ( componentIndex <= Std.int( _components.length ) )
 			{
-				trace( "mixedDrinkList.MouseUpHandler - CLICKED at: " + _clickPoint );
-				var countDrawn:Int = 0;
-				var distance:Float = Globals.g_app.tabHeight() + Globals.g_app.logoHeight();
-				var clickLoc:Float = _listOffset + (me.stageY);
-				var shotCount:Int = _items.length;
-				for ( i in 0...shotCount )
-				{
-					if ( distance + Globals.g_app.componentHeight() < clickLoc )
-					{
-						distance += Globals.g_app.componentHeight();
-						countDrawn++;
-					}
-					else 
-					{
-						_item = _items[countDrawn];
-						break;
-					}
-				}
-
+				_item = cast( _components[componentIndex], DataTextField ).getData();
 				if ( null != _item )
 					selectionHandler();
 			}
@@ -168,12 +207,8 @@ class IListWindow extends ITabWindow
 	{
 		_stage.addEventListener( MouseEvent.MOUSE_UP, mouseUpHandler );
 		_stage.addEventListener( MouseEvent.MOUSE_MOVE, mouseMoveHandler );
-		//if ( !_drag )
-		{
-			_clickPoint = me.stageY;
-			//_time = Lib.getTimer();
-			//_drag = true;		
-		}
+		
+		_clickPoint = me.stageY;
 	}
 	
 	private function mouseMoveHandler( me:MouseEvent ):Void
@@ -181,6 +216,7 @@ class IListWindow extends ITabWindow
 		if ( 5 < Math.abs( _clickPoint - me.stageY ) )
 		{
 			_drag = true;
+			_time = Lib.getTimer();
 		}
 	
 		if ( _drag )
@@ -217,6 +253,9 @@ class IListWindow extends ITabWindow
 	
 	private function onEnter(e:Event):Void
 	{
+		//_temp.setText( "2" );
+		//_window.addChild( _temp );
+		//_temp.setText( Std.string( Std.parseInt( _temp._textField.text ) + 1) );
 		/*
 		if ( 0 != _swipeSpeed && true != _drag )
 		{	

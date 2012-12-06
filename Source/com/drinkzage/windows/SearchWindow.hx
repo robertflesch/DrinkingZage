@@ -1,6 +1,7 @@
 ﻿package com.drinkzage.windows;
 
 import nme.Vector;
+import nme.Vector;
 import Std;
 
 import nme.Assets;
@@ -49,7 +50,6 @@ import com.drinkzage.windows.IListWindow;
  */
 class SearchWindow extends IListWindow
 {
-	
 	private static var _instance:SearchWindow = null;
 
 	private 	   var _textFormat:TextFormat = null;
@@ -71,14 +71,16 @@ class SearchWindow extends IListWindow
 		
 		setUseSearch( false );
 		
-		_searchText = new TextField();
-		
 		_tabs.push( "BACK" );
 
 		_textFormat = new TextFormat("_sans");
 		_textFormat.size = 32;                // set the font size
 		_textFormat.align = TextFormatAlign.CENTER;
 		_textFormat.color = 0x000000;
+		
+		_searchText = new TextField();
+		_searchText.text = "";
+		_searchText.setTextFormat( _textFormat );
 		
 		createList();
 	}
@@ -98,76 +100,109 @@ class SearchWindow extends IListWindow
 		//_searchText.borderColor = Globals.COLOR_SAGE;
 		_searchText.width = Lib.current.stage.stageWidth;
 		_searchText.height = _window.componentHeight();
-#if android
-		_searchText.y = Lib.current.stage.stageHeight / 2 + _searchText.height/2 - 20;
-#else		
 		_searchText.y = Lib.current.stage.stageHeight - _searchText.height - 2;
-#end		
 		_searchText.x = 0;
 		_searchText.type = TextFieldType.INPUT;
 		_searchText.addEventListener (Event.CHANGE, TextField_onChange);
+		_searchText.addEventListener ( FocusEvent.FOCUS_IN, searchGetFocus );
 		_searchText.background = true;
 		_searchText.backgroundColor = Globals.COLOR_WHITE;
 		_searchText.setTextFormat( _textFormat );
 		
 		_window.addChild( _searchText );
+		
+		listRefresh( 0 );
 
 		_stage.focus = _searchText;
 		//_searchText.setSelection(_searchText.text.length, _searchText.text.length);//();
-		}
-	
+	}
 
-	// This removes all of the "items" from the displayObject list.
-	private function listUpdate():Void
+	public function searchGetFocus( event:FocusEvent ):Void
 	{
-		var i:Int = _window.numChildren;
-		// this removes the existing items from the list.
-		// which allows list draw to add them back in.
-		while ( i > 0 )
-		{
-			i--;
-			var item:DisplayObject = _window.getChildAt(i);
-			if ( "item" == item.name )
-				_window.removeChildAt( i );
-		}
+		_searchText.removeEventListener ( FocusEvent.FOCUS_IN, searchGetFocus );
+		_searchText.addEventListener ( FocusEvent.FOCUS_OUT, searchLoseFocus );
 		
-		// now add these visible items back in
-		listDraw( _listOffset );
+		_searchText.setTextFormat( _textFormat );
+#if android
+		_searchText.y = Lib.current.stage.stageHeight / 2 + _searchText.height/2 - 20;
+#end		
+	}
+
+	public function searchLoseFocus( event:FocusEvent ):Void
+	{
+		_searchText.removeEventListener ( FocusEvent.FOCUS_OUT, searchLoseFocus );
+		_searchText.addEventListener ( FocusEvent.FOCUS_IN, searchGetFocus );
+		
+		_searchText.y = Lib.current.stage.stageHeight - _searchText.height - 2;
 	}
 	
-	override public function listDraw( scrollOffset:Float ):Void
+ 	// This removes all of the "items" from the displayObject list.
+	override private function listRefresh( scrollOffset:Float ):Void
 	{
 		_window.resetVisiblity();
 		if ( "" != _searchText.text )
 		{
 			_window.hideItemsWithoutString( _searchText.text );
 		}
-		
-		var width:Int = Lib.current.stage.stageWidth;
 
-		var textOffset:Float = 5;
+		//super.listRefresh( scrollOffset );
+		for ( j in 0..._maxComponents )
+		{
+			_components[j].visible = false;
+			cast( _components[j], DataTextField ).setData( null );
+		}
 		
-		var allItems:Vector<Item> = _window.getAllItems();
+		var offset:Float = Globals.g_app.tabHeight() + Globals.g_app.logoHeight();
+		var itemCount:Int = _items.length;
+		var countDrawn:Int = 0;
+		var remainder:Float = scrollOffset % Globals.g_app.componentHeight();
+		var item:Item = null;
+		for ( i in 0...itemCount )
+		{
+			if ( scrollOffset <= i * Globals.g_app.componentHeight() + Globals.g_app.componentHeight() )
+			{
+				item = _items[i];
+				if ( true == item.isVisible() )
+				{
+					_components[countDrawn].visible = true;
+					cast( _components[countDrawn], TextField ).text = item.name();
+					cast( _components[countDrawn], TextField ).setTextFormat(_tf);
+					_components[countDrawn].y = countDrawn * Globals.g_app.componentHeight() + offset - remainder;
+					cast( _components[countDrawn], DataTextField ).setData( item );
+					
+					countDrawn++;
+					if ( countDrawn == _maxComponents )
+						break;
+				}
+			}
+		}
+	}
+
+
+	override private function listDraw( scrollOffset:Float ):Void
+	{
 		var width:Float = _stage.stageWidth;
 		var height:Float = Globals.g_app.componentHeight();
 		var offset:Float = Globals.g_app.tabHeight() + Globals.g_app.logoHeight();
-		var count:Int = allItems.length;
+		var itemCount:Int = _items.length;
 		var item:Item = null;
 		var countDrawn:Int = 0;
 		var remainder:Float = scrollOffset % Globals.g_app.componentHeight();
-		for ( i in 0...count )
+		for ( i in 0...itemCount )
 		{
-			//if ( scrollOffset <= i * Globals.g_app.componentHeight() + Globals.g_app.componentHeight() )
+			if ( scrollOffset <= i * Globals.g_app.componentHeight() + Globals.g_app.componentHeight() )
 			{
-				
-				item = allItems[i];
-				if ( true == item.isVisible() )
-				{
-					item._textField.x = ListWindowConsts.GUTTER;
-					item._textField.width = width - ListWindowConsts.GUTTER * 2;
-					
-					item._textField.y = countDrawn * Globals.g_app.componentHeight() + offset - remainder;
-					
+				item = _items[i];
+				cast( _components[countDrawn], TextField ).text = item.name();
+				cast( _components[countDrawn], TextField ).setTextFormat(_tf);
+				_components[countDrawn].name = Std.string( i );
+				_components[countDrawn].x = ListWindowConsts.GUTTER;
+				_components[countDrawn].width = width - ListWindowConsts.GUTTER * 2;
+				_components[countDrawn].y = countDrawn * Globals.g_app.componentHeight() + offset - remainder;
+				cast( _components[countDrawn], DataTextField ).setData( item );
+				_window.addChild(_components[countDrawn]);
+				///////////
+/*				
 					var image:String = "search.jpg";
 					if ( EmoteWindow == item.category() )
 						image = "emote.jpg";
@@ -184,111 +219,36 @@ class SearchWindow extends IListWindow
 
 					var graphic:Sprite = Utils.loadGraphic ( "assets/" + image, true );
 					graphic.name = "item";
-					graphic.x = item._textField.x;
-					graphic.y = item._textField.y + 1;
+					graphic.x = _components[countDrawn].x;
+					graphic.y = _components[countDrawn].y + 1;
 					graphic.height = Globals.g_app.componentHeight() - 2; 
 					graphic.width = Globals.g_app.componentHeight(); 
-					
-					_window.addChild(item._textField);
 					_window.addChild(graphic);
-					countDrawn++;
-					
-#if android
-					if ( Lib.current.stage.stageHeight < item._textField.y )
-						break;
-#else		
-					if ( ( Lib.current.stage.stageHeight - _searchText.height - 2) < item._textField.y )
-						break;
-#end		
-				}
+*/				
+				////////////
+				countDrawn++;
+				if ( countDrawn == _maxComponents )
+					break;
 			}
 		}
-		
-		// readd the searchText field which bring it to the front.
-		_searchText.setTextFormat( _textFormat );
-		_window.addChild( _searchText );
-		_stage.focus = _searchText;
-	}
-
-	override public function mouseUpHandler( me:MouseEvent ):Void
-	{
-		_stage.removeEventListener( MouseEvent.MOUSE_UP, mouseUpHandler );
-		_stage.removeEventListener( MouseEvent.MOUSE_MOVE, mouseMoveHandler );
-		
-		// if we let the mouse up over the header or logo, and it hasnt moved
-		// then return
-		if ( me.stageY < Globals.g_app.tabHeight() + Globals.g_app.logoHeight() && me.stageY - _clickPoint < 5 )
-			return;
-			
-		// if click is lower then search bar
-#if android
-		var bh:Int = Std.int( Lib.current.stage.stageHeight/2 - Globals.g_app.searchHeight() );
-#else
-		var bh:Int = Lib.current.stage.stageHeight - Std.int( Globals.g_app.searchHeight() * 2 );
-#end
-		if ( me.stageY > bh )
-			return;
-			
-		//listOffsetAdjust( _change );
-		
-		_item = null;
-		var allItems:Vector<Item> = _window.getAllItems();
-		if ( ListWindowConsts.MOVE_MIN > Math.abs( _change ) )
-		{
-			var countDrawn:Int = 0;
-			var distance:Float = Globals.g_app.tabHeight() + Globals.g_app.logoHeight();
-			var clickLoc:Float = _listOffset + (me.stageY);
-			var itemCount:Int = allItems.length;
-			var item:Item = null;
-			for ( i in 0...itemCount )
-			{
-				item = allItems[i];
-				if ( false == item.isVisible() )
-					continue;
-				
-				if ( distance + Globals.g_app.componentHeight() < clickLoc )
-				{
-					distance += Globals.g_app.componentHeight();
-					countDrawn++;
-				}
-				else 
-				{
-					trace( allItems[i]._name );
-					if ( true == allItems[i].isVisible() )
-					{
-						_item = allItems[i];
-						break;
-					}
-					countDrawn++;
-				}
-			}
-
-			if ( null != _item )
-				selectionHandler();
-		}
-		
-		var swipeTime:Float = Lib.getTimer() - _time;
-		_swipeSpeed = _change / swipeTime * 10;
-
-		_drag = false;
-		_change = 0;
 	}
 
 	public function TextField_onChange( event:Event ): Void
 	{
-		var textField:TextField = event.currentTarget;
+		//var textField:TextField = event.currentTarget;
+		//_searchText.text = textField.text;
 		
-		//_window.addItem( new Item( "1" + textField.text, EmoteWindow ) );
- 
-		trace ( "SearchWindow.TextField_onChange - search data:" + textField.text);		
-		
-		_searchText.text = textField.text;
-		listUpdate();
+		_searchText.setTextFormat( _textFormat );
+
+		listRefresh( 0 );
 	}
 	
 	override public function selectionHandler():Void
 	{
-		trace( "SearchWindow.selectionHandler" );
+		if ( _clickPoint > _searchText.y )
+			return;
+			
+		//trace( "SearchWindow.selectionHandler" );
 		removeListeners();
 		
 		var window:Dynamic = null;
@@ -330,5 +290,6 @@ class SearchWindow extends IListWindow
 	
 	override public function createList():Void
 	{
+		_items = Globals.g_app.getAllItems();
 	}
 }

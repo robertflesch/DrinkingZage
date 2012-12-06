@@ -118,7 +118,7 @@ class ItemFinalWindow extends ITabWindow {
 	
 	public function itemDraw():Void
 	{
-		trace( "ItemFinalWindow.populate - name: " + _item._name );
+		trace( "ItemFinalWindow.populate - name: " + _item.name() );
 		
 		var width:Float = _stage.stageWidth;
 		var height:Float = _stage.stageHeight;
@@ -137,7 +137,7 @@ class ItemFinalWindow extends ITabWindow {
 		name.embedFonts = true;
 		name.x = width*5/8;
 		name.y = Globals.g_app.logoHeight() + Globals.g_app.tabHeight();
-		name.text = _item._name;
+		name.text = _item.name();
 		name.width = height;
 		name.height = width * 2 / 3;
 		

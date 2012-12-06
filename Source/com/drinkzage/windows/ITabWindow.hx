@@ -32,6 +32,7 @@ class ITabWindow extends IChildWindow
 		super();
 	}
 	
+	// add the tabs and search button
 	public function populate():Void
 	{
 		_window.prepareNewWindow();		
@@ -41,6 +42,7 @@ class ITabWindow extends IChildWindow
 			_window.searchDraw();
 	}
 	
+	// This should be overridden if more then the back tab is used
 	private function tabHandler( me:MouseEvent ):Void
 	{
 		if ( me.stageY >= Globals.g_app.tabHeight() + Globals.g_app.logoHeight() )
@@ -53,7 +55,7 @@ class ITabWindow extends IChildWindow
 	{ 
 		removeListeners();
 		if ( null == _backHandler )
-			trace( "IChildWindow.backHandler - ERROR - MISSING" );
+			throw "ITabWindow.backHandler - ERROR - MISSING VALID BACKHANDLER";
 		_backHandler.populate(); 
 	}
 	
@@ -67,6 +69,8 @@ class ITabWindow extends IChildWindow
 		_stage.removeEventListener(KeyboardEvent.KEY_UP, onKeyUp );				
 	}
 	
+	// this intercepts the ESC or BACK key (Android)
+	// And calls the back handler to move to parent window
 	function onKeyUp( event:KeyboardEvent ):Void
 	{
 		if ( Globals.BACK_BUTTON == event.keyCode )
