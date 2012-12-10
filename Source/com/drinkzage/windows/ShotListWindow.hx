@@ -62,7 +62,7 @@ class ShotListWindow extends IListWindow
 	
 	override public function createList():Void
 	{
-		var allItems:Vector<Item> = _window.getAllItems();
+		var allItems:Vector<Item> = _window.allItems();
 		var count:Int = allItems.length;
 		for ( i in 0 ... count )
 		{

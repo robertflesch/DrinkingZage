@@ -53,6 +53,7 @@ class IListWindow extends ITabWindow
 	
 	override public function populate():Void
 	{
+		trace( "IListWindow.populate" );
 		_maxOffset = _items.length * Globals.g_app.componentHeight() - (_stage.stageHeight - Globals.g_app.tabHeight() - Globals.g_app.logoHeight());
 		_maxOffset += Globals.g_app.tabHeight() + ListWindowConsts.FUDGE_FACTOR; // Fudge factor
 		
@@ -73,7 +74,8 @@ class IListWindow extends ITabWindow
 		addListeners();
 		listDraw( _listOffset );
 
-		_window.tabsDraw( _tabs, _tabSelected, tabHandler );
+		_tabHandler = tabHandler;
+		tabsDraw( _tabs, _tabSelected );
 		
 		if ( getUseSearch() )
 			_window.searchDraw();

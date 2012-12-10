@@ -170,6 +170,8 @@ class SearchWindow extends IListWindow
 					_components[countDrawn].y = countDrawn * Globals.g_app.componentHeight() + offset - remainder;
 					cast( _components[countDrawn], DataTextField ).setData( item );
 					
+					if ( _components[countDrawn].y + Globals.g_app.logoHeight() > _stage.stageHeight )
+						break;
 					countDrawn++;
 					if ( countDrawn == _maxComponents )
 						break;
@@ -226,6 +228,8 @@ class SearchWindow extends IListWindow
 					_window.addChild(graphic);
 */				
 				////////////
+				if ( _components[countDrawn].y + Globals.g_app.logoHeight() > _stage.stageHeight )
+					break;
 				countDrawn++;
 				if ( countDrawn == _maxComponents )
 					break;
@@ -290,6 +294,6 @@ class SearchWindow extends IListWindow
 	
 	override public function createList():Void
 	{
-		_items = Globals.g_app.getAllItems();
+		_items = Globals.g_app.allItems();
 	}
 }

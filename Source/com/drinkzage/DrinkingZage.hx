@@ -53,7 +53,7 @@ import com.drinkzage.windows.LiquorChoice;
 import com.drinkzage.windows.ListWindowConsts;
 import com.drinkzage.windows.SearchWindow;
 import com.drinkzage.windows.ShotWindow;
-import com.drinkzage.windows.WineChoiceWindow;
+import com.drinkzage.windows.WineListWindow;
 import com.drinkzage.windows.WineWindow;
 
 #if flash
@@ -66,11 +66,12 @@ import org.flashdevelop.utils.FlashConnect;
 class DrinkingZage extends Sprite {
 	
 	static inline var GUTTER:Float = 10;
+	private var _allItems( allItems, null ):Vector<Item>;
+	public function allItems():Vector<Item> { return _allItems; }
+	
 	private var _frontButtons:Vector<FrontButton>;
-	private var _allItems:Vector<Item>;
 	private var _searchBut:Sprite = null;
-	private var _tabSprites:Vector<Sprite> = null;
-	private var _tabSpritesAdded:Bool = false;
+	
 	
 	public function new () {
 		
@@ -80,13 +81,6 @@ class DrinkingZage extends Sprite {
 		Lib.current.stage.scaleMode = EXACT_FIT;
 		
 		_allItems = new Vector<Item>();
-		_tabSprites = new Vector<Sprite>();
-		for ( i in 0...6 )
-		{
-			_tabSprites[i] = new Sprite();
-		}
-
-		//initialize ();
 		addEventListener( Event.ADDED_TO_STAGE, addedToStage );
 		
 		_frontButtons = new Vector<FrontButton>();
@@ -100,51 +94,6 @@ class DrinkingZage extends Sprite {
 		createList();
  
 		storageTest();
-	}
-	
-	public function getAllItems():Vector<Item>
-	{
-		return _allItems;
-	}
-	
-	private function storageTest():Void
-	{
-		/*
-		trace("DrinkingZage.storageTest" );
-		var so = SharedObject.getLocal( "storage-test" );
-		// Load the values
-		// Data.message is null the first time
-		trace("DrinkingZage.storageTest data loaded: " + so.data.message );
-		var count:Int = Std.parseInt( so.data.count );
-
-		// Set the values
-		so.data.message = "oh hello! [" + count + "]";
-		so.data.count = count + 1 ;
-
-		// Prepare to save.. with some checks
-		#if ( cpp || neko )
-			// Android didn't wanted SharedObjectFlushStatus not to be a String
-			var flushStatus:SharedObjectFlushStatus = null;
-		#else
-			// Flash wanted it very much to be a String
-			var flushStatus:String = null;
-		#end
-
-		try {
-			flushStatus = so.flush() ;	// Save the object
-		} catch ( e:Dynamic ) {
-			trace("couldn't write...");
-		}
-
-		if ( flushStatus != null ) {
-			switch( flushStatus ) {
-				case SharedObjectFlushStatus.PENDING:
-					trace("DrinkingZage.storageTest - requesting permission to save");
-				case SharedObjectFlushStatus.FLUSHED:
-					trace("DrinkingZage.storageTest - value saved");
-			}
-		}
-		*/
 	}
 	
 	function resizeHandler(e:Event):Void
@@ -180,11 +129,10 @@ class DrinkingZage extends Sprite {
 #if flash
 		stage.showDefaultContextMenu = false;
 #end
-		//stage.scaleMode = StageScaleMode.EXACT_FIT;
+		
 #if android		
 		stage.needsSoftKeyboard = true;
 #end		
-		//stage.autoOrients = false;
 		
 		stage.addEventListener(Event.RESIZE, resizeHandler);
 		populate();
@@ -192,6 +140,7 @@ class DrinkingZage extends Sprite {
 	
 	public function populate():Void
 	{
+		trace( "DrinkingZage.populate" );
 		prepareNewWindow();
 		addButtons();
 		searchDraw();
@@ -261,12 +210,6 @@ class DrinkingZage extends Sprite {
 	
 	public function searchDraw():Void
 	{
-		//var logo:Sprite = Utils.loadGraphic ( "assets/bottombar.jpg", true );
-		//logo.width = Lib.current.stage.stageWidth;
-		//logo.height = logoHeight();
-		//logo.y = Lib.current.stage.stageHeight - logo.height;
-		//this.addChild(logo);
-		
 		_searchBut = Utils.loadGraphic ( "assets/findDrink.png", true );
 		_searchBut.name = "searchBut";
 		_searchBut.y = Lib.current.stage.stageHeight - _searchBut.height;
@@ -284,77 +227,16 @@ class DrinkingZage extends Sprite {
 		sw.populate();
 	}
 
-	public function tabsDraw( tabs:Vector<String>, tabSelected:Dynamic, tabHandler:Dynamic -> Void):Void
-	{
-		//trace( "tabsDraw: START" );
-		var tabCount:Int = tabs.length;
-		var width:Float = Lib.current.stage.stageWidth;
-		var height:Float = tabHeight();
-		for ( i in 0...tabCount )
-		{
-			//trace( "tabsDraw: " + i );
-			if ( i == Type.enumIndex( tabSelected ) )
-				_tabSprites[i] = Utils.loadGraphic( "assets/" + "tab_active.png", true );
-			else	
-				_tabSprites[i] = Utils.loadGraphic( "assets/" + "tab_inactive.png", true );
-				
-			_tabSprites[i].x = i * width / tabCount;
-			_tabSprites[i].y = Globals.g_app.logoHeight();
-			_tabSprites[i].width =  width / tabCount;
-			_tabSprites[i].height = height;
-			_tabSprites[i].addEventListener( MouseEvent.CLICK, tabHandler );
-			_tabSprites[i].name = Std.string( i );
-			//_tabSprites[i].name = "TAB";
-
-			var text : TextField = new TextField();
-			text.selectable = false;
-			text.text = tabs[ i ];
-			// this was WAY to high
-			//text.height = _tabSprites[i].height; //* 0.55;
-			text.height = Globals.g_app.componentHeight()/3;
-			text.name = Std.string( i );
-			
-			// This should work as text.width = _tabSprites[i].width
-			// but it only works for some cases. strange....
-			if ( tabCount == 1 )
-				text.width = _tabSprites[i].width / 6.5;
-			else if ( tabCount == 2 )
-				text.width = _tabSprites[i].width / 3.3;
-			else if ( tabCount == 3 )
-				text.width = _tabSprites[i].width / 2.2;
-			else if ( tabCount == 4 )
-				text.width = _tabSprites[i].width / 1.65;
-			else if ( tabCount == 5 )
-				text.width = _tabSprites[i].width / 1.30;
-			else
-				text.width = _tabSprites[i].width * 1.15;
-				
-			text.y = _tabSprites[i].height/ 8;
-			text.x = 0;
-			
-			//text.border = true;
-			//text.borderColor = 0xffff00;
-			
-			var ts:TextFormat = new TextFormat("_sans");
-			ts.size = 11;                // set the font size
-			ts.align = TextFormatAlign.CENTER;
-			ts.color = 0xffffff;
-			text.setTextFormat(ts);
-			_tabSprites[i].addChild(text);
-			
-			this.addChild( _tabSprites[i] );
-		}
-		
-		_tabSpritesAdded = true;
-	}
-	
 	public function prepareNewWindow():Void
 	{
 		// remove ALL items from the display list
 		var children:Int = this.numChildren;
+		var dispObject :DisplayObject = null;
 		for ( i in 0...children )
 		{
-			this.removeChildAt( 0 );
+			dispObject = this.removeChildAt( 0 );
+			if ( dispObject.hasEventListener( MouseEvent.CLICK ) )
+				dispObject.removeEventListener( MouseEvent.CLICK, mouseDownHandler );
 		}
 
 		//trace( "DrinkZage.prepareNewWindow - Number of Children after removal: " + this.numChildren );
@@ -389,7 +271,7 @@ class DrinkingZage extends Sprite {
 			}
 			case 2: // Wine
 			{
-				nw = WineChoiceWindow.instance();
+				nw = WineListWindow.instance();
 				nw.setBackHandler( this );
 				nw.populate();
 			}
@@ -505,6 +387,46 @@ class DrinkingZage extends Sprite {
 			trace ( item.name );
 		}
 	}
+
+	private function storageTest():Void
+	{
+		/*
+		trace("DrinkingZage.storageTest" );
+		var so = SharedObject.getLocal( "storage-test" );
+		// Load the values
+		// Data.message is null the first time
+		trace("DrinkingZage.storageTest data loaded: " + so.data.message );
+		var count:Int = Std.parseInt( so.data.count );
+
+		// Set the values
+		so.data.message = "oh hello! [" + count + "]";
+		so.data.count = count + 1 ;
+
+		// Prepare to save.. with some checks
+		#if ( cpp || neko )
+			// Android didn't wanted SharedObjectFlushStatus not to be a String
+			var flushStatus:SharedObjectFlushStatus = null;
+		#else
+			// Flash wanted it very much to be a String
+			var flushStatus:String = null;
+		#end
+
+		try {
+			flushStatus = so.flush() ;	// Save the object
+		} catch ( e:Dynamic ) {
+			trace("couldn't write...");
+		}
+
+		if ( flushStatus != null ) {
+			switch( flushStatus ) {
+				case SharedObjectFlushStatus.PENDING:
+					trace("DrinkingZage.storageTest - requesting permission to save");
+				case SharedObjectFlushStatus.FLUSHED:
+					trace("DrinkingZage.storageTest - value saved");
+			}
+		}
+		*/
+	}
 }
 
 class FrontButton
@@ -517,5 +439,6 @@ class FrontButton
 		_text = text;
 		_image = image;
 	}
+
 }
 

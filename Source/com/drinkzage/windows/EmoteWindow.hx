@@ -31,6 +31,6 @@ class EmoteWindow extends ItemFinalWindow {
 		
 		_window.prepareNewWindow();
 		itemDraw();
-		_window.tabsDraw( _tabs, TabDefault.Back, tabHandler );
+		tabsDraw( _tabs, TabDefault.Back );
 	}
 }

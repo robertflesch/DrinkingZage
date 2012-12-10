@@ -43,15 +43,21 @@ class ItemFinalWindow extends ITabWindow {
 	private var _countTextField:TextField;
 	private var _countTextFormat:TextFormat;
 	private var _item:Item;
-	private var _parent:Dynamic;
-	//private var _tabs:Vector<String>;
 	
 	public function new () 
 	{
 		super();
 		
-		//_tabs = new Vector<String>();
-		
+		createCount();
+	}
+	
+	public function setItem( item:Item ):Void
+	{
+		_item = item;
+	}
+	
+	public function createCount():Void
+	{
 		var font = Assets.getFont ("assets/VeraSeBd.ttf");
 		_countTextFormat = new TextFormat (font.fontName, 150, 0xffff00);
 		_countTextFormat.align = TextFormatAlign.CENTER;
@@ -71,16 +77,11 @@ class ItemFinalWindow extends ITabWindow {
 		
 		_countTextField.x = width + 10;
 		_countTextField.y = height / 2 - 30;
-		
-	}
-	
-	public function setItem( item:Item ):Void
-	{
-		_item = item;
 	}
 	
 	override public function populate():Void
 	{
+		trace( "ItemFinalWindow.populate" );
 		if ( null == _item )
 		{
 			trace( "ItemFinalWindow.populate - NULL ITEM" );
@@ -118,7 +119,7 @@ class ItemFinalWindow extends ITabWindow {
 	
 	public function itemDraw():Void
 	{
-		trace( "ItemFinalWindow.populate - name: " + _item.name() );
+		trace( "ItemFinalWindow.itemDraw - name: " + _item.name() );
 		
 		var width:Float = _stage.stageWidth;
 		var height:Float = _stage.stageHeight;
@@ -142,24 +143,26 @@ class ItemFinalWindow extends ITabWindow {
 		name.height = width * 2 / 3;
 		
 		name.rotation = 90;
-		name.addEventListener (FocusEvent.FOCUS_IN, TextField_onFocus);
+		name.addEventListener (MouseEvent.CLICK, onClickHander );
+		//name.addEventListener (FocusEvent.FOCUS_IN, onFocusHandler );
 		
 		_window.addChild( name );
 
 	}
 	
-	public function TextField_onFocus( event:Event ): Void
+	public function onClickHander( event:MouseEvent ): Void
 	{
+		trace( "ClickHander" );
 		var textField:TextField = event.currentTarget;
-		textField.type = TextFieldType.INPUT;
-		textField.addEventListener (FocusEvent.FOCUS_OUT, TextField_loseFocus);
+		var ctiw:CustomTextInputWindow	= CustomTextInputWindow.instance();
+		ctiw.setItem( new Item( textField.text, null ) );
+		ctiw.setBackHandler( this );
+		ctiw.populate();
 	}
 	
-	public function TextField_loseFocus( event:Event ): Void
+	public function onFocusHandler( event:FocusEvent ): Void
 	{
-		var textField:TextField = event.currentTarget;
-		textField.type = TextFieldType.DYNAMIC;
-		textField.removeEventListener (FocusEvent.FOCUS_OUT, TextField_loseFocus);
+		trace( "FocusHandler" );
 	}
 	
 	private function plusHandler( me:MouseEvent ):Void

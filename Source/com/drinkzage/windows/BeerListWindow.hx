@@ -65,6 +65,7 @@ class BeerListWindow extends IListWindow
 	///////////////////////////////////////////////////////////////
 	// overides 
 	///////////////////////////////////////////////////////////////
+	
 	override private function tabHandler( me:MouseEvent ):Void
 	{
 		//trace( "BeerListWindow.tabHandler" );
@@ -162,7 +163,7 @@ class BeerListWindow extends IListWindow
 	
 	override public function createList():Void
 	{
-		var allItems:Vector<Item> = _window.getAllItems();
+		var allItems:Vector<Item> = _window.allItems();
 		var count:Int = allItems.length;
 		for ( i in 0 ... count )
 		{

@@ -7,6 +7,12 @@ import nme.display.Sprite;
 import nme.display.Bitmap;
 import nme.display.Stage;
 
+import nme.text.TextField;
+import nme.text.TextFormat;
+import nme.text.TextFormatAlign;
+import nme.text.Font;
+import nme.text.TextFieldType;
+
 import nme.events.MouseEvent;
 import com.drinkzage.Globals;
 
@@ -54,6 +60,28 @@ class BeerWindow extends ItemFinalWindow {
 		_tabs.push( "Draft" );
 		_tabs.push( "Pitcher" );
 		_tabs.push( "BACK" );
+	}
+	
+	override public function createCount():Void
+	{
+		var font = Assets.getFont ("assets/VeraSeBd.ttf");
+		_countTextFormat = new TextFormat (font.fontName, 150, 0x00ff00);
+		_countTextFormat.align = TextFormatAlign.CENTER;
+		
+		_countTextField = new TextField();
+		_countTextField.selectable = false;
+		_countTextField.embedFonts = true;
+		_countTextField.text = "1";
+		_countTextField.selectable = false;
+		_countTextField.height = 200;
+		_countTextField.width = 200;
+		_countTextField.setTextFormat( _countTextFormat );	
+
+		var width:Float = _stage.stageWidth;
+		var height:Float = _stage.stageHeight;
+		
+		_countTextField.x = width / 1.6; // + 10;
+		_countTextField.y = height / 2 - 30;
 	}
 	
 	override public function populate():Void
