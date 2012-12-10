@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <project>
 
-  <app title="DrinkingZage" file="com.drinkzage.DrinkingZage" main="com.drinkzage.DrinkingZage" package="com.drinkzage.DrinkingZage" version="1.0.0" icon="assets/dz_icon_114.png" company="DrinkingZage" />
+  <app title="DrinkingZage" file="com.drinkzage.DrinkingZage" main="com.drinkzage.DrinkingZage" package="com.drinkzage.DrinkingZage" version="0.5.0" icon="assets/dz_icon_114.png" company="DrinkingZage" />
   <window width="480" height="854" fps="30" orientation="portrait" resizable="false" background="0x000000" />
  
   <set name="BUILD_DIR" value="Export" />
