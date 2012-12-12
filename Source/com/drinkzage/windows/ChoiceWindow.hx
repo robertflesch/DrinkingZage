@@ -18,7 +18,7 @@ import com.drinkzage.windows.ChoiceButton;
 /**
  * @author Robert Flesch
  */
-class ChoiceWindow extends IListWindow
+class ChoiceWindow extends ITabWindow
 {
 	static inline var GUTTER:Float = 10;
 	public var _choiceButtons:Vector<ChoiceButton>;
@@ -38,11 +38,15 @@ class ChoiceWindow extends IListWindow
 		super();
 		
 		_choiceButtons = new Vector<ChoiceButton>();
-		
-		createList();
 	}
-	
-	override public function listDraw( scrollOffset:Float ):Void
+
+	override public function populate():Void
+	{
+		super.populate();
+		listDraw( 0 );
+	}
+
+	public function listDraw( scrollOffset:Float ):Void
 	{
 		var numberOfChoices:Int = _choiceButtons.length;
 		var width:Float = _stage.stageWidth;
@@ -50,14 +54,13 @@ class ChoiceWindow extends IListWindow
 
 		for ( i in 0...numberOfChoices )
 		{
-			//var graphic:Sprite = Utils.loadGraphic ( "assets/buttonBlank.jpg", true );
-			var graphic:Bitmap = new Bitmap (Assets.getBitmapData ("assets/buttonBlank.jpg"));
+			var graphic:Sprite = Utils.loadGraphic ( "assets/buttonBlank.jpg", true );
 			graphic.name = Std.string( i );
 			graphic.x = GUTTER;
 			graphic.y = i * height + GUTTER + Globals.g_app.logoHeight() + Globals.g_app.tabHeight();
 			graphic.width = width - (GUTTER * numberOfChoices);
 			graphic.height = height - (GUTTER * numberOfChoices);
-			graphic.addEventListener( MouseEvent.CLICK, choiceClickHandler);
+			_em.addEvent( graphic, MouseEvent.CLICK, choiceClickHandler );
 			_window.addChild(graphic);
 
 			var icon:Sprite = Utils.loadGraphic ( "assets/" + _choiceButtons[ i ]._image, true );
@@ -66,7 +69,7 @@ class ChoiceWindow extends IListWindow
 			icon.height = graphic.height * 0.75;
 			icon.x = graphic.x + graphic.width/2 - icon.width/2;
 			icon.y = graphic.y + graphic.height/2 - icon.height/2;
-			icon.addEventListener( MouseEvent.CLICK, choiceClickHandler);
+			_em.addEvent( icon, MouseEvent.CLICK, choiceClickHandler );
 			_window.addChild(icon);
 		}
 	}
