@@ -1,10 +1,7 @@
 ﻿package com.drinkzage.windows;
 
 import nme.Vector;
-import nme.events.MouseEvent;
-
 import com.drinkzage.windows.Item;
-import com.drinkzage.windows.IListWindow;
 
 /**
  * @author Robert Flesch
@@ -21,7 +18,7 @@ class EmoticonsWindow extends IListWindow
 		return _instance;
 	}
 	
-	public function new () 
+	private function new () 
 	{
 		super();
 		
@@ -38,7 +35,6 @@ class EmoticonsWindow extends IListWindow
 		blw.setItem( _item );
 		blw.populate();
 	}
-	
 	
 	override public function createList():Void
 	{

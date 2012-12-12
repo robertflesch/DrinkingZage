@@ -85,6 +85,11 @@ class ITabWindow extends IChildWindow
 		// have to remove old event listeners
 		_em.removeAllEvents();
 		
+		for ( ts in 0..._tabSprites.length )
+		{
+			_tabSprites[ts] = null;
+		}
+		
 		var tabCount:Int = tabs.length;
 		var width:Float = Lib.current.stage.stageWidth;
 		

@@ -42,7 +42,6 @@ import com.drinkzage.windows.ContainerColor;
 import com.drinkzage.windows.BeerColor;
 import com.drinkzage.windows.ShotWindow;
 import com.drinkzage.windows.EmoteWindow;
-import com.drinkzage.windows.MixedDrinkWindow;
 import com.drinkzage.windows.IListWindow;
 
 /**
@@ -216,8 +215,6 @@ class SearchWindow extends IListWindow
 						image = "beer.jpg";
 					else if ( ShotWindow == item.category() )
 						image = "shot.jpg";
-					else if ( MixedDrinkWindow == item.category() )
-						image = "liquor.jpg";
 
 					var graphic:Sprite = Utils.loadGraphic ( "assets/" + image, true );
 					graphic.name = "item";
@@ -255,7 +252,7 @@ class SearchWindow extends IListWindow
 		//trace( "SearchWindow.selectionHandler" );
 		//removeListeners();
 		
-		var window:Dynamic = null;
+		var window:ItemFinalWindow = null;
 		if ( EmoteWindow == _item.category() )
 		{
 			window = EmoteWindow.instance();
@@ -276,9 +273,13 @@ class SearchWindow extends IListWindow
 		{
 			window = ShotWindow.instance();
 		}
-		else if ( MixedDrinkWindow == _item.category() )
+		else if ( TumblerWindow == _item.category() )
 		{
-			window = MixedDrinkWindow.instance();
+			window = TumblerWindow.instance();
+		}
+		else if ( MartiniWindow == _item.category() )
+		{
+			window = MartiniWindow.instance();
 		}
 		
 		if ( null != window )

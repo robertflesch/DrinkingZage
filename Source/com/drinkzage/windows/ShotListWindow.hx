@@ -1,38 +1,13 @@
 ﻿package com.drinkzage.windows;
 
-import Std;
-
-import nme.Assets;
-import nme.Lib;
 import nme.Vector;
-
-import nme.display.Sprite;
-import nme.display.Stage;
-
-import nme.events.MouseEvent;
-import nme.events.Event;
-
-import nme.filters.GlowFilter;
-
-import nme.text.TextField;
-import nme.text.TextFormat;
-import nme.text.TextFormatAlign;
-
-import nme.ui.Mouse;
-import nme.events.TimerEvent;
 import com.drinkzage.windows.Item;
-import com.drinkzage.windows.IListWindow;
-import com.drinkzage.windows.ListWindowConsts;
-
-import com.drinkzage.Globals;
-import com.drinkzage.utils.Utils;
 
 /**
  * @author Robert Flesch
  */
 class ShotListWindow extends IListWindow
 {
-	
 	private static var _instance:ShotListWindow = null;
 	
 	public static function instance():ShotListWindow
@@ -43,7 +18,8 @@ class ShotListWindow extends IListWindow
 		return _instance;
 	}
 
-	private function new () {
+	private function new () 
+	{
 		super();
 		
 		_tabs.push( "BACK" );

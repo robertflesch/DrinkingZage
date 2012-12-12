@@ -228,7 +228,6 @@ class IListWindow extends ITabWindow
 		{
 			_swipeSpeed = 0;
 			_change = _clickPoint - me.stageY;
-//			trace( "mixedDrinkListMouseMoveHandler change:" + _change + "  _clickPoint: " + _clickPoint + "  me.stageY: " + me.stageY );
 		
 			if ( _maxOffset < _listOffset + _change )
 			{

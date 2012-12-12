@@ -27,10 +27,7 @@ class EmoteWindow extends ItemFinalWindow {
 	
 	override public function populate():Void
 	{
-		addListeners();
-		
-		_window.prepareNewWindow();
-		itemDraw();
-		tabsDraw( _tabs, TabDefault.Back );
+		super.setUseCount( false );
+		super.populate();
 	}
 }

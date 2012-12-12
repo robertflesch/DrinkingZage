@@ -1,5 +1,7 @@
 ﻿package com.drinkzage;
 
+import com.drinkzage.windows.MartiniWindow;
+import com.drinkzage.windows.TumblerWindow;
 import Std;
 
 import haxe.Json;
@@ -47,7 +49,6 @@ import com.drinkzage.windows.EmoteWindow;
 import com.drinkzage.windows.Item;
 import com.drinkzage.windows.ItemBeer;
 import com.drinkzage.windows.LogoConsts;
-import com.drinkzage.windows.MixedDrinkWindow;
 import com.drinkzage.windows.NonAlcoholicDrinks;
 import com.drinkzage.windows.NonAlcoholicDrinkWindow;
 import com.drinkzage.windows.NotDoneYetWindow;
@@ -359,13 +360,17 @@ class DrinkingZage extends Sprite {
 		{
 			addItem ( new Item( drinks.emotes[i].name, EmoteWindow ) );
 		}
-		
-		var mixedDrinksListSize:Int = drinks.mixedDrinks.length;
-		for ( i in 0 ... mixedDrinksListSize )
-		{
-			addItem ( new Item( drinks.mixedDrinks[i].name, MixedDrinkWindow ) );
-		}
 
+		for ( i in 0 ... drinks.tumbler.length )
+		{
+			addItem ( new Item( drinks.tumbler[i].name, TumblerWindow ) );
+		}
+		
+		for ( i in 0 ... drinks.martini.length )
+		{
+			addItem ( new Item( drinks.martini[i].name, MartiniWindow ) );
+		}
+		
 		var commercial_beersListSize:Int = drinks.commercial_beers.length;
 		for ( i in 0 ... commercial_beersListSize )
 		{
