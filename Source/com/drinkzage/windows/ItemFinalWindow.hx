@@ -44,6 +44,10 @@ class ItemFinalWindow extends ITabWindow {
 	private var _countTextFormat:TextFormat;
 	private var _item:Item;
 	
+	private var _useCount ( getUseCount, setUseCount ):Bool = true;
+	function getUseCount():Bool { return _useCount; }
+	function setUseCount( val:Bool ):Bool { return _useCount = val; }
+
 	public function new () 
 	{
 		super();
@@ -93,7 +97,8 @@ class ItemFinalWindow extends ITabWindow {
 		super.populate();
 		
 		itemDraw();
-		countDraw();
+		if ( getUseCount() )
+			countDraw();
 	}
 	
 	public function countDraw():Void
