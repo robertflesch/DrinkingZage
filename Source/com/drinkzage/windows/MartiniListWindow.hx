@@ -1,39 +1,36 @@
 ﻿package com.drinkzage.windows;
 
 import nme.Vector;
-import nme.events.MouseEvent;
 
-import com.drinkzage.windows.Item;
-import com.drinkzage.windows.IListWindow;
 
 /**
  * @author Robert Flesch
  */
-class MixedDrinkListWindow extends IListWindow
+class MartiniListWindow extends IListWindow
 {
-	private static var _instance:MixedDrinkListWindow = null;
 	
-	public static function instance():MixedDrinkListWindow
+	private static var _instance:MartiniListWindow = null;
+	
+	public static function instance():MartiniListWindow
 	{ 
 		if ( null == _instance )
-			_instance = new MixedDrinkListWindow();
+			_instance = new MartiniListWindow();
 			
 		return _instance;
 	}
 
-	private function new () 
-	{
+	private function new () {
 		super();
 		
-		createList();
-
 		_tabs.push( "BACK" );
+		
+		createList();
 	}
 	
 	override public function selectionHandler():Void
 	{
 		_em.removeAllEvents();
-		var blw: MixedDrinkWindow = MixedDrinkWindow.instance();
+		var blw: MartiniWindow = MartiniWindow.instance();
 		blw.setBackHandler( this );
 		blw.setItem( _item );
 		blw.populate();
@@ -45,7 +42,7 @@ class MixedDrinkListWindow extends IListWindow
 		var count:Int = allItems.length;
 		for ( i in 0 ... count )
 		{
-			if ( allItems[i].category() == MixedDrinkWindow )
+			if ( allItems[i].category() == MartiniWindow )
 				_items.push( allItems[i] );
 		}
 	}
