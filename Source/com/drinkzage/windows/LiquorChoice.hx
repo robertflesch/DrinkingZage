@@ -15,19 +15,14 @@ import com.drinkzage.windows.IListWindow;
 /**
  * @author Robert Flesch
  */
-class LiquorChoice extends IListWindow
+class LiquorChoice extends ChoiceWindow
 {
-	static inline var GUTTER:Float = 10;
-	static inline var CHOICES:Int = 2;
-	private var _ChoiceButtons:Vector<ChoiceButton>;
-	
 	private static var _instance:LiquorChoice = null;
-	
 	public static function instance():LiquorChoice
 	{ 
 		if ( null == _instance )
 			_instance = new LiquorChoice();
-			
+		
 		return _instance;
 	}
 	
@@ -36,29 +31,9 @@ class LiquorChoice extends IListWindow
 		super();
 		
 		_tabs.push( "BACK" );
-		
-		createList();
 	}
 	
-	override public function listDraw( scrollOffset:Float ):Void
-	{
-		var width:Float = _stage.stageWidth;
-		var height:Float = (Globals.g_app.drawableHeight() - Globals.g_app.searchHeight())/CHOICES;
-
-		for ( i in 0...CHOICES )
-		{
-			var graphic:Sprite = Utils.loadGraphic ( "assets/" + _ChoiceButtons[ i ]._image, true );
-			graphic.name = Std.string( i );
-			graphic.x = GUTTER;
-			graphic.y = i * height + GUTTER + Globals.g_app.logoHeight() + Globals.g_app.tabHeight();
-			graphic.width = width - (GUTTER * CHOICES);
-			graphic.height = height - (GUTTER * CHOICES);
-			graphic.addEventListener( MouseEvent.CLICK, liquorChoiceMouseDownHandler);
-			_window.addChild(graphic);
-		}
-	}
-	
-	private function liquorChoiceMouseDownHandler( me:MouseEvent ):Void
+	override private function choiceClickHandler( me:MouseEvent ):Void
 	{
 		var index:Int = me.target.name;
 		switch ( index )
@@ -76,21 +51,8 @@ class LiquorChoice extends IListWindow
 	
 	override public function createList():Void
 	{
-		_ChoiceButtons = new Vector<ChoiceButton>();
-		_ChoiceButtons.push( new ChoiceButton( "Shots", "shot.jpg" ) );
-		_ChoiceButtons.push( new ChoiceButton( "Liquor", "liquor.jpg" ) );
+		_choiceButtons.push( new ChoiceButton( "Shot", "shot.png" ) );
+		_choiceButtons.push( new ChoiceButton( "Tumbler", "tumbler.png" ) );
+		_choiceButtons.push( new ChoiceButton( "Martini", "martini.png" ) );
 	}
 }
-
-class ChoiceButton
-{
-	public var _text:String;
-	public var _image:String;
-	
-	public function new( text:String, image:String )
-	{
-		_text = text;
-		_image = image;
-	}
-}
-

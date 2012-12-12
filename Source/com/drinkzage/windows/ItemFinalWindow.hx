@@ -69,14 +69,15 @@ class ItemFinalWindow extends ITabWindow {
 		_countTextField.selectable = false;
 		_countTextField.rotation = 90;
 		_countTextField.height = 200;
-		_countTextField.width = 200;
+		_countTextField.width = 300;
 		_countTextField.setTextFormat( _countTextFormat );	
 
 		var width:Float = _stage.stageWidth;
 		var height:Float = _stage.stageHeight;
 		
 		_countTextField.x = width + 10;
-		_countTextField.y = height / 2 - 30;
+		//_countTextField.y = height / 2 - 30;
+		_countTextField.y = height / 2 - 100;
 	}
 	
 	override public function populate():Void
@@ -104,6 +105,8 @@ class ItemFinalWindow extends ITabWindow {
 		
 		var plus:Sprite = Utils.loadGraphic ( "assets/plus.png", true );
 		plus.name = "plus";
+		plus.width = 128 / 480 * width;
+		plus.height = 128 / 854 * height;
 		plus.x = width - 140;
 		plus.y = Globals.g_app.logoHeight() + Globals.g_app.tabHeight() + height/20;
 		plus.addEventListener( MouseEvent.MOUSE_DOWN, plusHandler );
@@ -111,8 +114,10 @@ class ItemFinalWindow extends ITabWindow {
 		
 		var minus:Sprite = Utils.loadGraphic ( "assets/minus.png", true );
 		minus.name = "minus";
+		minus.width = 128 / 480 * width;
+		minus.height = 128 / 854 * height;
 		minus.x = width - 140;
-		minus.y = height - 140;
+		minus.y = height - 170;
 		minus.addEventListener( MouseEvent.MOUSE_DOWN, minusHandler );
 		_window.addChild(minus);
 	}

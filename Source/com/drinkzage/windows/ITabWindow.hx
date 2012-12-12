@@ -62,7 +62,7 @@ class ITabWindow extends IChildWindow
 		}
 
 		_tabTextFormat = new TextFormat("_sans");
-		_tabTextFormat.size = 30;
+		_tabTextFormat.size = 28;
 		_tabTextFormat.align = TextFormatAlign.CENTER;
 		_tabTextFormat.color = 0xffffff;
 		

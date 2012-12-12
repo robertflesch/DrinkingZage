@@ -39,6 +39,7 @@ class CustomTextInputWindow extends ITabWindow
 	private 	   var _searchText : TextField = null;
 	private 	   var _item:Item = null;
 	private		   var _button:Sprite = null;
+	private		   var _buttonSave:Sprite = null;
 
 	public static function instance():CustomTextInputWindow
 	{ 
@@ -100,15 +101,16 @@ class CustomTextInputWindow extends ITabWindow
 		
 		_window.addChild( _searchText );
 		
+		// Accepts changes
 		_button = Utils.loadGraphic( "assets/" + "tab_active.png", true );
 		_button.height = Globals.g_app.componentHeight() * 2;
 		_button.width = _stage.width;
 		_button.y = _searchText.y - _button.height;
 		_button.x = 0;
-		/////////
+		
 		var text : TextField = new TextField();
 		text.selectable = false;
-		text.text = "Accept Changes";
+		text.text = "Use Changes one time";
 		text.height = Globals.g_app.componentHeight()/3;
 		text.name = "Accept Changes";
 			
@@ -117,8 +119,8 @@ class CustomTextInputWindow extends ITabWindow
 		text.y = _button.height/ 8;
 		text.x = 0;
 		
-		text.border = true;
-		text.borderColor = 0xffff00;
+//		text.border = true;
+//		text.borderColor = 0xffff00;
 		
 		var ts:TextFormat = new TextFormat("_sans");
 		ts.size = 11;                // set the font size
@@ -127,14 +129,49 @@ class CustomTextInputWindow extends ITabWindow
 		text.setTextFormat(ts);
 		_button.addChild(text);
 		_button.addEventListener( MouseEvent.CLICK, acceptChanges );
-		///////////
+	
 		_window.addChild( _button );
-
+		
+		// Accepts and Save changes
+		_buttonSave = Utils.loadGraphic( "assets/" + "tab_active.png", true );
+		_buttonSave.height = Globals.g_app.componentHeight() * 2;
+		_buttonSave.width = _stage.width;
+		_buttonSave.y = _searchText.y - _buttonSave.height;
+		_buttonSave.x = 0;
+		
+		var textSave : TextField = new TextField();
+		textSave.selectable = false;
+		textSave.text = "Accept & Save Changes";
+		textSave.height = Globals.g_app.componentHeight()/3;
+		textSave.name = "Accept SaveChanges";
+			
+		textSave.width = _buttonSave.width / 6.5;
+				
+		textSave.y = _buttonSave.height/ 8;
+		textSave.x = 0;
+		
+//		textSave.border = true;
+//		textSave.borderColor = 0xffff00;
+		
+		textSave.setTextFormat(ts);
+		_buttonSave.addChild(textSave);
+		_buttonSave.addEventListener( MouseEvent.CLICK, acceptChanges );
+		
+		_window.addChild( _buttonSave );
+///////////////
 		_stage.focus = _searchText;
+	}
+	
+	override public function removeListeners():Void
+	{
+		super.removeListeners();
+		_button.removeEventListener( MouseEvent.CLICK, acceptChanges );
+		_buttonSave.removeEventListener( MouseEvent.CLICK, acceptChanges );
 	}
 
 	public function acceptChanges( event:MouseEvent ):Void
 	{
+		Globals.g_dataPersistance.addCustomDrink( "Wine", "Custom1", "Nancy doesnt suck" );
 		_backHandler.setItem( new Item( _searchText.text, null ) );
 		backHandler();
 	}
@@ -147,6 +184,7 @@ class CustomTextInputWindow extends ITabWindow
 //#if android
 		_searchText.y = Lib.current.stage.stageHeight / 2 + _searchText.height / 2 - 20;
 		_button.y  = _searchText.y - _button.height;
+		_buttonSave.y  = _button.y - _buttonSave.height;
 //#end		
 	}
 

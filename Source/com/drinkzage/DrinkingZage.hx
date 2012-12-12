@@ -35,6 +35,8 @@ import nme.text.TextFormatAlign;
 
 import com.drinkzage.Globals;
 import com.drinkzage.utils.Utils;
+import com.drinkzage.utils.DataPersistance;
+import com.drinkzage.utils.DataPersistanceNull;
 
 import com.drinkzage.windows.BeerColor;
 import com.drinkzage.windows.BeerListWindow;
@@ -71,6 +73,8 @@ class DrinkingZage extends Sprite {
 	
 	private var _frontButtons:Vector<FrontButton>;
 	private var _searchBut:Sprite = null;
+	private var _customBut:Sprite = null;
+	
 	
 	
 	public function new () {
@@ -92,8 +96,12 @@ class DrinkingZage extends Sprite {
 		_frontButtons.push( new FrontButton( "Non Alco", "non.jpg" ) );
 
 		createList();
- 
-		storageTest();
+		
+#if ( flash || android )
+		Globals.g_dataPersistance = new DataPersistance();
+#else		
+		Globals.g_dataPersistance = new DataPersistanceNull();
+#end
 	}
 	
 	function resizeHandler(e:Event):Void
@@ -203,20 +211,23 @@ class DrinkingZage extends Sprite {
 		return (Globals.g_stage.stageHeight - Globals.g_app.logoHeight() - Globals.g_app.tabHeight());
 	}
 	
-	public function searchPop():Void
-	{
-		this.addChild(_searchBut);
-	}
-	
 	public function searchDraw():Void
 	{
-		_searchBut = Utils.loadGraphic ( "assets/findDrink.png", true );
+		//_customBut = Utils.loadGraphic ( "assets/custom.png", true );
+		//_customBut.name = "customBut";
+		//_customBut.y = Lib.current.stage.stageHeight - _customBut.height;
+		//_customBut.x = 0;
+		//_customBut.width = Lib.current.stage.stageWidth;
+		//_customBut.addEventListener( MouseEvent.CLICK, searchDrinkClickHandler);
+		//this.addChild(_customBut);
+		
+		_searchBut = Utils.loadGraphic ( "assets/search.jpg", true );
 		_searchBut.name = "searchBut";
 		_searchBut.y = Lib.current.stage.stageHeight - _searchBut.height;
 		_searchBut.x = 0;
 		_searchBut.width = Lib.current.stage.stageWidth;
 		_searchBut.addEventListener( MouseEvent.CLICK, searchDrinkClickHandler);
-		searchPop();
+		this.addChild(_searchBut);
 	}
 	
 	private function searchDrinkClickHandler( me:MouseEvent )
