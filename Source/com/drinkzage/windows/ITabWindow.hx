@@ -83,14 +83,9 @@ class ITabWindow extends IChildWindow
 	public function tabsDraw( tabs:Vector<String>, tabSelected:Dynamic ):Void
 	{
 		// have to remove old event listeners
-		for ( j in 0...TAB_COUNT )		
-		{
-			if ( null !=  _tabTextFields[j] )
-				_tabTextFields[j].removeEventListener( MouseEvent.CLICK, _tabHandler );
-		}
+		_em.removeAllEvents();
 		
 		var tabCount:Int = tabs.length;
-		//trace( "tabsDraw: START" );
 		var width:Float = Lib.current.stage.stageWidth;
 		
 		for ( i in 0...tabCount )
@@ -115,7 +110,7 @@ class ITabWindow extends IChildWindow
 			_tabTextFields[i].y = Globals.g_app.logoHeight() + Globals.g_app.tabHeight()/3;
 			_tabTextFields[i].height = Globals.g_app.tabHeight()* 2/3;			
 			_tabTextFields[i].width =  width / tabCount;
-			_tabTextFields[i].addEventListener( MouseEvent.CLICK, _tabHandler );
+			_em.addEvent( _tabTextFields[i], MouseEvent.CLICK, _tabHandler );
 			Globals.g_app.addChild(_tabTextFields[i]);
 		}
 	}
@@ -137,7 +132,8 @@ class ITabWindow extends IChildWindow
 		{
 			trace( "backHandler executed" );
 			_lastClickTime = Lib.getTimer();
-			removeListeners();
+			//removeListeners();
+			_em.removeAllEvents();
 			if ( null == _backHandler )
 				throw "ITabWindow.backHandler - ERROR - MISSING VALID BACKHANDLER";
 			_backHandler.populate(); 
@@ -148,12 +144,12 @@ class ITabWindow extends IChildWindow
 	
 	public function addListeners():Void
 	{
-		_stage.addEventListener(KeyboardEvent.KEY_UP, onKeyUp );	
+		_em.addEvent( _stage, KeyboardEvent.KEY_UP, onKeyUp );
 	}
 	
 	public function removeListeners():Void
 	{
-		_stage.removeEventListener(KeyboardEvent.KEY_UP, onKeyUp );				
+		_em.removeEvent( _stage, KeyboardEvent.KEY_UP, onKeyUp );
 	}
 	
 	// this intercepts the ESC or BACK key (Android)

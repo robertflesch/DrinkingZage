@@ -70,12 +70,11 @@ class IListWindow extends ITabWindow
 		_change = 0.0;
 		_drag = false;
 		
-		removeListeners();
-		addListeners();
 		listDraw( _listOffset );
 
 		_tabHandler = tabHandler;
 		tabsDraw( _tabs, _tabSelected );
+		addListeners();
 		
 		if ( getUseSearch() )
 			_window.searchDraw();
@@ -169,8 +168,10 @@ class IListWindow extends ITabWindow
 	
 	public function mouseUpHandler( me:MouseEvent ):Void
 	{
-		_stage.removeEventListener( MouseEvent.MOUSE_UP, mouseUpHandler );
-		_stage.removeEventListener( MouseEvent.MOUSE_MOVE, mouseMoveHandler );
+		_em.removeEvent( _stage, MouseEvent.MOUSE_UP, mouseUpHandler );
+		//_stage.removeEventListener( MouseEvent.MOUSE_UP, mouseUpHandler );
+		_em.removeEvent( _stage, MouseEvent.MOUSE_MOVE, mouseUpHandler );
+		//_stage.removeEventListener( MouseEvent.MOUSE_MOVE, mouseMoveHandler );
 		
 		// if we let the mouse up over the header or logo, and it hasnt moved then return
 		if ( me.stageY < Globals.g_app.tabHeight() + Globals.g_app.logoHeight() && me.stageY - _clickPoint < 5 )
@@ -207,8 +208,10 @@ class IListWindow extends ITabWindow
 	
 	private function mouseDownHandler( me:MouseEvent ):Void
 	{
-		_stage.addEventListener( MouseEvent.MOUSE_UP, mouseUpHandler );
-		_stage.addEventListener( MouseEvent.MOUSE_MOVE, mouseMoveHandler );
+		_em.addEvent( _stage, MouseEvent.MOUSE_UP, mouseUpHandler );
+		//_stage.addEventListener( MouseEvent.MOUSE_UP, mouseUpHandler );
+		_em.addEvent( _stage, MouseEvent.MOUSE_MOVE, mouseUpHandler );
+		//_stage.addEventListener( MouseEvent.MOUSE_MOVE, mouseMoveHandler );
 		
 		_clickPoint = me.stageY;
 	}
@@ -248,7 +251,7 @@ class IListWindow extends ITabWindow
 	
 	public function selectionHandler():Void
 	{
-		removeListeners();
+		_em.removeAllEvents();
 		var ndyw:NotDoneYetWindow = NotDoneYetWindow.instance();
 		ndyw.populate();
 	}
@@ -290,8 +293,10 @@ class IListWindow extends ITabWindow
 	override public function addListeners():Void
 	{
 		super.addListeners();
-		_stage.addEventListener( MouseEvent.MOUSE_DOWN, mouseDownHandler );
-		_stage.addEventListener( nme.events.Event.ENTER_FRAME, onEnter);
+		_em.addEvent( _stage, MouseEvent.MOUSE_DOWN, mouseDownHandler );
+		_em.addEvent( _stage, Event.ENTER_FRAME, onEnter );
+		//_stage.addEventListener( MouseEvent.MOUSE_DOWN, mouseDownHandler );
+		//_stage.addEventListener( nme.events.Event.ENTER_FRAME, onEnter);
 	}
 	
 	override public function removeListeners():Void

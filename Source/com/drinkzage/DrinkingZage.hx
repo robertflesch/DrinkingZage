@@ -58,6 +58,8 @@ import com.drinkzage.windows.ShotWindow;
 import com.drinkzage.windows.WineListWindow;
 import com.drinkzage.windows.WineWindow;
 
+import com.drinkzage.events.EventManager;
+
 #if flash
 import org.flashdevelop.utils.FlashConnect;
 #end
@@ -75,7 +77,7 @@ class DrinkingZage extends Sprite {
 	private var _searchBut:Sprite = null;
 	private var _customBut:Sprite = null;
 	
-	
+	private var _em:EventManager = null;
 	
 	public function new () {
 		
@@ -83,6 +85,7 @@ class DrinkingZage extends Sprite {
 		
 		Globals.g_app = this;
 		Lib.current.stage.scaleMode = EXACT_FIT;
+		_em = new EventManager();
 		
 		_allItems = new Vector<Item>();
 		addEventListener( Event.ADDED_TO_STAGE, addedToStage );
@@ -233,6 +236,7 @@ class DrinkingZage extends Sprite {
 	private function searchDrinkClickHandler( me:MouseEvent )
 	{
 		//trace("searchDrinkClickHandler");
+		_em.removeAllEvents();
 		var sw:SearchWindow = SearchWindow.instance();
 		sw.setBackHandler( this );
 		sw.populate();
@@ -270,36 +274,42 @@ class DrinkingZage extends Sprite {
 		{
 			case 0: // Fav
 			{
+				_em.removeAllEvents();
 				nw = NotDoneYetWindow.instance();
 				nw.setBackHandler( this );
 				nw.populate();
 			}
 			case 1: // Beer
 			{
+				_em.removeAllEvents();
 				nw = BeerListWindow.instance();
 				nw.setBackHandler( this );
 				nw.populate();
 			}
 			case 2: // Wine
 			{
+				_em.removeAllEvents();
 				nw = WineListWindow.instance();
 				nw.setBackHandler( this );
 				nw.populate();
 			}
 			case 3: // Emote
 			{
+				_em.removeAllEvents();
 				nw = EmoticonsWindow.instance();
 				nw.setBackHandler( this );
 				nw.populate();
 			}
 			case 4: // Liquor
 			{
+				_em.removeAllEvents();
 				nw = LiquorChoice.instance();
 				nw.setBackHandler( this );
 				nw.populate();
 			}
 			case 5: // Non Alco
 			{
+				_em.removeAllEvents();
 				nw = NonAlcoholicDrinks.instance();
 				nw.setBackHandler( this );
 				nw.populate();

@@ -159,6 +159,7 @@ class ItemFinalWindow extends ITabWindow {
 	{
 		trace( "ClickHander" );
 		var textField:TextField = event.currentTarget;
+		_em.removeAllEvents();
 		var ctiw:CustomTextInputWindow	= CustomTextInputWindow.instance();
 		ctiw.setItem( new Item( textField.text, null ) );
 		ctiw.setBackHandler( this );

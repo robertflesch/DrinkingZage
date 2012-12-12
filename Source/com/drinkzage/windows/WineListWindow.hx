@@ -32,7 +32,7 @@ class WineListWindow extends IListWindow
 	
 	override public function selectionHandler():Void
 	{
-		removeListeners();
+		_em.removeAllEvents();
 		var blw: WineWindow = WineWindow.instance();
 		blw.setBackHandler( this );
 		blw.setItem( _item );

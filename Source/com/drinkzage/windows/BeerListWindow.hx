@@ -154,8 +154,9 @@ class BeerListWindow extends IListWindow
 	override public function selectionHandler():Void
 	{
 		//trace( "BeerListWindow.selectionHandler" );
-		removeListeners();
-		var bw:BeerWindow = new BeerWindow();
+		//removeListeners();
+		_em.removeAllEvents();
+		var bw:BeerWindow = BeerWindow.instance();
 		bw.setBackHandler( this );
 		bw.setItem( cast( _item, ItemBeer ) );
 		bw.populate();

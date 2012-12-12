@@ -253,7 +253,7 @@ class SearchWindow extends IListWindow
 			return;
 			
 		//trace( "SearchWindow.selectionHandler" );
-		removeListeners();
+		//removeListeners();
 		
 		var window:Dynamic = null;
 		if ( EmoteWindow == _item.category() )
@@ -283,6 +283,7 @@ class SearchWindow extends IListWindow
 		
 		if ( null != window )
 		{
+			_em.removeAllEvents();
 			window.setBackHandler( this );
 			window.setItem( _item );
 			window.populate();

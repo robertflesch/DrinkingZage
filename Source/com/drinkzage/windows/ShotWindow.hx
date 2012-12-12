@@ -3,8 +3,8 @@
 import nme.events.MouseEvent;
 
 import nme.Assets;
-import com.drinkzage.utils.
-import nme.display.Bitmap;
+//import com.drinkzage.utils.
+//import nme.display.Bitmap;
 import nme.geom.Matrix;
 import nme.display.BitmapData;
 import nme.display.DisplayObject;
@@ -47,8 +47,8 @@ class ShotWindow extends ItemFinalWindow {
 		//bottleImage1.alpha = 0.5;
 		//_window.addChild( bottleImage1 );
 		
-		var icon:Sprite = Utils.loadGraphic ( "assets/shot.png" );
-		icon.name = Std.string( i );
+		//var icon:Sprite = Utils.loadGraphic ( "assets/shot.png" );
+		//icon.name = Std.string( i );
 
 		super.itemDraw();
 	}

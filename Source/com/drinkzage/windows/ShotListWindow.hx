@@ -53,7 +53,7 @@ class ShotListWindow extends IListWindow
 	
 	override public function selectionHandler():Void
 	{
-		removeListeners();
+		_em.removeAllEvents();
 		var blw: ShotWindow = ShotWindow.instance();
 		blw.setBackHandler( this );
 		blw.setItem( _item );

@@ -32,7 +32,7 @@ class MixedDrinkListWindow extends IListWindow
 	
 	override public function selectionHandler():Void
 	{
-		removeListeners();
+		_em.removeAllEvents();
 		var blw: MixedDrinkWindow = MixedDrinkWindow.instance();
 		blw.setBackHandler( this );
 		blw.setItem( _item );

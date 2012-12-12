@@ -39,10 +39,12 @@ class LiquorChoice extends ChoiceWindow
 		switch ( index )
 		{
 			case 0: // Shots
+				_em.removeAllEvents();
 				var slw:ShotListWindow = ShotListWindow.instance();
 				slw.setBackHandler( this );
 				slw.populate();
 			case 1: // Mixed Drinks
+				_em.removeAllEvents();
 				var mlw:MixedDrinkListWindow = MixedDrinkListWindow.instance();
 				mlw.setBackHandler( this );
 				mlw.populate();
