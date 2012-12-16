@@ -29,6 +29,7 @@ class EventObject
 	
 	public function dispose():Void
 	{
+		//trace( "EventObject.dispose - type: " + _type + "   listener: " + _listener );
 		_target.removeEventListener( _type, _listener );
 	}
 }

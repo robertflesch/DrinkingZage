@@ -12,11 +12,8 @@ import nme.display.Stage;
 import nme.events.MouseEvent;
 import nme.events.FocusEvent;
 import nme.events.Event;
-import nme.events.KeyboardEvent;
 
 import nme.errors.Error;
-
-import nme.filters.GlowFilter;
 
 import nme.geom.Matrix;
 
@@ -114,7 +111,7 @@ class ItemFinalWindow extends ITabWindow {
 		plus.height = 128 / 854 * height;
 		plus.x = width - 140;
 		plus.y = Globals.g_app.logoHeight() + Globals.g_app.tabHeight() + height/20;
-		plus.addEventListener( MouseEvent.MOUSE_DOWN, plusHandler );
+		_em.addEvent( plus, MouseEvent.MOUSE_DOWN, plusHandler );
 		_window.addChild(plus);
 		
 		var minus:Sprite = Utils.loadGraphic ( "assets/minus.png", true );
@@ -123,7 +120,7 @@ class ItemFinalWindow extends ITabWindow {
 		minus.height = 128 / 854 * height;
 		minus.x = width - 140;
 		minus.y = height - 170;
-		minus.addEventListener( MouseEvent.MOUSE_DOWN, minusHandler );
+		_em.addEvent( minus, MouseEvent.MOUSE_DOWN, minusHandler );
 		_window.addChild(minus);
 	}
 	
@@ -153,8 +150,7 @@ class ItemFinalWindow extends ITabWindow {
 		name.height = width * 2 / 3;
 		
 		name.rotation = 90;
-		name.addEventListener (MouseEvent.CLICK, onClickHander );
-		//name.addEventListener (FocusEvent.FOCUS_IN, onFocusHandler );
+		_em.addEvent( name, MouseEvent.CLICK, onClickHander );
 		
 		_window.addChild( name );
 

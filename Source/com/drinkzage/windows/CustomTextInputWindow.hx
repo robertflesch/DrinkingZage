@@ -13,7 +13,6 @@ import nme.display.Stage;
 import nme.events.Event;
 import nme.events.FocusEvent;
 import nme.events.MouseEvent;
-import nme.events.KeyboardEvent;
 
 import nme.text.TextField;
 import nme.text.TextFormat;
@@ -36,7 +35,7 @@ class CustomTextInputWindow extends ITabWindow
 	private static var _instance:CustomTextInputWindow = null;
 
 	private 	   var _textFormat:TextFormat = null;
-	private 	   var _searchText : TextField = null;
+	private 	   var _customText : TextField = null;
 	private 	   var _item:Item = null;
 	private		   var _button:Sprite = null;
 	private		   var _buttonSave:Sprite = null;
@@ -69,9 +68,9 @@ class CustomTextInputWindow extends ITabWindow
 		_textFormat.align = TextFormatAlign.CENTER;
 		_textFormat.color = 0x000000;
 		
-		_searchText = new TextField();
-		_searchText.text = "";
-		_searchText.setTextFormat( _textFormat );
+		_customText = new TextField();
+		_customText.text = "";
+		_customText.setTextFormat( _textFormat );
 	}
 	
 	//
@@ -83,29 +82,29 @@ class CustomTextInputWindow extends ITabWindow
 	{
 		super.populate();
 		
-		_searchText.name = "_searchText";
-		_searchText.selectable = true;
-		_searchText.border = true;
-		//_searchText.borderColor = Globals.COLOR_SAGE;
-		_searchText.width = Lib.current.stage.stageWidth;
-		_searchText.height = _window.componentHeight();
-		_searchText.y = Lib.current.stage.stageHeight - _searchText.height - 2;
-		_searchText.x = 0;
-		_searchText.type = TextFieldType.INPUT;
-		_searchText.addEventListener (Event.CHANGE, TextField_onChange);
-		_searchText.addEventListener ( FocusEvent.FOCUS_IN, searchGetFocus );
-		_searchText.background = true;
-		_searchText.backgroundColor = Globals.COLOR_WHITE;
-		_searchText.text = _item.name();
-		_searchText.setTextFormat( _textFormat );
+		_customText.name = "_customText";
+		_customText.selectable = true;
+		_customText.border = true;
+		//_customText.borderColor = Globals.COLOR_SAGE;
+		_customText.width = Lib.current.stage.stageWidth;
+		_customText.height = _window.componentHeight();
+		_customText.y = Lib.current.stage.stageHeight - _customText.height - 2;
+		_customText.x = 0;
+		_customText.type = TextFieldType.INPUT;
+		_em.addEvent( _customText, Event.CHANGE, TextField_onChange );
+		_em.addEvent( _customText, FocusEvent.FOCUS_IN, searchGetFocus );
+		_customText.background = true;
+		_customText.backgroundColor = Globals.COLOR_WHITE;
+		_customText.text = _item.name();
+		_customText.setTextFormat( _textFormat );
 		
-		_window.addChild( _searchText );
+		_window.addChild( _customText );
 		
 		// Accepts changes
 		_button = Utils.loadGraphic( "assets/" + "tab_active.png", true );
 		_button.height = Globals.g_app.componentHeight() * 2;
 		_button.width = _stage.width;
-		_button.y = _searchText.y - _button.height;
+		_button.y = _customText.y - _button.height;
 		_button.x = 0;
 		
 		var text : TextField = new TextField();
@@ -128,7 +127,7 @@ class CustomTextInputWindow extends ITabWindow
 		ts.color = 0xffffff;
 		text.setTextFormat(ts);
 		_button.addChild(text);
-		_button.addEventListener( MouseEvent.CLICK, acceptChanges );
+		_em.addEvent( _button, MouseEvent.CLICK, acceptChanges );
 	
 		_window.addChild( _button );
 		
@@ -136,7 +135,7 @@ class CustomTextInputWindow extends ITabWindow
 		_buttonSave = Utils.loadGraphic( "assets/" + "tab_active.png", true );
 		_buttonSave.height = Globals.g_app.componentHeight() * 2;
 		_buttonSave.width = _stage.width;
-		_buttonSave.y = _searchText.y - _buttonSave.height;
+		_buttonSave.y = _button.y - _buttonSave.height;
 		_buttonSave.x = 0;
 		
 		var textSave : TextField = new TextField();
@@ -155,44 +154,37 @@ class CustomTextInputWindow extends ITabWindow
 		
 		textSave.setTextFormat(ts);
 		_buttonSave.addChild(textSave);
-		_buttonSave.addEventListener( MouseEvent.CLICK, acceptChanges );
+		_em.addEvent( _buttonSave, MouseEvent.CLICK, acceptChanges );
 		
 		_window.addChild( _buttonSave );
 ///////////////
-		_stage.focus = _searchText;
+		_stage.focus = _customText;
 	}
 	
-	override public function removeListeners():Void
-	{
-		super.removeListeners();
-		_button.removeEventListener( MouseEvent.CLICK, acceptChanges );
-		_buttonSave.removeEventListener( MouseEvent.CLICK, acceptChanges );
-	}
-
 	public function acceptChanges( event:MouseEvent ):Void
 	{
 		Globals.g_dataPersistance.addCustomDrink( "Wine", "Custom1", "Nancy doesnt suck" );
-		_backHandler.setItem( new Item( _searchText.text, null ) );
+		_backHandler.setItem( new Item( _customText.text, null ) );
 		backHandler();
 	}
 	
 	public function searchGetFocus( event:FocusEvent ):Void
 	{
-		_searchText.removeEventListener ( FocusEvent.FOCUS_IN, searchGetFocus );
+		_em.addEvent( _customText, FocusEvent.FOCUS_IN, searchGetFocus );
 		
-		_searchText.setTextFormat( _textFormat );
-//#if android
-		_searchText.y = Lib.current.stage.stageHeight / 2 + _searchText.height / 2 - 20;
-		_button.y  = _searchText.y - _button.height;
+		_customText.setTextFormat( _textFormat );
+#if android
+		_customText.y = Lib.current.stage.stageHeight / 2 + _customText.height / 2 - 20;
+		_button.y  = _customText.y - _button.height;
 		_buttonSave.y  = _button.y - _buttonSave.height;
-//#end		
+#end		
 	}
 
 	public function TextField_onChange( event:Event ): Void
 	{
 		var textField:TextField = event.currentTarget;
 		
-		_searchText.text = textField.text;
-		_searchText.setTextFormat( _textFormat );
+		_customText.text = textField.text;
+		_customText.setTextFormat( _textFormat );
 	}
 }

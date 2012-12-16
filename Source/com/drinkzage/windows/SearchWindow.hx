@@ -15,9 +15,6 @@ import nme.display.DisplayObject;
 import nme.events.Event;
 import nme.events.FocusEvent;
 import nme.events.MouseEvent;
-import nme.events.KeyboardEvent;
-
-import nme.filters.GlowFilter;
 
 import nme.text.TextField;
 import nme.text.TextFormat;
@@ -91,6 +88,7 @@ class SearchWindow extends IListWindow
 	
 	override public function populate():Void
 	{
+		trace( "SearchWindow.populate" );		
 		super.populate();
 		
 		_searchText.name = "_searchText";
@@ -102,39 +100,44 @@ class SearchWindow extends IListWindow
 		_searchText.y = Lib.current.stage.stageHeight - _searchText.height - 2;
 		_searchText.x = 0;
 		_searchText.type = TextFieldType.INPUT;
-		_searchText.addEventListener (Event.CHANGE, TextField_onChange);
-		_searchText.addEventListener ( FocusEvent.FOCUS_IN, searchGetFocus );
+		_em.addEvent( _searchText, Event.CHANGE, TextField_onChange);
+		_em.addEvent( _searchText, FocusEvent.FOCUS_IN, searchGetFocus );
 		_searchText.background = true;
 		_searchText.backgroundColor = Globals.COLOR_WHITE;
 		_searchText.setTextFormat( _textFormat );
 		
+		
+		listDraw( 0, false );
+
 		_window.addChild( _searchText );
 		
-		listRefresh( 0 );
-
 		_stage.focus = _searchText;
 		//_searchText.setSelection(_searchText.text.length, _searchText.text.length);//();
 	}
 
 	public function searchGetFocus( event:FocusEvent ):Void
 	{
-		_searchText.removeEventListener ( FocusEvent.FOCUS_IN, searchGetFocus );
-		_searchText.addEventListener ( FocusEvent.FOCUS_OUT, searchLoseFocus );
+		trace( "SearchWindow.searchGetFocus" );		
+		_em.removeEvent( _searchText, FocusEvent.FOCUS_IN, searchGetFocus );
+		_em.addEvent( _searchText, FocusEvent.FOCUS_OUT, searchLoseFocus );
 		
 		_searchText.setTextFormat( _textFormat );
-#if android
+//#if android
 		_searchText.y = Lib.current.stage.stageHeight / 2 + _searchText.height/2 - 20;
-#end		
+//#end		
+		// re adding button pops it to front
 	}
 
 	public function searchLoseFocus( event:FocusEvent ):Void
 	{
-		_searchText.removeEventListener ( FocusEvent.FOCUS_OUT, searchLoseFocus );
-		_searchText.addEventListener ( FocusEvent.FOCUS_IN, searchGetFocus );
+		trace( "SearchWindow.searchLoseFocus" );
+		_em.removeEvent( _searchText,  FocusEvent.FOCUS_OUT, searchLoseFocus );
+		_em.addEvent( _searchText, FocusEvent.FOCUS_IN, searchGetFocus );
 		
 		_searchText.y = Lib.current.stage.stageHeight - _searchText.height - 2;
 	}
 	
+/*	
  	// This removes all of the "items" from the displayObject list.
 	override private function listRefresh( scrollOffset:Float ):Void
 	{
@@ -178,10 +181,32 @@ class SearchWindow extends IListWindow
 			}
 		}
 	}
+*/
 
-
-	override private function listDraw( scrollOffset:Float ):Void
+	private function hideItemsWithoutString( val:String ):Void
 	{
+		var count:Int = _items.length;
+		for ( i in 0...count )
+		{
+			var index:Int = _items[i].name().toLowerCase().indexOf( val.toLowerCase(), 0 );
+			if ( 0 > index )
+				_items[i].setVisible( false );
+		}
+	}
+	
+
+	override private function applyFilter():Void
+	{
+		_window.resetVisiblity( _items );
+		if ( "" != _searchText.text )
+		{
+			hideItemsWithoutString( _searchText.text );
+		}
+	}
+/*
+	override private function listDraw( scrollOffset:Float, addChild:Bool = true ):Void
+	{
+		trace( "SearchWindow.listDraw" );
 		var width:Float = _stage.stageWidth;
 		var height:Float = Globals.g_app.componentHeight();
 		var offset:Float = Globals.g_app.tabHeight() + Globals.g_app.logoHeight();
@@ -203,27 +228,27 @@ class SearchWindow extends IListWindow
 				cast( _components[countDrawn], DataTextField ).setData( item );
 				_window.addChild(_components[countDrawn]);
 				///////////
-/*				
-					var image:String = "search.jpg";
-					if ( EmoteWindow == item.category() )
-						image = "emote.jpg";
-					else if ( WineWindow == item.category() )
-						image = "wine.jpg";
-					else if ( NonAlcoholicDrinkWindow == item.category() )
-						image = "non.jpg";
-					else if ( BeerWindow == item.category() )
-						image = "beer.jpg";
-					else if ( ShotWindow == item.category() )
-						image = "shot.jpg";
-
-					var graphic:Sprite = Utils.loadGraphic ( "assets/" + image, true );
-					graphic.name = "item";
-					graphic.x = _components[countDrawn].x;
-					graphic.y = _components[countDrawn].y + 1;
-					graphic.height = Globals.g_app.componentHeight() - 2; 
-					graphic.width = Globals.g_app.componentHeight(); 
-					_window.addChild(graphic);
-*/				
+				
+					//var image:String = "search.jpg";
+					//if ( EmoteWindow == item.category() )
+						//image = "emote.jpg";
+					//else if ( WineWindow == item.category() )
+						//image = "wine.jpg";
+					//else if ( NonAlcoholicDrinkWindow == item.category() )
+						//image = "non.jpg";
+					//else if ( BeerWindow == item.category() )
+						//image = "beer.jpg";
+					//else if ( ShotWindow == item.category() )
+						//image = "shot.jpg";
+//
+					//var graphic:Sprite = Utils.loadGraphic ( "assets/" + image, true );
+					//graphic.name = "item";
+					//graphic.x = _components[countDrawn].x;
+					//graphic.y = _components[countDrawn].y + 1;
+					//graphic.height = Globals.g_app.componentHeight() - 2; 
+					//graphic.width = Globals.g_app.componentHeight(); 
+					//_window.addChild(graphic);
+				
 				////////////
 				if ( _components[countDrawn].y + Globals.g_app.logoHeight() > _stage.stageHeight )
 					break;
@@ -233,19 +258,23 @@ class SearchWindow extends IListWindow
 			}
 		}
 	}
-
+*/
 	public function TextField_onChange( event:Event ): Void
 	{
+		trace( "SearchWindow.onChange" );		
 		//var textField:TextField = event.currentTarget;
 		//_searchText.text = textField.text;
 		
 		_searchText.setTextFormat( _textFormat );
 
-		listRefresh( 0 );
+		listDraw( 0, false );
+		
+		_window.addChild( _searchText );
 	}
 	
 	override public function selectionHandler():Void
 	{
+		trace( "SearchWindow.selectionHandler" );		
 		if ( _clickPoint > _searchText.y )
 			return;
 			
@@ -296,6 +325,7 @@ class SearchWindow extends IListWindow
 	
 	override public function createList():Void
 	{
+		trace( "SearchWindow.createList" );		
 		_items = Globals.g_app.allItems();
 	}
 }

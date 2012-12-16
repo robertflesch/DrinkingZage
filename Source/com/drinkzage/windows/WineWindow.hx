@@ -5,7 +5,10 @@ import nme.events.MouseEvent;
 
 import nme.Assets;
 import nme.display.Bitmap;
+import nme.display.Sprite;
 
+import com.drinkzage.windows.WineCategory;
+import com.drinkzage.utils.Utils;
 /**
  * @author Robert Flesch
  */
@@ -34,14 +37,20 @@ class WineWindow extends ItemFinalWindow {
 		var height:Int = _stage.stageHeight;
 		var drawableHeight = height - Globals.g_app.logoHeight() - Globals.g_app.tabHeight();
 
-		var bottleImage1:Bitmap;
-		bottleImage1 = new Bitmap (Assets.getBitmapData ("assets/wine.jpg"));
-		bottleImage1.bitmapData = BitmapScaled( bottleImage1, width, width );
-		bottleImage1.rotation = 90;
-		bottleImage1.x = width;
-		bottleImage1.y = drawableHeight / 2 - bottleImage1.width / 2 + Globals.g_app.logoHeight() + Globals.g_app.tabHeight();
-		bottleImage1.alpha = 0.5;
-		_window.addChild( bottleImage1 );
+		var icon:Sprite = null;
+		var item:ItemWine = cast( _item, ItemWine );
+		if ( WineCategory.Red == item.getWineCategory() )
+			icon = Utils.loadGraphic( "assets/wineRed.png", true );
+		else
+			icon = Utils.loadGraphic( "assets/wineWhite.png", true );
+			
+		icon.name = "wine.png";
+		icon.rotation = 90;
+		icon.alpha = 0.5;
+		icon.x = icon.width + width/2 - icon.width/2;
+		icon.y = height/2;
+		_window.addChild(icon);
+		
 		
 		super.itemDraw();
 	}

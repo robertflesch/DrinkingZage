@@ -19,12 +19,9 @@ import nme.display.StageQuality;
 import nme.display.StageScaleMode;
 
 import nme.events.Event;
-import nme.events.KeyboardEvent;
 import nme.events.MouseEvent;
 
 import nme.display.DisplayObject;
-
-import nme.filters.GlowFilter;
 
 import nme.geom.Vector3D;
 
@@ -48,11 +45,13 @@ import com.drinkzage.windows.EmoticonsWindow;
 import com.drinkzage.windows.EmoteWindow;
 import com.drinkzage.windows.Item;
 import com.drinkzage.windows.ItemBeer;
+import com.drinkzage.windows.ItemWine;
 import com.drinkzage.windows.LogoConsts;
 import com.drinkzage.windows.NonAlcoholicDrinks;
 import com.drinkzage.windows.NonAlcoholicDrinkWindow;
 import com.drinkzage.windows.NotDoneYetWindow;
 import com.drinkzage.windows.LiquorChoice;
+import com.drinkzage.windows.WineChoice;
 import com.drinkzage.windows.ListWindowConsts;
 import com.drinkzage.windows.SearchWindow;
 import com.drinkzage.windows.ShotWindow;
@@ -108,28 +107,12 @@ class DrinkingZage extends Sprite {
 #end
 	}
 	
-	function resizeHandler(e:Event):Void
+	public function resetVisiblity( items:Vector<Item> ):Void
 	{
-		populate();
-	}
-	
-	public function resetVisiblity():Void
-	{
-		var count:Int = _allItems.length;
+		var count:Int = items.length;
 		for ( i in 0...count )
 		{
-			_allItems[i].setVisible( true );
-		}
-	}
-	
-	public function hideItemsWithoutString( val:String ):Void
-	{
-		var count:Int = _allItems.length;
-		for ( i in 0...count )
-		{
-			var index:Int = _allItems[i].name().toLowerCase().indexOf( val.toLowerCase(), 0 );
-			if ( 0 > index )
-				_allItems[i].setVisible( false );
+			items[i].setVisible( true );
 		}
 	}
 	
@@ -145,15 +128,14 @@ class DrinkingZage extends Sprite {
 #if android		
 		stage.needsSoftKeyboard = true;
 #end		
-		
-		stage.addEventListener(Event.RESIZE, resizeHandler);
+	
 		populate();
 	}
 	
 	public function populate():Void
 	{
 		trace( "DrinkingZage.populate" );
-		prepareNewWindow();
+		removeAllChildrenAndDrawLogo();
 		addButtons();
 		searchDraw();
 	}
@@ -173,7 +155,7 @@ class DrinkingZage extends Sprite {
 				graphic.y = j * height + GUTTER + logoHeight();
 				graphic.width = width - (GUTTER * 2);
 				graphic.height = height - (GUTTER * 2);
-				graphic.addEventListener( MouseEvent.CLICK, mouseDownHandler);
+				_em.addEvent( graphic, MouseEvent.CLICK, mouseDownHandler );
 				addChild(graphic);
 			}
 		}
@@ -225,12 +207,17 @@ class DrinkingZage extends Sprite {
 		//_customBut.addEventListener( MouseEvent.CLICK, searchDrinkClickHandler);
 		//this.addChild(_customBut);
 		
-		_searchBut = Utils.loadGraphic ( "assets/search.jpg", true );
-		_searchBut.name = "searchBut";
-		_searchBut.y = Lib.current.stage.stageHeight - _searchBut.height;
-		_searchBut.x = 0;
-		_searchBut.width = Lib.current.stage.stageWidth;
-		_searchBut.addEventListener( MouseEvent.CLICK, searchDrinkClickHandler);
+		if ( null == _searchBut )
+		{
+			_searchBut = Utils.loadGraphic ( "assets/search.jpg", true );
+			_searchBut.name = "searchBut";
+			_searchBut.y = Lib.current.stage.stageHeight - _searchBut.height;
+			_searchBut.x = 0;
+			_searchBut.width = Lib.current.stage.stageWidth;
+			// This is a special case of add event, since this button lives from screen to screen
+			// we want to leave this listener attached to it.
+			_searchBut.addEventListener( MouseEvent.CLICK, searchDrinkClickHandler);
+		}
 		this.addChild(_searchBut);
 	}
 	
@@ -243,25 +230,14 @@ class DrinkingZage extends Sprite {
 		sw.populate();
 	}
 
-	public function prepareNewWindow():Void
+	public function removeAllChildrenAndDrawLogo():Void
 	{
 		// remove ALL items from the display list
-		var children:Int = this.numChildren;
-		var dispObject :DisplayObject = null;
-		for ( i in 0...children )
+		for ( i in 0...numChildren )
 		{
-			dispObject = this.removeChildAt( 0 );
-			if ( dispObject.hasEventListener( MouseEvent.CLICK ) )
-				dispObject.removeEventListener( MouseEvent.CLICK, mouseDownHandler );
+			this.removeChildAt( 0 );
 		}
 
-		//trace( "DrinkZage.prepareNewWindow - Number of Children after removal: " + this.numChildren );
-		//for  ( j in 0...this.numChildren )
-		//{
-			//var item:DisplayObject = this.getChildAt(j);
-			//trace ( item.name );
-		//}
-		
 		logoDraw();
 	}
 	
@@ -269,7 +245,6 @@ class DrinkingZage extends Sprite {
 	{
 		//trace( me.target.name );
 		var index:Int = me.target.name;
-		stage.removeEventListener(Event.RESIZE, resizeHandler);
 		var nw:Dynamic = null;
 		switch ( index )
 		{
@@ -290,7 +265,7 @@ class DrinkingZage extends Sprite {
 			case 2: // Wine
 			{
 				_em.removeAllEvents();
-				nw = WineListWindow.instance();
+				nw = WineChoice.instance();
 				nw.setBackHandler( this );
 				nw.populate();
 			}
@@ -340,7 +315,7 @@ class DrinkingZage extends Sprite {
 		var wineListSize:Int = drinks.wines.length;
 		for ( i in 0 ... wineListSize )
 		{
-			addItem ( new Item( drinks.wines[i].name, WineWindow ) );
+			addItem ( new ItemWine( drinks.wines[i].name, WineWindow, drinks.wines[i].color ) );
 		}
 		
 		var nonAlcoholicDrinksListSize:Int = drinks.nonAlcoholicDrinks.length;

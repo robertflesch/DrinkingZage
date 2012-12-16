@@ -58,15 +58,16 @@ class ChoiceWindow extends ITabWindow
 			graphic.name = Std.string( i );
 			graphic.x = GUTTER;
 			graphic.y = i * height + GUTTER + Globals.g_app.logoHeight() + Globals.g_app.tabHeight();
-			graphic.width = width - (GUTTER * numberOfChoices);
-			graphic.height = height - (GUTTER * numberOfChoices);
+			graphic.width = width - (GUTTER * 2);
+			graphic.height = height - (GUTTER * 1);
 			_em.addEvent( graphic, MouseEvent.CLICK, choiceClickHandler );
 			_window.addChild(graphic);
 
 			var icon:Sprite = Utils.loadGraphic ( "assets/" + _choiceButtons[ i ]._image, true );
 			icon.name = Std.string( i );
-			icon.width = graphic.height * 0.75;
+			var hvw = icon.height / icon.width;
 			icon.height = graphic.height * 0.75;
+			icon.width = icon.height / hvw;
 			icon.x = graphic.x + graphic.width/2 - icon.width/2;
 			icon.y = graphic.y + graphic.height/2 - icon.height/2;
 			_em.addEvent( icon, MouseEvent.CLICK, choiceClickHandler );

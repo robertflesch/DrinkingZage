@@ -17,8 +17,6 @@ import nme.display.Stage;
 import nme.events.MouseEvent;
 import nme.events.Event;
 
-import nme.filters.GlowFilter;
-
 import nme.geom.Vector3D;
 
 import nme.text.TextField;

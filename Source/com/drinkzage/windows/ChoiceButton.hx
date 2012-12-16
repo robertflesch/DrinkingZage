@@ -18,6 +18,8 @@ import com.drinkzage.windows.IListWindow;
  * @author Robert Flesch
  */
 
+
+
 class ChoiceButton
 {
 	public var _text:String;

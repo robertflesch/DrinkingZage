@@ -22,9 +22,11 @@ class EventManager
 		_events.push( eo );
 	}
 
+	// This is called by functions whose events have short lives
+	// Like a mouse move message, which is just active after a mouse down has been processed
 	public function removeEvent( target:EventDispatcher, type:String, listener:Dynamic->Void ):Void 
 	{
-		//trace( "EventManager.removeEvent - target: " + target + "  type: " + type );
+		//trace( "EventManager.removeEvent - target: " + target + "  type: " + type + " eventSize: " + _events.length );
 		// can be slow if lots of listeners, but works for now
 		for ( e in 0..._events.length )
 		{
@@ -33,6 +35,8 @@ class EventManager
 			&& _events[e]._listener == listener )
 			{
 				_events[e].dispose();
+				_events.splice( e, 1 );
+				return;
 			}
 		}
 	}
@@ -42,7 +46,8 @@ class EventManager
 		//trace( "EventManager.removeAllEvents" );
 		while ( 0 < _events.length )
 		{
-			_events.pop().dispose();
+			var eo:EventObject = _events.pop();
+			eo.dispose();
 		}
 	}
 }

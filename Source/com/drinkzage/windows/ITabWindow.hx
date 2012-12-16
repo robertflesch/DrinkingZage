@@ -1,5 +1,6 @@
 ﻿package com.drinkzage.windows;
 
+import nme.display.Bitmap;
 import nme.Vector;
 import nme.Lib;
 import com.drinkzage.utils.Utils;
@@ -72,18 +73,37 @@ class ITabWindow extends IChildWindow
 	// add the tabs and search button
 	public function populate():Void
 	{
-		_window.prepareNewWindow();		
+		_window.removeAllChildrenAndDrawLogo();		
 		_tabHandler = tabHandler;
 		tabsDraw( _tabs, _tabSelected );
+		
+		_em.addEvent( _stage, KeyboardEvent.KEY_UP, onKeyUp );
 		
 		if ( getUseSearch() )
 			_window.searchDraw();
 	}
 
+	public function tabsRefresh():Void
+	{
+		var width:Float = Lib.current.stage.stageWidth;
+		var tabCount:Int = _tabs.length;
+		for ( i in 0...tabCount )
+		{
+			//trace( "tabsRefresh: " + i );
+			_tabSprites[i].getChildAt(0).visible = false;
+			_tabSprites[i].getChildAt(1).visible = false;
+			if ( i == Type.enumIndex( _tabSelected ) )
+				_tabSprites[i].getChildAt(0).visible = true;
+			else
+				_tabSprites[i].getChildAt(1).visible = true;
+		}
+		
+	}
+	
 	public function tabsDraw( tabs:Vector<String>, tabSelected:Dynamic ):Void
 	{
 		// have to remove old event listeners
-		_em.removeAllEvents();
+//		_em.removeAllEvents();
 		
 		for ( ts in 0..._tabSprites.length )
 		{
@@ -95,11 +115,11 @@ class ITabWindow extends IChildWindow
 		
 		for ( i in 0...tabCount )
 		{
-			//trace( "tabsDraw: " + i );
-			if ( i == Type.enumIndex( tabSelected ) )
-				_tabSprites[i] = Utils.loadGraphic( "assets/" + "tab_active.png", true );
-			else	
-				_tabSprites[i] = Utils.loadGraphic( "assets/" + "tab_inactive.png", true );
+			trace( "tabsDraw: " + i );
+			// load both images onto tab
+			_tabSprites[i] = Utils.loadGraphic( "assets/" + "tab_active.png", true );
+			var bm:Bitmap = Utils.loadGraphic( "assets/" + "tab_inactive.png" );
+			_tabSprites[i].addChildAt( bm, 1 );
 				
 			_tabSprites[i].x = i * width / tabCount;
 			_tabSprites[i].y = Globals.g_app.logoHeight();
@@ -118,6 +138,8 @@ class ITabWindow extends IChildWindow
 			_em.addEvent( _tabTextFields[i], MouseEvent.CLICK, _tabHandler );
 			Globals.g_app.addChild(_tabTextFields[i]);
 		}
+		
+		tabsRefresh();
 	}
 	
 	
@@ -147,22 +169,14 @@ class ITabWindow extends IChildWindow
 		 trace( "backHandler disable due to time" );
 	}
 	
-	public function addListeners():Void
-	{
-		_em.addEvent( _stage, KeyboardEvent.KEY_UP, onKeyUp );
-	}
-	
-	public function removeListeners():Void
-	{
-		_em.removeEvent( _stage, KeyboardEvent.KEY_UP, onKeyUp );
-	}
-	
 	// this intercepts the ESC or BACK key (Android)
 	// And calls the back handler to move to parent window
 	function onKeyUp( event:KeyboardEvent ):Void
 	{
+		//trace( "ITabWindow.onKeyUp - key: " + event.keyCode );
 		if ( Globals.BACK_BUTTON == event.keyCode )
 		{
+			//trace( "ITabWindow.onKeyUp - BACK_BUTTON: " + event.keyCode );
 			backHandler();
 			event.stopImmediatePropagation();
 		}

@@ -13,8 +13,6 @@ import nme.display.DisplayObject;
 import nme.events.MouseEvent;
 import nme.events.Event;
 
-import nme.filters.GlowFilter;
-
 import nme.text.TextField;
 import nme.text.TextFormat;
 import nme.text.TextFormatAlign;
@@ -61,6 +59,15 @@ class BeerListWindow extends IListWindow
 		createList();
 	}
 	
+	override public function populate():Void
+	{
+		// todo - BUG BUG BUG This should not be required
+		// but if its not here, then only some of the items show up
+		// when returning to this window
+		_tabSelected = BeerCategory.All;
+		
+		super.populate();
+	}
 	//
 	///////////////////////////////////////////////////////////////
 	// overides 
@@ -87,67 +94,20 @@ class BeerListWindow extends IListWindow
 				backHandler();
 				return;
 		}
-		populate();
+		listDraw( _listOffset, false );
+		tabsRefresh();
 	}
 
-	override private function listDraw( scrollOffset:Float ):Void
+	override private function applyFilter():Void
 	{
-		var width:Float = _stage.stageWidth;
-		var height:Float = Globals.g_app.componentHeight();
-		var offset:Float = Globals.g_app.tabHeight() + Globals.g_app.logoHeight();
-		var itemCount:Int = _items.length;
-		var item:Item = null;
-		var countDrawn:Int = 0;
-		var remainder:Float = scrollOffset % Globals.g_app.componentHeight();
-		for ( i in 0...itemCount )
+		_window.resetVisiblity( _items );
+
+		var count:Int = _items.length;
+		for ( i in 0...count )
 		{
-			if ( scrollOffset <= i * Globals.g_app.componentHeight() + Globals.g_app.componentHeight() )
-			{
-				item = cast( _items[i], ItemBeer );
-				if ( BeerCategory.All == _tabSelected )
-				{
-					cast( _components[countDrawn], TextField ).text = _items[i].name();
-					cast( _components[countDrawn], TextField ).setTextFormat(_tf);
-					_components[countDrawn].name = Std.string( i );
-					_components[countDrawn].x = ListWindowConsts.GUTTER;
-					_components[countDrawn].width = width - ListWindowConsts.GUTTER * 2;
-					
-					_components[countDrawn].y = countDrawn * Globals.g_app.componentHeight() + offset - remainder;
-					cast( _components[countDrawn], DataTextField ).setData( _items[i] );
-					
-					if ( _components[countDrawn].y + Globals.g_app.logoHeight() > _stage.stageHeight )
-						break;
-					
-					_window.addChild(_components[countDrawn]);
-					countDrawn++;
-					if ( countDrawn == _maxComponents )
-						break;
-				}
-				else 
-				{
-					if ( _tabSelected == cast( item, ItemBeer ).beerCategory )
-					{
-						cast( _components[countDrawn], TextField ).text = _items[i].name();
-						cast( _components[countDrawn], TextField ).setTextFormat(_tf);
-						_components[countDrawn].name = Std.string( i );
-						_components[countDrawn].x = ListWindowConsts.GUTTER;
-						_components[countDrawn].width = width - ListWindowConsts.GUTTER * 2;
-						
-						_components[countDrawn].y = countDrawn * Globals.g_app.componentHeight() + offset - remainder;
-						cast( _components[countDrawn], DataTextField ).setData( _items[i] );
-						
-						if ( _components[countDrawn].y + Globals.g_app.logoHeight() > _stage.stageHeight )
-							break;
-						
-						_window.addChild(_components[countDrawn]);
-						countDrawn++;
-						if ( countDrawn == _maxComponents )
-							break;
-					}
-				}
-				
-				
-			}
+			var item:Item = cast( _items[i], ItemBeer );
+			if ( BeerCategory.All != _tabSelected && cast( item, ItemBeer ).beerCategory != _tabSelected )
+				_items[i].setVisible( false );
 		}
 	}
 	

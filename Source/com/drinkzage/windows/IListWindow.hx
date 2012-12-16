@@ -5,8 +5,8 @@ import nme.Vector;
 import nme.display.DisplayObject;
 
 import nme.events.Event;
-import nme.events.KeyboardEvent;
 import nme.events.MouseEvent;
+import nme.events.KeyboardEvent;
 
 import nme.text.TextField;
 import nme.text.TextFormat;
@@ -27,18 +27,21 @@ class IListWindow extends ITabWindow
 	function getListOffset():Float { return _listOffset; }
 	function setListOffset( val:Float ):Float { return _listOffset = val; }
 	
+	private var _listHasMomentum( listHasMomentum, setListHasMomentum ):Bool = true;
+	function listHasMomentum():Bool { return _listHasMomentum; }
+	function setListHasMomentum( val:Bool ):Bool { return _listHasMomentum = val; }
+	
 	private var _clickPoint:Float = 0;
-	private var _change:Float = 0;
+	private var _dragDistance:Float = 0;
 	private var _drag:Bool = false;
-	private var _maxOffset:Float = 0;
 	private var _time:Int = 0;
 	private var _swipeSpeed:Float = 0;
-	public  var _item:Item = null;
+	
+	private var _maxOffset:Float = 0;
+	private var _item:Item = null;
 	private var _maxComponents:Int = 0;
 	private var _components:Vector<DisplayObject> = null;
-	public  var _tf:TextFormat = null;
-	
-	public var _temp:Item = null;
+	private var _tf:TextFormat = null;
 	
 	private function new () {
 		super();
@@ -49,11 +52,18 @@ class IListWindow extends ITabWindow
 		}
 	}
 	
-	public function createList():Void {}
+	public function createList():Void 
+	{
+		throw ( "IListWindow.createList - VIRTUAL FUNCTION WHICH NEEDS TO BE OVERRIDDEN" );
+	}
 	
 	override public function populate():Void
 	{
-		trace( "IListWindow.populate" );
+		//trace( "IListWindow.populate" );
+		_clickPoint = 0.0;
+		_dragDistance = 0.0;
+		_drag = false;
+
 		_maxOffset = _items.length * Globals.g_app.componentHeight() - (_stage.stageHeight - Globals.g_app.tabHeight() - Globals.g_app.logoHeight());
 		_maxOffset += Globals.g_app.tabHeight() + ListWindowConsts.FUDGE_FACTOR; // Fudge factor
 		
@@ -61,27 +71,38 @@ class IListWindow extends ITabWindow
 		var maxVisibleComponents:Float = drawableArea / Globals.g_app.componentHeight() + 0.5;
 		// Add in one extra for when partial components at top and bottom as visible
 		_maxComponents = Std.int( maxVisibleComponents ) + 1;
+	
+		if ( null == _components )
+			createComponents();
 		
-		createComponents();
+		_window.removeAllChildrenAndDrawLogo();		
 		
-		_window.prepareNewWindow();		
-
-		_clickPoint = 0.0;
-		_change = 0.0;
-		_drag = false;
-		
+		// need to duplicate functionality of parent
+		// because list drawn need to come before tab and search
 		listDraw( _listOffset );
-
+		
 		_tabHandler = tabHandler;
 		tabsDraw( _tabs, _tabSelected );
-		addListeners();
+		
 		
 		if ( getUseSearch() )
 			_window.searchDraw();
-	}
+
+		_em.addEvent( _stage, KeyboardEvent.KEY_UP, onKeyUp );
+		_em.addEvent( _stage, MouseEvent.MOUSE_DOWN, mouseDownHandler );
+		_em.addEvent( _stage, Event.ENTER_FRAME, onEnter );
+	}	
 	
 	public function createComponents():Void
 	{
+		if ( null == _tf )
+		{
+			_tf = new TextFormat("_sans");
+			_tf.size = 36;                // set the font size
+			_tf.align = TextFormatAlign.CENTER;
+			_tf.color = 0xFF0000;           // set the color
+		}
+		
 		_components = new Vector<DisplayObject>();
 		for ( i in 0..._maxComponents )
 		{
@@ -95,18 +116,35 @@ class IListWindow extends ITabWindow
 			cast( _components[i], TextField ).selectable = false;
 			//_components[i].name = "item";
 			
-			if ( null == _tf )
-			{
-				_tf = new TextFormat("_sans");
-				_tf.size = 36;                // set the font size
-				_tf.align = TextFormatAlign.CENTER;
-				_tf.color = 0xFF0000;           // set the color
-			}
 		}
 	}
 	
-	private function listDraw( scrollOffset:Float ):Void
+	private function setComponentValues( displyObject:DisplayObject, item:Item, i:Int, countDrawn:Int, offset:Float, remainder:Float ):Void
 	{
+		cast( displyObject, TextField ).text = item.name();
+		cast( displyObject, TextField ).setTextFormat(_tf);
+		displyObject.name = Std.string( i );
+		displyObject.x = ListWindowConsts.GUTTER;
+		displyObject.y = countDrawn * Globals.g_app.componentHeight() + offset - remainder;
+		displyObject.width = _stage.stageWidth - ListWindowConsts.GUTTER * 2;
+		cast( displyObject, DataTextField ).setData( item );
+	}
+	
+	private function applyFilter():Void
+	{
+		// override this to apply a custom filter
+		// just make sure everything is visible
+		_window.resetVisiblity( _items );
+	}
+	
+	private function listDraw( scrollOffset:Float, addChild:Bool = true ):Void
+	{
+		for ( j in 0..._maxComponents )
+			_components[j].visible = false;
+
+		// this gives decendants a choice of what items they want to display
+		applyFilter();
+		
 		var width:Float = _stage.stageWidth;
 		var height:Float = Globals.g_app.componentHeight();
 		var offset:Float = Globals.g_app.tabHeight() + Globals.g_app.logoHeight();
@@ -118,76 +156,60 @@ class IListWindow extends ITabWindow
 		{
 			if ( scrollOffset <= i * Globals.g_app.componentHeight() + Globals.g_app.componentHeight() )
 			{
-				cast( _components[countDrawn], TextField ).text = _items[i].name();
-				cast( _components[countDrawn], TextField ).setTextFormat(_tf);
-				_components[countDrawn].name = Std.string( i );
-				_components[countDrawn].x = ListWindowConsts.GUTTER;
-				_components[countDrawn].width = width - ListWindowConsts.GUTTER * 2;
-				_components[countDrawn].y = countDrawn * Globals.g_app.componentHeight() + offset - remainder;
-				cast( _components[countDrawn], DataTextField ).setData( _items[i] );
-				
-				if ( _components[countDrawn].y + Globals.g_app.logoHeight() > _stage.stageHeight )
-					break;
-				
-				_window.addChild(_components[countDrawn]);
-				countDrawn++;
-				if ( countDrawn == _maxComponents )
-					break;
+				item = _items[i];
+				if ( true == item.isVisible() )
+				{
+					_components[countDrawn].visible = true;
+					
+					setComponentValues( _components[countDrawn], item, i, countDrawn, offset, remainder );
+					
+					if ( _components[countDrawn].y + Globals.g_app.logoHeight() > _stage.stageHeight )
+						break;
+					
+					if ( addChild )
+						_window.addChild(_components[countDrawn]);
+					countDrawn++;
+					if ( countDrawn == _maxComponents )
+						break;
+				}
 			}
 		}
 	}
 	
-	// This removes all of the "items" from the displayObject list.
-	private function listRefresh( scrollOffset:Float ):Void
+	private function mouseDownHandler( me:MouseEvent ):Void
 	{
-		for ( j in 0..._maxComponents )
-			_components[j].visible = false;
-			
-		var offset:Float = Globals.g_app.tabHeight() + Globals.g_app.logoHeight();
-		var itemCount:Int = _items.length;
-		var countDrawn:Int = 0;
-		var remainder:Float = scrollOffset % Globals.g_app.componentHeight();
-		for ( i in 0...itemCount )
-		{
-			if ( scrollOffset <= i * Globals.g_app.componentHeight() + Globals.g_app.componentHeight() )
-			{
-				_components[countDrawn].visible = true;
-				cast( _components[countDrawn], TextField ).text = _items[i].name();
-				cast( _components[countDrawn], TextField ).setTextFormat(_tf);
-				_components[countDrawn].y = countDrawn * Globals.g_app.componentHeight() + offset - remainder;
-				cast( _components[countDrawn], DataTextField ).setData( _items[i] );
-				
-				if ( _components[countDrawn].y + Globals.g_app.logoHeight() > _stage.stageHeight )
-					break;
-				countDrawn++;
-				if ( countDrawn == _maxComponents )
-					break;
-			}
-		}
+		_em.addEvent( _stage, MouseEvent.MOUSE_UP, mouseUpHandler );
+		_em.addEvent( _stage, MouseEvent.MOUSE_MOVE, mouseMoveHandler );
+		
+		_clickPoint = me.stageY;
 	}
 	
 	public function mouseUpHandler( me:MouseEvent ):Void
 	{
 		_em.removeEvent( _stage, MouseEvent.MOUSE_UP, mouseUpHandler );
-		//_stage.removeEventListener( MouseEvent.MOUSE_UP, mouseUpHandler );
-		_em.removeEvent( _stage, MouseEvent.MOUSE_MOVE, mouseUpHandler );
-		//_stage.removeEventListener( MouseEvent.MOUSE_MOVE, mouseMoveHandler );
+		_em.removeEvent( _stage, MouseEvent.MOUSE_MOVE, mouseMoveHandler );
 		
 		// if we let the mouse up over the header or logo, and it hasnt moved then return
 		if ( me.stageY < Globals.g_app.tabHeight() + Globals.g_app.logoHeight() && me.stageY - _clickPoint < 5 )
 			return;
 			
-		listOffsetAdjust( _change );
+		// _dragDistance is calculated in the last mouseMove event
+		listOffsetAdjust( _dragDistance );
 		
 		if ( _drag )
 		{
-			// TODO currently the list doesnt have momentum
-			// so when you stop moving, the list stops
-			var swipeTime:Float = Lib.getTimer() - _time;
-			_swipeSpeed = _change / swipeTime * 10;
+			if ( listHasMomentum() )
+			{
+				var swipeTime:Float = Lib.getTimer() - _time;
+				_swipeSpeed = _dragDistance / swipeTime ; // * 500;
+				_swipeSpeed *= 10;
+				_swipeSpeed = Math.min( _swipeSpeed, 15 );
+				//trace( "swipeSpeed: " + _swipeSpeed + "  change: " + _dragDistance + "  swipeTime: " + swipeTime );
+			}
 
+			// drag is done, reset data
 			_drag = false;
-			_change = 0;
+			_dragDistance = 0;
 		}
 		else
 		{
@@ -206,43 +228,57 @@ class IListWindow extends ITabWindow
 		}
 	}
 	
-	private function mouseDownHandler( me:MouseEvent ):Void
+//	public var _temp:Item = null;
+	private function onEnter(e:Event):Void
 	{
-		_em.addEvent( _stage, MouseEvent.MOUSE_UP, mouseUpHandler );
-		//_stage.addEventListener( MouseEvent.MOUSE_UP, mouseUpHandler );
-		_em.addEvent( _stage, MouseEvent.MOUSE_MOVE, mouseUpHandler );
-		//_stage.addEventListener( MouseEvent.MOUSE_MOVE, mouseMoveHandler );
+		//_temp.setText( "2" );
+		//_window.addChild( _temp );
+		//_temp.setText( Std.string( Std.parseInt( _temp._textField.text ) + 1) );
 		
-		_clickPoint = me.stageY;
+		if ( 0 != _swipeSpeed && true != _drag )
+		{	
+			_swipeSpeed = 0.95 * _swipeSpeed;
+			//trace( "decay swipeSpeed: " + _swipeSpeed );
+			if ( 0.1 > Math.abs( _swipeSpeed ) )
+				_swipeSpeed = 0;
+			
+			listOffsetAdjust( _swipeSpeed );
+
+			listDraw( _listOffset, false );
+		}
 	}
 	
 	private function mouseMoveHandler( me:MouseEvent ):Void
 	{
 		if ( 5 < Math.abs( _clickPoint - me.stageY ) )
 		{
+			// only set the start time on the first message
+			if ( false == _drag )
+				_time = Lib.getTimer();
+				
 			_drag = true;
-			_time = Lib.getTimer();
 		}
 	
 		if ( _drag )
 		{
 			_swipeSpeed = 0;
-			_change = _clickPoint - me.stageY;
+			_dragDistance = _clickPoint - me.stageY;
 		
-			if ( _maxOffset < _listOffset + _change )
+			// is list at bottom?
+			if ( _maxOffset < _listOffset + _dragDistance )
 			{
 				// end of list
-				listRefresh( _maxOffset );
+				listDraw( _maxOffset, false );
 			}
 			else
 			{
 				// Beginning of list
-				if ( _listOffset + _change < 0 )
-					listRefresh( 0 );
+				if ( _listOffset + _dragDistance < 0 )
+					listDraw( 0, false );
 				else
 				{
-//					trace( "mouseMoveHandler: " + _listOffset + _change );
-					listRefresh( _listOffset + _change ); // middle of list
+					// middle of list
+					listDraw( _listOffset + _dragDistance, false ); // middle of list
 				}
 			}
 		}
@@ -250,28 +286,10 @@ class IListWindow extends ITabWindow
 	
 	public function selectionHandler():Void
 	{
+		throw ( "IListWindow.selectionHandler - VIRTUAL FUNCTION WHICH SHOULD BE OVERRIDDEN" );
 		_em.removeAllEvents();
 		var ndyw:NotDoneYetWindow = NotDoneYetWindow.instance();
 		ndyw.populate();
-	}
-	
-	private function onEnter(e:Event):Void
-	{
-		//_temp.setText( "2" );
-		//_window.addChild( _temp );
-		//_temp.setText( Std.string( Std.parseInt( _temp._textField.text ) + 1) );
-		/*
-		if ( 0 != _swipeSpeed && true != _drag )
-		{	
-			_swipeSpeed = 0.95 * _swipeSpeed;
-			if ( 0.1 > Math.abs( _swipeSpeed ) )
-				_swipeSpeed = 0;
-			
-//			listOffsetAdjust( _swipeSpeed );
-
-			populate(); 	
-		}
-		*/
 	}
 	
 	private function listOffsetAdjust( changeAmount:Float ):Void
@@ -288,21 +306,4 @@ class IListWindow extends ITabWindow
 			}
 		}
 	}
-	
-	override public function addListeners():Void
-	{
-		super.addListeners();
-		_em.addEvent( _stage, MouseEvent.MOUSE_DOWN, mouseDownHandler );
-		_em.addEvent( _stage, Event.ENTER_FRAME, onEnter );
-		//_stage.addEventListener( MouseEvent.MOUSE_DOWN, mouseDownHandler );
-		//_stage.addEventListener( nme.events.Event.ENTER_FRAME, onEnter);
-	}
-	
-	override public function removeListeners():Void
-	{
-		super.removeListeners();
-		_stage.removeEventListener( MouseEvent.MOUSE_DOWN, mouseDownHandler );
-		_stage.removeEventListener( nme.events.Event.ENTER_FRAME, onEnter);
-	}
-	
 }

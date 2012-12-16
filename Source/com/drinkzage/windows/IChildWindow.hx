@@ -1,8 +1,5 @@
 ﻿package com.drinkzage.windows;
 
-import nme.events.Event;
-import nme.events.EventDispatcher;
-import nme.events.KeyboardEvent;
 import nme.display.Stage;
 
 import com.drinkzage.Globals;
