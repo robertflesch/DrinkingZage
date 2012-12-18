@@ -21,6 +21,9 @@ import com.drinkzage.windows.BeerListWindow;
 import com.drinkzage.windows.Item;
 import com.drinkzage.utils.Utils;
 
+import nme.Lib;
+
+
 /**
  * @author Robert Flesch
  */
@@ -31,6 +34,7 @@ class BeerWindow extends ItemFinalWindow {
 	private static var _beerTabSelected:Dynamic = BeerContainer.Bottle;
 	private 	   var _container:Sprite = null;
 	private 	   var _label:Sprite = null;
+	private 	   var _label_hvw:Float = 0;
 	
 	public static function instance():BeerWindow
 	{ 
@@ -38,13 +42,6 @@ class BeerWindow extends ItemFinalWindow {
 			_instance = new BeerWindow();
 			
 		return _instance;
-	}
-	
-	private function setSelectedBeerType( container:BeerContainer ):Void
-	{
-		_tabSelected = container;
-		// Remember this for next time window is activated
-		_beerTabSelected = _tabSelected;
 	}
 	
 	public function new () 
@@ -82,15 +79,15 @@ class BeerWindow extends ItemFinalWindow {
 	
 	override public function populate():Void
 	{
-		//_tabSelected = _beerTabSelected;
-		_tabSelected = BeerContainer.Bottle;
+		trace( "BeerWindow.populate" );
+		_tabSelected = _beerTabSelected;
+		
 		_container = new Sprite(); 
 		_label = new Sprite();
 		
 		itemBuild();
 		
 		super.populate();
-
 	}
 	
 	override public function tabHandler( me:MouseEvent ):Void
@@ -102,15 +99,16 @@ class BeerWindow extends ItemFinalWindow {
 		switch ( index )
 		{
 			case 0: // Bottle
-				_tabSelected = BeerContainer.Bottle;
+				_tabSelected = _beerTabSelected = BeerContainer.Bottle;
 			case 1: // Can
-				_tabSelected = BeerContainer.Can;
+				_tabSelected = _beerTabSelected = BeerContainer.Can;
 			case 2: // ..
-				_tabSelected = BeerContainer.Draft;
+				_tabSelected = _beerTabSelected = BeerContainer.Draft;
 			case 3: // ..
-				_tabSelected = BeerContainer.Pitcher;
+				_tabSelected = _beerTabSelected = BeerContainer.Pitcher;
 			case 4: // Back
 				backHandler();
+				return;
 		}
 
 		tabsRefresh();
@@ -122,7 +120,7 @@ class BeerWindow extends ItemFinalWindow {
 		var bottleImage:Bitmap;
 		if ( Type.enumEq( BeerContainer.Can, container ) )
 		{
-			bottleImage = new Bitmap (Assets.getBitmapData ("assets/Can.png"));
+			bottleImage = new Bitmap (Assets.getBitmapData ("assets/beer/Can.png"));
 		}
 		else if ( Type.enumEq( BeerContainer.Bottle, container ) )
 		{
@@ -131,7 +129,7 @@ class BeerWindow extends ItemFinalWindow {
 			
 			trace( "assets/" + containerName + colorName + ".png");
 
-			bottleImage = new Bitmap (Assets.getBitmapData ("assets/" + containerName + colorName + ".png"));
+			bottleImage = new Bitmap (Assets.getBitmapData ("assets/beer/" + containerName + colorName + ".png"));
 		}
 		else
 		{
@@ -140,7 +138,7 @@ class BeerWindow extends ItemFinalWindow {
 			
 			trace( "assets/" + containerName + colorName + ".png");
 
-			bottleImage = new Bitmap (Assets.getBitmapData ("assets/" + containerName + colorName + ".png"));
+			bottleImage = new Bitmap (Assets.getBitmapData ("assets/beer/" + containerName + colorName + ".png"));
 		}
 		return bottleImage;
 	}
@@ -148,9 +146,9 @@ class BeerWindow extends ItemFinalWindow {
 	private function addImage( beer:ItemBeer, type:BeerContainer ):Void
 	{
 		var bottleImage:Bitmap = getBeerImage( beer, type );
-		//var hvw = bottleImage.height / bottleImage.width;
-		//bottleImage.height = _stage.stageHeight * 0.75;
-		//bottleImage.width = bottleImage.height / hvw;
+		var hvw = bottleImage.height / bottleImage.width;
+		bottleImage.height = Globals.g_app.drawableHeight() * 0.90;
+		bottleImage.width = bottleImage.height / hvw;
 		bottleImage.visible = false;
 		_container.addChildAt( bottleImage, Type.enumIndex( type ) );
 	}
@@ -162,16 +160,9 @@ class BeerWindow extends ItemFinalWindow {
 		addImage( beer, BeerContainer.Can );
 		addImage( beer, BeerContainer.Draft );
 		addImage( beer, BeerContainer.Pitcher );
-		var label:Bitmap = new Bitmap (Assets.getBitmapData ( "assets/" + beer._label ));
-		var tmp:Float = Globals.g_app.drawableHeight();
-		var hvw = _stage.height / _stage.width;
-		_container.y = (Globals.g_app.logoHeight() + Globals.g_app.tabHeight() + Globals.g_app.drawableHeight() / 2) - _container.height / 2;
-		_container.x = (_stage.width * 2 / 3 ) / 2 - _container.width / 2;
 		
-		_label = Utils.loadGraphic( "assets/" + beer._label, true );
-		label.x = 300;
-		//label.x = (_stage.width * 2 / 3 ) / 2 - label.width / 2;
-
+		_label = Utils.loadGraphic( "assets/beer/" + beer._label, true );
+		_label_hvw = _label.height / _label.width;
 	}
 	
 	private function hideContainers():Void
@@ -182,84 +173,52 @@ class BeerWindow extends ItemFinalWindow {
 	
 	override public function itemDraw():Void	
 	{
-		// height is 744
-		// width is 320
-		var beer:ItemBeer = cast( _item, ItemBeer );
-		
-		var width:Float = _stage.stageWidth;
-		var height:Float = _stage.stageHeight;
-		
 		hideContainers();
 		
-		_container.getChildAt( Type.enumIndex( _tabSelected ) ).visible = true;
+		// make the selected container visible
+		var selectedContainer:DisplayObject = _container.getChildAt( Type.enumIndex( _tabSelected ) );
+		selectedContainer.visible = true;
+		
+		var drawableCenterHeight:Float = (Globals.g_app.logoHeight() + Globals.g_app.tabHeight() + Globals.g_app.drawableHeight() / 2);
+		_container.y = drawableCenterHeight - selectedContainer.height / 2;
+		_container.x = (_stage.width * 2 / 3 ) / 2 - selectedContainer.width / 2;
+		
+		_label.width = selectedContainer.width;
+		_label.height = _label.width * _label_hvw;
+		_label.y = drawableCenterHeight - selectedContainer.height / 2;
+		_label.x = (_stage.width * 2 / 3 ) / 2 - _label.width / 2;
+		
+		// for each container we need to tweak the vertical label position 
 		if ( Type.enumEq( BeerContainer.Bottle, _tabSelected ) )
 		{
+			_label.y = drawableCenterHeight;// - (selectedContainer.height * 0.07);
 		}
 		else if ( Type.enumEq( BeerContainer.Can, _tabSelected ) )
 		{
+			_label.y = drawableCenterHeight - (selectedContainer.height * 0.30);
 		}
 		else if ( Type.enumEq( BeerContainer.Draft, _tabSelected ) )
 		{
+			//_label.width = (selectedContainer.width * 0.850);
+			_label.width = (selectedContainer.width * 0.70);
+			_label.height = _label.width * _label_hvw;
+			_label.y = drawableCenterHeight - (selectedContainer.height * 0.20);
+			_label.x = (_stage.width * 2 / 3 ) / 2 - _label.width / 2;
 		}
 		else if ( Type.enumEq( BeerContainer.Pitcher, _tabSelected ) )
 		{
+			_label.width = (selectedContainer.width * 0.70);
+			_label.height = _label.width * _label_hvw;
+			_label.y = drawableCenterHeight - (selectedContainer.height * 0.17);
+			_label.x = (_stage.width * 2 / 3 ) / 2 - _label.width / 2;
 		}
 		else
 		{  
 			throw ("Unknown Container" );
 		}
 
-		
-/*		if ( Type.enumEq( BeerContainer.Bottle, _tabSelected ) )
-		{
-			var bottleImage:Bitmap = cast( _container.getChildAt( 0 ), Bitmap );
-			var scaling:Float = bottleImage.width/_container.width;
-			
-			_container.y = bottleImage.y + bottleImage.height / 2 - _container.height / 2 + 10;
-			_container.x = bottleImage.x + bottleImage.width / 2 - _container.width / 2;
-		}
-		else if ( Type.enumEq( BeerContainer.Can, _tabSelected ) )
-		{
-			var bottleImage:Bitmap = cast( _container.getChildAt( 0 ), Bitmap );
-			var scaling:Float = bottleImage.width/_container.width;
-			_container.width = bottleImage.width;
-			_container.height = _container.height * scaling;
-			
-			_container.y = bottleImage.y + bottleImage.height / 2 - _container.height / 2 + 10;
-			_container.x = bottleImage.x + bottleImage.width / 2 - _container.width / 2;
-		}
-		/*
-		else if ( Type.enumEq( BeerContainer.Draft, _tabSelected ) )
-		{
-			var scaling:Float = bottleImage.width/label.width;
-			label.width = bottleImage.width * 0.75;
-			label.height = label.height * scaling * 0.75;
-			
-			label.y = bottleImage.y + bottleImage.height / 2 - label.height / 2;
-			label.x = bottleImage.x + bottleImage.width / 2 - label.width / 2;
-		}
-		else if ( Type.enumEq( BeerContainer.Pitcher, _tabSelected ) )
-		{
-			var scaling:Float = bottleImage.width/label.width;
-			label.width = bottleImage.width * 0.6;
-			label.height = label.height * scaling * 0.6;
-			
-			label.y = bottleImage.y + bottleImage.height / 2 - label.height / 2; // - height / 10;
-			label.x = bottleImage.x + bottleImage.width / 2 - label.width / 2 + width/40;
-		}
-		else
-		{  // BOTTLE
-			var scaling:Float = bottleImage.width/label.width;
-			label.width = bottleImage.width;
-			label.height = label.height * scaling;
-			
-			label.y = bottleImage.y + bottleImage.height * 11 / 16 - label.height / 2;
-			label.x = bottleImage.x + bottleImage.width / 2 - label.width / 2;
-		}
-*/
 		_window.addChild( _container );
 		_window.addChild( _label );
-
 	}
 }
 

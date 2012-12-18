@@ -137,7 +137,7 @@ class IListWindow extends ITabWindow
 		_window.resetVisiblity( _items );
 	}
 	
-	private function listDraw( scrollOffset:Float, addChild:Bool = true ):Void
+	private function listDraw( scrollOffset:Float, isListRefresh:Bool = true ):Void
 	{
 		for ( j in 0..._maxComponents )
 			_components[j].visible = false;
@@ -166,7 +166,8 @@ class IListWindow extends ITabWindow
 					if ( _components[countDrawn].y + Globals.g_app.logoHeight() > _stage.stageHeight )
 						break;
 					
-					if ( addChild )
+					// We dont want to readd component, since that brings it to the front, and we want it to stay behind the search and tabs
+					if ( isListRefresh )
 						_window.addChild(_components[countDrawn]);
 					countDrawn++;
 					if ( countDrawn == _maxComponents )

@@ -115,7 +115,7 @@ class ITabWindow extends IChildWindow
 		
 		for ( i in 0...tabCount )
 		{
-			trace( "tabsDraw: " + i );
+			//trace( "tabsDraw: " + i );
 			// load both images onto tab
 			_tabSprites[i] = Utils.loadGraphic( "assets/" + "tab_active.png", true );
 			var bm:Bitmap = Utils.loadGraphic( "assets/" + "tab_inactive.png" );
@@ -157,7 +157,7 @@ class ITabWindow extends IChildWindow
 	{ 
 		if ( 750 < ( Lib.getTimer() - _lastClickTime ) )
 		{
-			trace( "backHandler executed" );
+			//trace( "backHandler executed" );
 			_lastClickTime = Lib.getTimer();
 			//removeListeners();
 			_em.removeAllEvents();
@@ -165,8 +165,8 @@ class ITabWindow extends IChildWindow
 				throw "ITabWindow.backHandler - ERROR - MISSING VALID BACKHANDLER";
 			_backHandler.populate(); 
 		}
-		else 
-		 trace( "backHandler disable due to time" );
+		//else 
+		// trace( "backHandler disable due to time" );
 	}
 	
 	// this intercepts the ESC or BACK key (Android)
