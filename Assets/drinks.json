@@ -1,31 +1,23 @@
 {
     "wines": 
 			[
-                {  "name" : "House Red Wine" },
-                {  "name" : "Merlot" },
-                {  "name" : "Cabernet" },
-                {  "name" : "Shiraz" },
-                {  "name" : "Malbec" },
-                {  "name" : "Pinot noir" },
-                {  "name" : "Zinfandel" },
-                {  "name" : "Sangiovese" },
-                {  "name" : "Barbera" },
-                {  "name" : "House White Wine" },
-                {  "name" : "Chardonnay" },
-                {  "name" : "Sauvignon blanc" },
-                {  "name" : "Moscato" },
-                {  "name" : "Pinot grigio" },
-                {  "name" : "Gewürztraminer" },
-                {  "name" : "Riesling" },
-                {  "name" : "House Red Wine" },
-                {  "name" : "Merlot" },
-                {  "name" : "Cabernet" },
-                {  "name" : "Shiraz" },
-                {  "name" : "Malbec" },
-                {  "name" : "Pinot noir" },
-                {  "name" : "Zinfandel" },
-                {  "name" : "Sangiovese" },
-                {  "name" : "House Sparkling Wine" }
+                {  "name" : "House Red Wine", "color" : "Red" },
+                {  "name" : "Merlot", "color" : "Red" },
+                {  "name" : "Cabernet", "color" : "Red" },
+                {  "name" : "Shiraz", "color" : "Red" },
+                {  "name" : "Malbec", "color" : "Red" },
+                {  "name" : "Pinot noir", "color" : "Red" },
+                {  "name" : "Zinfandel", "color" : "Red" },
+                {  "name" : "Sangiovese", "color" : "Red" },
+                {  "name" : "Barbera", "color" : "Red" },
+                {  "name" : "House White Wine", "color" : "White" },
+                {  "name" : "Chardonnay", "color" : "White" },
+                {  "name" : "Sauvignon blanc", "color" : "White" },
+                {  "name" : "Moscato", "color" : "White" },
+                {  "name" : "Pinot grigio", "color" : "White" },
+                {  "name" : "Gewürztraminer", "color" : "White" },
+                {  "name" : "Riesling", "color" : "White" },
+				{  "name" : "House Sparkling Wine", "color" : "Sparkling" }
             ],
 	"nonAlcoholicDrinks": 
 			[
@@ -89,6 +81,13 @@
     "commercial_beers": 
 			[
 				{ 
+					"name"   			: "Blue Moon", 
+					"label"  			: "blue_moon_label.png",
+					"origin" 			: "Domestic",
+					"container_color"	: "Dark",
+					"beer_color"		: "Light" 
+				},
+				{ 
 					"name"   			: "Bud Light", 
 					"label"  			: "budweiser_lite_label.png",
 					"origin" 			: "Domestic",
@@ -96,38 +95,17 @@
 					"beer_color"		: "Light" 
 				},
 				{ 
+					"name"   			: "Bud Ice", 
+					"label"  			: "bud_ice_label.png",
+					"origin" 			: "Domestic",
+					"container_color"	: "Light",
+					"beer_color"		: "Light" 
+				},
+				{ 
 					"name"   			: "Budweiser", 
 					"label"  			: "budweiser_label.png",
 					"origin" 			: "Domestic",
 					"container_color"	: "Dark",
-					"beer_color"		: "Light" 
-				},
-				{ 
-					"name"   			: "Miller Lite", 
-					"label"  			: "miller_lite_label.png",
-					"origin" 			: "Domestic",
-					"container_color"	: "Light",
-					"beer_color"		: "Light" 
-				},
-				{ 
-					"name"   			: "Coors Lite", 
-					"label"  			: "coors_lite_label.png",
-					"origin" 			: "Domestic",
-					"container_color"	: "Dark",
-					"beer_color"		: "Light" 
-				},
-				{ 
-					"name"   			: "Natural Lite", 
-					"label"  			: "natural_lite_label.png",
-					"origin" 			: "Domestic",
-					"container_color"	: "Dark",
-					"beer_color"		: "Light" 
-				},
-				{ 
-					"name"   			: "Corona", 
-					"label"  			: "corona_label.png",
-					"origin" 			: "Domestic",
-					"container_color"	: "Light",
 					"beer_color"		: "Light" 
 				},
 				{ 
@@ -145,10 +123,94 @@
 					"beer_color"		: "Light" 
 				},
 				{ 
+					"name"   			: "Coors Lite", 
+					"label"  			: "coors_lite_label.png",
+					"origin" 			: "Domestic",
+					"container_color"	: "Dark",
+					"beer_color"		: "Light" 
+				},
+				{ 
+					"name"   			: "Corona", 
+					"label"  			: "corona_label.png",
+					"origin" 			: "Domestic",
+					"container_color"	: "Light",
+					"beer_color"		: "Light" 
+				},
+				{ 
 					"name"   			: "Heineken", 
 					"label"  			: "heineken_label.png",
 					"origin" 			: "Import",
 					"container_color"	: "Green",
+					"beer_color"		: "Light" 
+				},
+				{ 
+					"name"   			: "Keystone Light", 
+					"label"  			: "keystone_light_label.png",
+					"origin" 			: "Domestic",
+					"container_color"	: "Light",
+					"beer_color"		: "Light" 
+				},
+				{ 
+					"name"   			: "Kirichiban", 
+					"label"  			: "kirin_ichiban_label.png",
+					"origin" 			: "Import",
+					"container_color"	: "Dark",
+					"beer_color"		: "Light" 
+				},
+				{ 
+					"name"   			: "Miller Lite", 
+					"label"  			: "miller_lite_label.png",
+					"origin" 			: "Domestic",
+					"container_color"	: "Light",
+					"beer_color"		: "Light" 
+				},
+				{ 
+					"name"   			: "Michelob Ultra Light", 
+					"label"  			: "michelob_ultra_label.png",
+					"origin" 			: "Domestic",
+					"container_color"	: "Light",
+					"beer_color"		: "Light" 
+				},
+				{ 
+					"name"   			: "Modelo Especial", 
+					"label"  			: "modelo_especial_label.png",
+					"origin" 			: "Import",
+					"container_color"	: "Dark",
+					"beer_color"		: "Dark" 
+				},
+				{ 
+					"name"   			: "Natural Lite", 
+					"label"  			: "natural_lite_label.png",
+					"origin" 			: "Domestic",
+					"container_color"	: "Light",
+					"beer_color"		: "Light" 
+				},
+				{ 
+					"name"   			: "Newcastle", 
+					"label"  			: "newcastle_label.png",
+					"origin" 			: "Domestic",
+					"container_color"	: "Dark",
+					"beer_color"		: "Dark" 
+				},
+				{ 
+					"name"   			: "Sam Adams", 
+					"label"  			: "samuel_adams_label.png",
+					"origin" 			: "Domestic",
+					"container_color"	: "Dark",
+					"beer_color"		: "Dark" 
+				},
+				{ 
+					"name"   			: "Pabst Blue Ribbon", 
+					"label"  			: "pabst_blue_ribbon_label.png",
+					"origin" 			: "Domestic",
+					"container_color"	: "Light",
+					"beer_color"		: "Light" 
+				},
+				{ 
+					"name"   			: "Yuengling", 
+					"label"  			: "yuengling_label.png",
+					"origin" 			: "Domestic",
+					"container_color"	: "Dark",
 					"beer_color"		: "Light" 
 				},
 				{ 
