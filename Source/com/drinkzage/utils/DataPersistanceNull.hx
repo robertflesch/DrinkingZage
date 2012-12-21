@@ -10,11 +10,11 @@ class DataPersistanceNull  {
 		trace( "DataPersistanceNull - new" );
 	}
 
-	public function addCustomDrink( drinkType:String, name:String, val:String ):Void
+	public function flush():Void
 	{
-		addEntry( drinkType + name, val );
+		
 	}
-	
+		
 	public function getEntry( key:String ):String
 	{
 		return "";
