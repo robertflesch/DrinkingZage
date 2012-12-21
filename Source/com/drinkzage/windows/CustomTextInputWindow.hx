@@ -87,7 +87,7 @@ class CustomTextInputWindow extends ITabWindow
 		_customText.border = true;
 		//_customText.borderColor = Globals.COLOR_SAGE;
 		_customText.width = Lib.current.stage.stageWidth;
-		_customText.height = _window.componentHeight();
+		_customText.height = componentHeight();
 		_customText.y = Lib.current.stage.stageHeight - _customText.height - 2;
 		_customText.x = 0;
 		_customText.type = TextFieldType.INPUT;
@@ -102,7 +102,7 @@ class CustomTextInputWindow extends ITabWindow
 		
 		// Accepts changes
 		_button = Utils.loadGraphic( "assets/" + "tab_active.png", true );
-		_button.height = Globals.g_app.componentHeight() * 2;
+		_button.height = componentHeight() * 2;
 		_button.width = _stage.width;
 		_button.y = _customText.y - _button.height;
 		_button.x = 0;
@@ -110,7 +110,7 @@ class CustomTextInputWindow extends ITabWindow
 		var text : TextField = new TextField();
 		text.selectable = false;
 		text.text = "Use Changes one time";
-		text.height = Globals.g_app.componentHeight()/3;
+		text.height = componentHeight()/3;
 		text.name = "Accept Changes";
 			
 		text.width = _button.width / 6.5;
@@ -133,7 +133,7 @@ class CustomTextInputWindow extends ITabWindow
 		
 		// Accepts and Save changes
 		_buttonSave = Utils.loadGraphic( "assets/" + "tab_active.png", true );
-		_buttonSave.height = Globals.g_app.componentHeight() * 2;
+		_buttonSave.height = componentHeight() * 2;
 		_buttonSave.width = _stage.width;
 		_buttonSave.y = _button.y - _buttonSave.height;
 		_buttonSave.x = 0;
@@ -141,7 +141,7 @@ class CustomTextInputWindow extends ITabWindow
 		var textSave : TextField = new TextField();
 		textSave.selectable = false;
 		textSave.text = "Accept & Save Changes";
-		textSave.height = Globals.g_app.componentHeight()/3;
+		textSave.height = componentHeight()/3;
 		textSave.name = "Accept SaveChanges";
 			
 		textSave.width = _buttonSave.width / 6.5;
@@ -163,7 +163,7 @@ class CustomTextInputWindow extends ITabWindow
 	
 	public function acceptChanges( event:MouseEvent ):Void
 	{
-		Globals.g_dataPersistance.addCustomDrink( "Wine", "Custom1", "Nancy doesnt suck" );
+		Globals.g_itemLibrary.addCustomDrink( _item.category(), _item.name(), _customText.text );
 		_backHandler.setItem( new Item( _customText.text, null ) );
 		backHandler();
 	}

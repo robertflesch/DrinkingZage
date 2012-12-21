@@ -13,6 +13,7 @@ import nme.events.Event;
 
 import com.drinkzage.utils.Utils;
 import com.drinkzage.windows.IListWindow;
+import com.drinkzage.windows.ListWindowConsts;
 import com.drinkzage.windows.ChoiceButton;
 
 /**
@@ -20,7 +21,6 @@ import com.drinkzage.windows.ChoiceButton;
  */
 class ChoiceWindow extends ITabWindow
 {
-	static inline var GUTTER:Float = 10;
 	public var _choiceButtons:Vector<ChoiceButton>;
 	
 	private static var _instance:ChoiceWindow = null;
@@ -50,16 +50,16 @@ class ChoiceWindow extends ITabWindow
 	{
 		var numberOfChoices:Int = _choiceButtons.length;
 		var width:Float = _stage.stageWidth;
-		var height:Float = (Globals.g_app.drawableHeight() - Globals.g_app.searchHeight())/numberOfChoices;
+		var height:Float = (drawableHeight() - searchHeight())/numberOfChoices;
 
 		for ( i in 0...numberOfChoices )
 		{
 			var graphic:Sprite = Utils.loadGraphic ( "assets/buttonBlank.jpg", true );
 			graphic.name = Std.string( i );
-			graphic.x = GUTTER;
-			graphic.y = i * height + GUTTER + Globals.g_app.logoHeight() + Globals.g_app.tabHeight();
-			graphic.width = width - (GUTTER * 2);
-			graphic.height = height - (GUTTER * 1);
+			graphic.x = ListWindowConsts.GUTTER;
+			graphic.y = i * height + ListWindowConsts.GUTTER + logoHeight() + tabHeight();
+			graphic.width = width - (ListWindowConsts.GUTTER * 2);
+			graphic.height = height - (ListWindowConsts.GUTTER * 1);
 			_em.addEvent( graphic, MouseEvent.CLICK, choiceClickHandler );
 			_window.addChild(graphic);
 

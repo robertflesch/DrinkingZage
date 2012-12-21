@@ -110,7 +110,7 @@ class ItemFinalWindow extends ITabWindow {
 		plus.width = 128 / 480 * width;
 		plus.height = 128 / 854 * height;
 		plus.x = width - 140;
-		plus.y = Globals.g_app.logoHeight() + Globals.g_app.tabHeight() + height/20;
+		plus.y = logoHeight() + tabHeight() + height/20;
 		_em.addEvent( plus, MouseEvent.MOUSE_DOWN, plusHandler );
 		_window.addChild(plus);
 		
@@ -130,7 +130,7 @@ class ItemFinalWindow extends ITabWindow {
 		
 		var width:Float = _stage.stageWidth;
 		var height:Float = _stage.stageHeight;
-		height = height - Globals.g_app.tabHeight() - Globals.g_app.logoHeight();
+		height = height - tabHeight() - logoHeight();
 		
 		var font = Assets.getFont ("assets/VeraSeBd.ttf");
 		var format = new TextFormat (font.fontName, 120, 0xFF0000);
@@ -144,7 +144,7 @@ class ItemFinalWindow extends ITabWindow {
 		name.defaultTextFormat = format;
 		name.embedFonts = true;
 		name.x = width*5/8;
-		name.y = Globals.g_app.logoHeight() + Globals.g_app.tabHeight();
+		name.y = logoHeight() + tabHeight();
 		name.text = _item.name();
 		name.width = height;
 		name.height = width * 2 / 3;
@@ -162,7 +162,8 @@ class ItemFinalWindow extends ITabWindow {
 		var textField:TextField = event.currentTarget;
 		_em.removeAllEvents();
 		var ctiw:CustomTextInputWindow	= CustomTextInputWindow.instance();
-		ctiw.setItem( new Item( textField.text, null ) );
+//		ctiw.setItem( new Item( textField.text, null ) );
+		ctiw.setItem( _item );
 		ctiw.setBackHandler( this );
 		ctiw.populate();
 	}

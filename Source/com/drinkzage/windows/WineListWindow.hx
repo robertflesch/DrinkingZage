@@ -45,7 +45,7 @@ class WineListWindow extends IListWindow
 	
 	override public function createList():Void
 	{
-		var allItems:Vector<Item> = _window.allItems();
+		var allItems:Vector<Item> = Globals.g_itemLibrary.allItems();
 		var count:Int = allItems.length;
 		for ( i in 0 ... count )
 		{
@@ -56,7 +56,7 @@ class WineListWindow extends IListWindow
 	
 	override private function applyFilter():Void
 	{
-		_window.resetVisiblity( _items );
+		Globals.g_itemLibrary.resetVisiblity( _items );
 
 		var count:Int = _items.length;
 		for ( i in 0...count )

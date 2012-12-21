@@ -35,7 +35,7 @@ class WineWindow extends ItemFinalWindow {
 		// This draws the image of the drink in the background
 		var width:Int = _stage.stageWidth;
 		var height:Int = _stage.stageHeight;
-		var drawableHeight = height - Globals.g_app.logoHeight() - Globals.g_app.tabHeight();
+		var drawableHeight = height - logoHeight() - tabHeight();
 
 		var icon:Sprite = null;
 		var item:ItemWine = cast( _item, ItemWine );

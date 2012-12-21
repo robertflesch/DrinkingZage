@@ -96,7 +96,7 @@ class SearchWindow extends IListWindow
 		_searchText.border = true;
 		//_searchText.borderColor = Globals.COLOR_SAGE;
 		_searchText.width = Lib.current.stage.stageWidth;
-		_searchText.height = _window.componentHeight();
+		_searchText.height = componentHeight();
 		_searchText.y = Lib.current.stage.stageHeight - _searchText.height - 2;
 		_searchText.x = 0;
 		_searchText.type = TextFieldType.INPUT;
@@ -141,7 +141,7 @@ class SearchWindow extends IListWindow
  	// This removes all of the "items" from the displayObject list.
 	override private function listRefresh( scrollOffset:Float ):Void
 	{
-		_window.resetVisiblity();
+		Globals.g_itemLibrary.resetVisiblity();
 		if ( "" != _searchText.text )
 		{
 			_window.hideItemsWithoutString( _searchText.text );
@@ -154,14 +154,14 @@ class SearchWindow extends IListWindow
 			cast( _components[j], DataTextField ).setData( null );
 		}
 		
-		var offset:Float = Globals.g_app.tabHeight() + Globals.g_app.logoHeight();
+		var offset:Float = tabHeight() + logoHeight();
 		var itemCount:Int = _items.length;
 		var countDrawn:Int = 0;
-		var remainder:Float = scrollOffset % Globals.g_app.componentHeight();
+		var remainder:Float = scrollOffset % componentHeight();
 		var item:Item = null;
 		for ( i in 0...itemCount )
 		{
-			if ( scrollOffset <= i * Globals.g_app.componentHeight() + Globals.g_app.componentHeight() )
+			if ( scrollOffset <= i * componentHeight() + componentHeight() )
 			{
 				item = _items[i];
 				if ( true == item.isVisible() )
@@ -169,10 +169,10 @@ class SearchWindow extends IListWindow
 					_components[countDrawn].visible = true;
 					cast( _components[countDrawn], TextField ).text = item.name();
 					cast( _components[countDrawn], TextField ).setTextFormat(_tf);
-					_components[countDrawn].y = countDrawn * Globals.g_app.componentHeight() + offset - remainder;
+					_components[countDrawn].y = countDrawn * componentHeight() + offset - remainder;
 					cast( _components[countDrawn], DataTextField ).setData( item );
 					
-					if ( _components[countDrawn].y + Globals.g_app.logoHeight() > _stage.stageHeight )
+					if ( _components[countDrawn].y + logoHeight() > _stage.stageHeight )
 						break;
 					countDrawn++;
 					if ( countDrawn == _maxComponents )
@@ -197,7 +197,7 @@ class SearchWindow extends IListWindow
 
 	override private function applyFilter():Void
 	{
-		_window.resetVisiblity( _items );
+		Globals.g_itemLibrary.resetVisiblity( _items );
 		if ( "" != _searchText.text )
 		{
 			hideItemsWithoutString( _searchText.text );
@@ -208,15 +208,15 @@ class SearchWindow extends IListWindow
 	{
 		trace( "SearchWindow.listDraw" );
 		var width:Float = _stage.stageWidth;
-		var height:Float = Globals.g_app.componentHeight();
-		var offset:Float = Globals.g_app.tabHeight() + Globals.g_app.logoHeight();
+		var height:Float = componentHeight();
+		var offset:Float = tabHeight() + logoHeight();
 		var itemCount:Int = _items.length;
 		var item:Item = null;
 		var countDrawn:Int = 0;
-		var remainder:Float = scrollOffset % Globals.g_app.componentHeight();
+		var remainder:Float = scrollOffset % componentHeight();
 		for ( i in 0...itemCount )
 		{
-			if ( scrollOffset <= i * Globals.g_app.componentHeight() + Globals.g_app.componentHeight() )
+			if ( scrollOffset <= i * componentHeight() + componentHeight() )
 			{
 				item = _items[i];
 				cast( _components[countDrawn], TextField ).text = item.name();
@@ -224,7 +224,7 @@ class SearchWindow extends IListWindow
 				_components[countDrawn].name = Std.string( i );
 				_components[countDrawn].x = ListWindowConsts.GUTTER;
 				_components[countDrawn].width = width - ListWindowConsts.GUTTER * 2;
-				_components[countDrawn].y = countDrawn * Globals.g_app.componentHeight() + offset - remainder;
+				_components[countDrawn].y = countDrawn * componentHeight() + offset - remainder;
 				cast( _components[countDrawn], DataTextField ).setData( item );
 				_window.addChild(_components[countDrawn]);
 				///////////
@@ -245,12 +245,12 @@ class SearchWindow extends IListWindow
 					//graphic.name = "item";
 					//graphic.x = _components[countDrawn].x;
 					//graphic.y = _components[countDrawn].y + 1;
-					//graphic.height = Globals.g_app.componentHeight() - 2; 
-					//graphic.width = Globals.g_app.componentHeight(); 
+					//graphic.height = componentHeight() - 2; 
+					//graphic.width = componentHeight(); 
 					//_window.addChild(graphic);
 				
 				////////////
-				if ( _components[countDrawn].y + Globals.g_app.logoHeight() > _stage.stageHeight )
+				if ( _components[countDrawn].y + logoHeight() > _stage.stageHeight )
 					break;
 				countDrawn++;
 				if ( countDrawn == _maxComponents )
@@ -326,6 +326,6 @@ class SearchWindow extends IListWindow
 	override public function createList():Void
 	{
 		trace( "SearchWindow.createList" );		
-		_items = Globals.g_app.allItems();
+		_items = Globals.g_itemLibrary.allItems();
 	}
 }

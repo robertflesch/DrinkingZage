@@ -73,14 +73,14 @@ class ITabWindow extends IChildWindow
 	// add the tabs and search button
 	public function populate():Void
 	{
-		_window.removeAllChildrenAndDrawLogo();		
+		removeAllChildrenAndDrawLogo();		
 		_tabHandler = tabHandler;
 		tabsDraw( _tabs, _tabSelected );
 		
 		_em.addEvent( _stage, KeyboardEvent.KEY_UP, onKeyUp );
 		
 		if ( getUseSearch() )
-			_window.searchDraw();
+			searchDraw();
 	}
 
 	public function tabsRefresh():Void
@@ -122,8 +122,8 @@ class ITabWindow extends IChildWindow
 			_tabSprites[i].addChildAt( bm, 1 );
 				
 			_tabSprites[i].x = i * width / tabCount;
-			_tabSprites[i].y = Globals.g_app.logoHeight();
-			_tabSprites[i].height = Globals.g_app.tabHeight();			
+			_tabSprites[i].y = logoHeight();
+			_tabSprites[i].height = tabHeight();			
 			_tabSprites[i].width =  width / tabCount;
 			_tabSprites[i].name = Std.string( i );
 			Globals.g_app.addChild( _tabSprites[i] );
@@ -132,8 +132,8 @@ class ITabWindow extends IChildWindow
 			_tabTextFields[i].setTextFormat(_tabTextFormat);
 			_tabTextFields[i].name = Std.string( i );
 			_tabTextFields[i].x = i * width / tabCount;
-			_tabTextFields[i].y = Globals.g_app.logoHeight() + Globals.g_app.tabHeight()/3;
-			_tabTextFields[i].height = Globals.g_app.tabHeight()* 2/3;			
+			_tabTextFields[i].y = logoHeight() + tabHeight()/3;
+			_tabTextFields[i].height = tabHeight()* 2/3;			
 			_tabTextFields[i].width =  width / tabCount;
 			_em.addEvent( _tabTextFields[i], MouseEvent.CLICK, _tabHandler );
 			Globals.g_app.addChild(_tabTextFields[i]);
@@ -147,7 +147,7 @@ class ITabWindow extends IChildWindow
 	private function tabHandler( me:MouseEvent ):Void
 	{
 		trace( "ITabWindow.tabHandler: " + me );
-		if ( me.stageY >= Globals.g_app.tabHeight() + Globals.g_app.logoHeight() )
+		if ( me.stageY >= tabHeight() + logoHeight() )
 			return;
 		
 		backHandler();

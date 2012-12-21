@@ -38,7 +38,7 @@ class MartiniListWindow extends IListWindow
 	
 	override public function createList():Void
 	{
-		var allItems:Vector<Item> = _window.allItems();
+		var allItems:Vector<Item> = Globals.g_itemLibrary.allItems();
 		var count:Int = allItems.length;
 		for ( i in 0 ... count )
 		{

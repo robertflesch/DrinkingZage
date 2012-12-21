@@ -76,7 +76,7 @@ class BeerListWindow extends IListWindow
 	override private function tabHandler( me:MouseEvent ):Void
 	{
 		//trace( "BeerListWindow.tabHandler" );
-		if ( me.stageY >= Globals.g_app.tabHeight() + Globals.g_app.logoHeight() )
+		if ( me.stageY >= tabHeight() + logoHeight() )
 			return;
 		
 		var index:Int = me.target.name;
@@ -100,7 +100,7 @@ class BeerListWindow extends IListWindow
 
 	override private function applyFilter():Void
 	{
-		_window.resetVisiblity( _items );
+		Globals.g_itemLibrary.resetVisiblity( _items );
 
 		var count:Int = _items.length;
 		for ( i in 0...count )
@@ -124,7 +124,7 @@ class BeerListWindow extends IListWindow
 	
 	override public function createList():Void
 	{
-		var allItems:Vector<Item> = _window.allItems();
+		var allItems:Vector<Item> = Globals.g_itemLibrary.allItems();
 		var count:Int = allItems.length;
 		for ( i in 0 ... count )
 		{

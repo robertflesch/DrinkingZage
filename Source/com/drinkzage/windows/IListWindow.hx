@@ -1,8 +1,10 @@
 ﻿package com.drinkzage.windows;
 
+import nme.display.Bitmap;
 import nme.Lib;
 import nme.Vector;
 import nme.display.DisplayObject;
+import nme.display.Sprite;
 
 import nme.events.Event;
 import nme.events.MouseEvent;
@@ -15,7 +17,7 @@ import nme.text.TextFormatAlign;
 import com.drinkzage.Globals;
 import com.drinkzage.windows.IChildWindow;
 import com.drinkzage.windows.DataTextField;
-
+import com.drinkzage.utils.Utils;
 /**
  * @author Robert Flesch
  */
@@ -38,9 +40,9 @@ class IListWindow extends ITabWindow
 	private var _swipeSpeed:Float = 0;
 	
 	private var _maxOffset:Float = 0;
-	private var _item:Item = null;
+	private var _item:Item = null;					// Selected item or null
 	private var _maxComponents:Int = 0;
-	private var _components:Vector<DisplayObject> = null;
+	private var _components:Vector<Sprite> = null;
 	private var _tf:TextFormat = null;
 	
 	private function new () {
@@ -64,18 +66,18 @@ class IListWindow extends ITabWindow
 		_dragDistance = 0.0;
 		_drag = false;
 
-		_maxOffset = _items.length * Globals.g_app.componentHeight() - (_stage.stageHeight - Globals.g_app.tabHeight() - Globals.g_app.logoHeight());
-		_maxOffset += Globals.g_app.tabHeight() + ListWindowConsts.FUDGE_FACTOR; // Fudge factor
+		_maxOffset = _items.length * componentHeight() - (_stage.stageHeight - tabHeight() - logoHeight());
+		_maxOffset += tabHeight() + ListWindowConsts.FUDGE_FACTOR; // Fudge factor
 		
-		var drawableArea:Float = _stage.stageHeight - Globals.g_app.tabHeight() - Globals.g_app.logoHeight() - ( getUseSearch() ? Globals.g_app.searchHeight() : 0 );
-		var maxVisibleComponents:Float = drawableArea / Globals.g_app.componentHeight() + 0.5;
+		var drawableArea:Float = _stage.stageHeight - tabHeight() - logoHeight() - ( getUseSearch() ? searchHeight() : 0 );
+		var maxVisibleComponents:Float = drawableArea / componentHeight() + 0.5;
 		// Add in one extra for when partial components at top and bottom as visible
 		_maxComponents = Std.int( maxVisibleComponents ) + 1;
 	
 		if ( null == _components )
 			createComponents();
 		
-		_window.removeAllChildrenAndDrawLogo();		
+		removeAllChildrenAndDrawLogo();		
 		
 		// need to duplicate functionality of parent
 		// because list drawn need to come before tab and search
@@ -86,7 +88,7 @@ class IListWindow extends ITabWindow
 		
 		
 		if ( getUseSearch() )
-			_window.searchDraw();
+			searchDraw();
 
 		_em.addEvent( _stage, KeyboardEvent.KEY_UP, onKeyUp );
 		_em.addEvent( _stage, MouseEvent.MOUSE_DOWN, mouseDownHandler );
@@ -103,38 +105,99 @@ class IListWindow extends ITabWindow
 			_tf.color = 0xFF0000;           // set the color
 		}
 		
-		_components = new Vector<DisplayObject>();
+		_components = new Vector<Sprite>();
 		for ( i in 0..._maxComponents )
 		{
-			_components.push( new DataTextField() );
-			_components[i].height = Globals.g_app.componentHeight();
-//			_components[i].text = name;
-			cast( _components[i], TextField ).background = true;
-			cast( _components[i], TextField ).backgroundColor = 0x000000;
-			cast( _components[i], TextField ).border = true;
-			cast( _components[i], TextField ).borderColor = 0xffffff;
-			cast( _components[i], TextField ).selectable = false;
+			_components.push( new Sprite() );
+
+			var textField:DataTextField = new DataTextField();
+			textField.height = componentHeight();
+//			textField.text = name;
+			textField.background = true;
+			textField.backgroundColor = 0x000000;
+			textField.border = true;
+			textField.borderColor = 0xffffff;
+			textField.selectable = false;
+			_components[i].addChildAt( textField, 0 );
 			//_components[i].name = "item";
 			
+			var icon:Sprite = new Sprite();
+			icon.name = "fav.png";
+			addImage( icon, "assets/fav_icon.png", 0 );
+			addImage( icon, "assets/fav_not_icon.png", 1 );
+				
+			_components[i].addChildAt(icon, 1);
 		}
 	}
 	
-	private function setComponentValues( displyObject:DisplayObject, item:Item, i:Int, countDrawn:Int, offset:Float, remainder:Float ):Void
+	private function addImage( container:Sprite, image:String, index:Int ):Void
 	{
-		cast( displyObject, TextField ).text = item.name();
-		cast( displyObject, TextField ).setTextFormat(_tf);
-		displyObject.name = Std.string( i );
-		displyObject.x = ListWindowConsts.GUTTER;
-		displyObject.y = countDrawn * Globals.g_app.componentHeight() + offset - remainder;
-		displyObject.width = _stage.stageWidth - ListWindowConsts.GUTTER * 2;
-		cast( displyObject, DataTextField ).setData( item );
+		var icon:Bitmap = Utils.loadGraphic( image );
+		icon.height = icon.width = componentHeight();
+		icon.visible = false;
+		container.addChildAt( icon, index );
+	}
+	
+	private function favoriteToggle( event:MouseEvent ):Void
+	{
+		var item:Item = findSelectedItem();
+		var icon:Sprite = event.target;
+		if ( true == icon.getChildAt( 0 ).visible )
+		{
+			if ( null != item )
+			{
+				item.setFav( false );
+				Globals.g_itemLibrary.setItemAsFavorite( item, false );
+			}
+			icon.getChildAt( 0 ).visible = false;
+			icon.getChildAt( 1 ).visible = true;
+		}
+		else
+		{
+			if ( null != item )
+			{
+				item.setFav( true );
+				Globals.g_itemLibrary.setItemAsFavorite( item, true );
+			}
+			icon.getChildAt( 0 ).visible = true;
+			icon.getChildAt( 1 ).visible = false;
+		}
+		
+	}
+	
+	private function setComponentValues( displyObject:Sprite, item:Item, i:Int, countDrawn:Int, offset:Float, remainder:Float ):Void
+	{
+		var tf:DataTextField = cast( displyObject.getChildAt( 0 ), DataTextField );
+		tf.text = item.name();
+		tf.setTextFormat(_tf);
+		tf.name = Std.string( i );
+		tf.x = componentHeight();
+//		tf.x = ListWindowConsts.GUTTER;
+		tf.y = countDrawn * componentHeight() + offset - remainder;
+//		tf.width = _stage.stageWidth - ListWindowConsts.LIST_GUTTER * 2;
+		tf.width = _stage.stageWidth - ListWindowConsts.LIST_GUTTER * 2 - tf.x;
+		tf.setData( item );
+		
+		var icon:Sprite = cast( displyObject.getChildAt( 1 ), Sprite );
+		icon.x = ListWindowConsts.LIST_GUTTER;
+		icon.y = countDrawn * componentHeight() + offset - remainder;
+		if ( item.fav() )
+		{
+			icon.getChildAt( 0 ).visible = true;
+			icon.getChildAt( 1 ).visible = false;
+		}
+		else
+		{
+			icon.getChildAt( 0 ).visible = false;
+			icon.getChildAt( 1 ).visible = true;
+		}
 	}
 	
 	private function applyFilter():Void
 	{
 		// override this to apply a custom filter
 		// just make sure everything is visible
-		_window.resetVisiblity( _items );
+		Globals.g_itemLibrary.resetVisiblity( _items );
 	}
 	
 	private function listDraw( scrollOffset:Float, isListRefresh:Bool = true ):Void
@@ -146,15 +209,15 @@ class IListWindow extends ITabWindow
 		applyFilter();
 		
 		var width:Float = _stage.stageWidth;
-		var height:Float = Globals.g_app.componentHeight();
-		var offset:Float = Globals.g_app.tabHeight() + Globals.g_app.logoHeight();
+		var height:Float = componentHeight();
+		var offset:Float = tabHeight() + logoHeight();
 		var itemCount:Int = _items.length;
 		var item:Item = null;
 		var countDrawn:Int = 0;
-		var remainder:Float = scrollOffset % Globals.g_app.componentHeight();
+		var remainder:Float = scrollOffset % componentHeight();
 		for ( i in 0...itemCount )
 		{
-			if ( scrollOffset <= i * Globals.g_app.componentHeight() + Globals.g_app.componentHeight() )
+			if ( scrollOffset <= i * componentHeight() + componentHeight() )
 			{
 				item = _items[i];
 				if ( true == item.isVisible() )
@@ -163,7 +226,7 @@ class IListWindow extends ITabWindow
 					
 					setComponentValues( _components[countDrawn], item, i, countDrawn, offset, remainder );
 					
-					if ( _components[countDrawn].y + Globals.g_app.logoHeight() > _stage.stageHeight )
+					if ( _components[countDrawn].y + logoHeight() > _stage.stageHeight )
 						break;
 					
 					// We dont want to readd component, since that brings it to the front, and we want it to stay behind the search and tabs
@@ -191,9 +254,15 @@ class IListWindow extends ITabWindow
 		_em.removeEvent( _stage, MouseEvent.MOUSE_MOVE, mouseMoveHandler );
 		
 		// if we let the mouse up over the header or logo, and it hasnt moved then return
-		if ( me.stageY < Globals.g_app.tabHeight() + Globals.g_app.logoHeight() && me.stageY - _clickPoint < 5 )
+		if ( me.stageY < tabHeight() + logoHeight() && me.stageY - _clickPoint < 5 )
 			return;
 			
+		if ( me.stageX < componentHeight() )
+		{
+			favoriteToggle( me );
+			return;
+		}
+		
 		// _dragDistance is calculated in the last mouseMove event
 		listOffsetAdjust( _dragDistance );
 		
@@ -214,20 +283,26 @@ class IListWindow extends ITabWindow
 		}
 		else
 		{
-			var remainder:Float = _listOffset % Globals.g_app.componentHeight();
-			// where did I click in the client area?
-			var relativeClickPoint:Float = (_clickPoint - Globals.g_app.tabHeight() - Globals.g_app.logoHeight());
-			// this gets the component index from where I clicked
-			var componentIndex:Int = Std.int((remainder + relativeClickPoint) / Globals.g_app.componentHeight());
 			_item = null;
-			if ( componentIndex <= Std.int( _components.length ) )
-			{
-				_item = cast( _components[componentIndex], DataTextField ).getData();
-				if ( null != _item )
-					selectionHandler();
-			}
+			_item = findSelectedItem();
+			if ( null != _item )
+				selectionHandler();
 		}
 	}
+
+	private function findSelectedItem():Item
+	{
+		var remainder:Float = _listOffset % componentHeight();
+		// where did I click in the client area?
+		var relativeClickPoint:Float = (_clickPoint - tabHeight() - logoHeight());
+		// this gets the component index from where I clicked
+		var componentIndex:Int = Std.int((remainder + relativeClickPoint) / componentHeight());
+		var item:Item = null;
+		if ( componentIndex <= Std.int( _components.length ) )
+			item = cast( _components[componentIndex].getChildAt(0), DataTextField ).getData();
+			
+		return item;	
+	}	
 	
 //	public var _temp:Item = null;
 	private function onEnter(e:Event):Void
@@ -307,4 +382,14 @@ class IListWindow extends ITabWindow
 			}
 		}
 	}
+	
+	private function resetItems():Void
+	{
+		var itemCount:Int = _items.length;
+		for ( i in 0...itemCount )
+		{
+			_items.pop();
+		}
+	}
+
 }

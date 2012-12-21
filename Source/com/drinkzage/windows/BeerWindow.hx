@@ -92,7 +92,7 @@ class BeerWindow extends ItemFinalWindow {
 	
 	override public function tabHandler( me:MouseEvent ):Void
 	{
-		if ( me.stageY >= Globals.g_app.tabHeight() + Globals.g_app.logoHeight() )
+		if ( me.stageY >= tabHeight() + logoHeight() )
 			return;
 			
 		var index:Int = me.target.name;
@@ -147,7 +147,7 @@ class BeerWindow extends ItemFinalWindow {
 	{
 		var bottleImage:Bitmap = getBeerImage( beer, type );
 		var hvw = bottleImage.height / bottleImage.width;
-		bottleImage.height = Globals.g_app.drawableHeight() * 0.90;
+		bottleImage.height = drawableHeight() * 0.90;
 		bottleImage.width = bottleImage.height / hvw;
 		bottleImage.visible = false;
 		_container.addChildAt( bottleImage, Type.enumIndex( type ) );
@@ -179,43 +179,42 @@ class BeerWindow extends ItemFinalWindow {
 		var selectedContainer:DisplayObject = _container.getChildAt( Type.enumIndex( _tabSelected ) );
 		selectedContainer.visible = true;
 		
-		var drawableCenterHeight:Float = (Globals.g_app.logoHeight() + Globals.g_app.tabHeight() + Globals.g_app.drawableHeight() / 2);
+		var drawableCenterHeight:Float = (logoHeight() + tabHeight() + drawableHeight() / 2);
 		_container.y = drawableCenterHeight - selectedContainer.height / 2;
 		_container.x = (_stage.width * 2 / 3 ) / 2 - selectedContainer.width / 2;
 		
 		_label.width = selectedContainer.width;
 		_label.height = _label.width * _label_hvw;
-		_label.y = drawableCenterHeight - selectedContainer.height / 2;
-		_label.x = (_stage.width * 2 / 3 ) / 2 - _label.width / 2;
+		
+		var containerCenterHeight:Float = (logoHeight() + tabHeight() + drawableHeight() * 2 /  4 );
 		
 		// for each container we need to tweak the vertical label position 
 		if ( Type.enumEq( BeerContainer.Bottle, _tabSelected ) )
 		{
-			_label.y = drawableCenterHeight;// - (selectedContainer.height * 0.07);
+			// center of beer bottle label is below center of bottle image
+			containerCenterHeight = (logoHeight() + tabHeight() + drawableHeight() * 2 /  3 );
 		}
 		else if ( Type.enumEq( BeerContainer.Can, _tabSelected ) )
 		{
-			_label.y = drawableCenterHeight - (selectedContainer.height * 0.30);
+			// no special handling needed
 		}
 		else if ( Type.enumEq( BeerContainer.Draft, _tabSelected ) )
 		{
-			//_label.width = (selectedContainer.width * 0.850);
 			_label.width = (selectedContainer.width * 0.70);
 			_label.height = _label.width * _label_hvw;
-			_label.y = drawableCenterHeight - (selectedContainer.height * 0.20);
-			_label.x = (_stage.width * 2 / 3 ) / 2 - _label.width / 2;
 		}
 		else if ( Type.enumEq( BeerContainer.Pitcher, _tabSelected ) )
 		{
 			_label.width = (selectedContainer.width * 0.70);
 			_label.height = _label.width * _label_hvw;
-			_label.y = drawableCenterHeight - (selectedContainer.height * 0.17);
-			_label.x = (_stage.width * 2 / 3 ) / 2 - _label.width / 2;
 		}
 		else
 		{  
 			throw ("Unknown Container" );
 		}
+
+		_label.x = (_stage.width * 2 / 3 ) / 2 - _label.width / 2;
+		_label.y = containerCenterHeight - (_label.height * 0.5);
 
 		_window.addChild( _container );
 		_window.addChild( _label );
