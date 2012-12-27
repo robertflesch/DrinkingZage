@@ -38,7 +38,11 @@ class ITabWindow extends IChildWindow
 
 	private var _backHandler(getBackHandler, setBackHandler):Dynamic = null;
 	function getBackHandler():Dynamic { return _backHandler; }
-	public function setBackHandler( val:Dynamic ):Dynamic { trace( "setBackHandler: " + val );  return _backHandler = val; }
+	public function setBackHandler( val:Dynamic ):Dynamic 
+	{ 
+		//trace( "setBackHandler: " + val );  
+		return _backHandler = val; 
+	}
 
 	private function new () 
 	{
@@ -146,7 +150,7 @@ class ITabWindow extends IChildWindow
 	// This should be overridden if more then the back tab is used
 	private function tabHandler( me:MouseEvent ):Void
 	{
-		trace( "ITabWindow.tabHandler: " + me );
+		//trace( "ITabWindow.tabHandler: " + me );
 		if ( me.stageY >= tabHeight() + logoHeight() )
 			return;
 		

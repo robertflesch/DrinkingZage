@@ -67,6 +67,10 @@ class FavoritesWindow extends IListWindow
 		{
 			window = EmoteWindow.instance();
 		}
+		else if ( EmotePictureWindow == _item.category() )
+		{
+			window = EmotePictureWindow.instance();
+		}
 		else if ( WineWindow == _item.category() )
 		{
 			window = WineWindow.instance();

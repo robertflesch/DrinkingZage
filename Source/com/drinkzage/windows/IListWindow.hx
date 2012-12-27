@@ -95,6 +95,11 @@ class IListWindow extends ITabWindow
 		_em.addEvent( _stage, Event.ENTER_FRAME, onEnter );
 	}	
 	
+	static inline private var BASE_TEXT_FIELD = 0;
+	static inline private var TEXT_FIELD = 1;
+	static inline private var FAV_ICON = 2;
+	static inline private var ICON_ACTIVE = 0;
+	static inline private var ICON_INACTIVE = 1;
 	public function createComponents():Void
 	{
 		if ( null == _tf )
@@ -110,23 +115,28 @@ class IListWindow extends ITabWindow
 		{
 			_components.push( new Sprite() );
 
+			var outlineField:DataTextField = new DataTextField();
+			//outlineField.border = true;
+			//outlineField.borderColor = 0xffffff;
+			_components[i].addChildAt( outlineField, BASE_TEXT_FIELD );
+			
 			var textField:DataTextField = new DataTextField();
 			textField.height = componentHeight();
 //			textField.text = name;
 			textField.background = true;
 			textField.backgroundColor = 0x000000;
-			textField.border = true;
-			textField.borderColor = 0xffffff;
+			//textField.border = false;
+			//textField.borderColor = 0xffffff;
 			textField.selectable = false;
-			_components[i].addChildAt( textField, 0 );
+			_components[i].addChildAt( textField, TEXT_FIELD );
 			//_components[i].name = "item";
 			
 			var icon:Sprite = new Sprite();
 			icon.name = "fav.png";
-			addImage( icon, "assets/fav_icon.png", 0 );
-			addImage( icon, "assets/fav_not_icon.png", 1 );
+			addImage( icon, "assets/fav_icon.png", ICON_ACTIVE );
+			addImage( icon, "assets/fav_not_icon.png", ICON_INACTIVE );
 				
-			_components[i].addChildAt(icon, 1);
+			_components[i].addChildAt(icon, FAV_ICON);
 		}
 	}
 	
@@ -142,15 +152,15 @@ class IListWindow extends ITabWindow
 	{
 		var item:Item = findSelectedItem();
 		var icon:Sprite = event.target;
-		if ( true == icon.getChildAt( 0 ).visible )
+		if ( true == icon.getChildAt( ICON_ACTIVE ).visible )
 		{
 			if ( null != item )
 			{
 				item.setFav( false );
 				Globals.g_itemLibrary.setItemAsFavorite( item, false );
 			}
-			icon.getChildAt( 0 ).visible = false;
-			icon.getChildAt( 1 ).visible = true;
+			icon.getChildAt( ICON_ACTIVE ).visible = false;
+			icon.getChildAt( ICON_INACTIVE ).visible = true;
 		}
 		else
 		{
@@ -159,15 +169,15 @@ class IListWindow extends ITabWindow
 				item.setFav( true );
 				Globals.g_itemLibrary.setItemAsFavorite( item, true );
 			}
-			icon.getChildAt( 0 ).visible = true;
-			icon.getChildAt( 1 ).visible = false;
+			icon.getChildAt( ICON_ACTIVE ).visible = true;
+			icon.getChildAt( ICON_INACTIVE ).visible = false;
 		}
 		
 	}
 	
 	private function setComponentValues( displyObject:Sprite, item:Item, i:Int, countDrawn:Int, offset:Float, remainder:Float ):Void
 	{
-		var tf:DataTextField = cast( displyObject.getChildAt( 0 ), DataTextField );
+		var tf:DataTextField = cast( displyObject.getChildAt( TEXT_FIELD ), DataTextField );
 		tf.text = item.name();
 		tf.setTextFormat(_tf);
 		tf.name = Std.string( i );
@@ -178,18 +188,18 @@ class IListWindow extends ITabWindow
 		tf.width = _stage.stageWidth - ListWindowConsts.LIST_GUTTER * 2 - tf.x;
 		tf.setData( item );
 		
-		var icon:Sprite = cast( displyObject.getChildAt( 1 ), Sprite );
+		var icon:Sprite = cast( displyObject.getChildAt( FAV_ICON ), Sprite );
 		icon.x = ListWindowConsts.LIST_GUTTER;
 		icon.y = countDrawn * componentHeight() + offset - remainder;
 		if ( item.fav() )
 		{
-			icon.getChildAt( 0 ).visible = true;
-			icon.getChildAt( 1 ).visible = false;
+			icon.getChildAt( ICON_ACTIVE ).visible = true;
+			icon.getChildAt( ICON_INACTIVE ).visible = false;
 		}
 		else
 		{
-			icon.getChildAt( 0 ).visible = false;
-			icon.getChildAt( 1 ).visible = true;
+			icon.getChildAt( ICON_ACTIVE ).visible = false;
+			icon.getChildAt( ICON_INACTIVE ).visible = true;
 		}
 	}
 	
@@ -299,7 +309,7 @@ class IListWindow extends ITabWindow
 		var componentIndex:Int = Std.int((remainder + relativeClickPoint) / componentHeight());
 		var item:Item = null;
 		if ( componentIndex <= Std.int( _components.length ) )
-			item = cast( _components[componentIndex].getChildAt(0), DataTextField ).getData();
+			item = cast( _components[componentIndex].getChildAt(TEXT_FIELD), DataTextField ).getData();
 			
 		return item;	
 	}	

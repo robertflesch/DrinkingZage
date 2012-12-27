@@ -41,7 +41,7 @@
                 {  "name" : "Purple Hooter" },
                 {  "name" : "Liquid Cocaine" }
 			],
-	"emotes": 
+	"emoteLines": 
 			[
                 {  "name" : "Like" },
                 {  "name" : "Love" },
@@ -50,6 +50,22 @@
                 {  "name" : "20 most original lines" },
                 {  "name" : "20 lines to make them laugh" },
                 {  "name" : "20 lines to shock them" }
+			],
+	"emotePictures": 
+			[
+                {  "name" : "BlowingKisses.jpg" },
+                {  "name" : "CallMe.jpg" },
+                {  "name" : "Grin.jpg" },
+                {  "name" : "HeartBalloon.jpg" },
+                {  "name" : "HeartInHand.jpg" },
+                {  "name" : "Loser.jpg" },
+                {  "name" : "Love_eyes.jpg" },
+                {  "name" : "SalivatingHeart.jpg" },
+                {  "name" : "SmileClosedMouth.jpg" },
+                {  "name" : "Smooching.jpg" },
+                {  "name" : "ThumbsUp.jpg" },
+                {  "name" : "ThumpingHeart.jpg" },
+                {  "name" : "TongueOut.jpg" }
 			],
     "tumbler": 
 			[

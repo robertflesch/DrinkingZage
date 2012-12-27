@@ -36,11 +36,12 @@ import com.drinkzage.windows.LogoConsts;
 import com.drinkzage.windows.ListWindowConsts;
 
 import com.drinkzage.windows.BeerListWindow;
-import com.drinkzage.windows.EmoticonsWindow;
+import com.drinkzage.windows.EmoteChoiceWindow;
 import com.drinkzage.windows.NonAlcoholicDrinks;
 import com.drinkzage.windows.NotDoneYetWindow;
 import com.drinkzage.windows.LiquorChoice;
 import com.drinkzage.windows.WineChoice;
+
 
 import com.drinkzage.windows.SearchWindow;
 
@@ -123,7 +124,7 @@ class MainWindow extends ChoiceWindow
 			case 2: // Wine
 				nw = WineChoice.instance();
 			case 3: // Emote
-				nw = EmoticonsWindow.instance();
+				nw = EmoteChoiceWindow.instance();
 			case 4: // Liquor
 				nw = LiquorChoice.instance();
 			case 5: // Non Alco

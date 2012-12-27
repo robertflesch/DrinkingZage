@@ -11,6 +11,7 @@ import com.drinkzage.utils.DataPersistanceNull;
 import com.drinkzage.windows.BeerWindow;
 import com.drinkzage.windows.ContainerColor;
 import com.drinkzage.windows.EmoteWindow;
+import com.drinkzage.windows.EmotePictureWindow;
 import com.drinkzage.windows.Item;
 import com.drinkzage.windows.ItemBeer;
 import com.drinkzage.windows.ItemWine;
@@ -82,10 +83,16 @@ class ItemLibrary {
 			addItem ( new Item( drinks.shots[i].name, ShotWindow ) );
 		}
 		
-		var emotesListSize:Int = drinks.emotes.length;
+		var emotesListSize:Int = drinks.emoteLines.length;
 		for ( i in 0 ... emotesListSize )
 		{
-			addItem ( new Item( drinks.emotes[i].name, EmoteWindow ) );
+			addItem ( new Item( drinks.emoteLines[i].name, EmoteWindow ) );
+		}
+
+		var emotesListSize:Int = drinks.emotePictures.length;
+		for ( i in 0 ... emotesListSize )
+		{
+			addItem ( new Item( drinks.emotePictures[i].name, EmotePictureWindow ) );
 		}
 
 		for ( i in 0 ... drinks.tumbler.length )

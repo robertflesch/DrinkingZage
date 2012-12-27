@@ -148,9 +148,10 @@ class ItemFinalWindow extends ITabWindow {
 		name.text = _item.name();
 		name.width = height;
 		name.height = width * 2 / 3;
+		name.selectable = false;
 		
 		name.rotation = 90;
-		_em.addEvent( name, MouseEvent.CLICK, onClickHander );
+//		_em.addEvent( name, MouseEvent.CLICK, onClickHander );
 		
 		_window.addChild( name );
 
